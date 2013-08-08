@@ -1,0 +1,79 @@
+# Install hddtemp, lmsensors and netstat. Turn on sticky bit for netstat
+# And edit HDD and/or NET section for your needs
+background yes
+use_xft yes # Use Xft?
+#xftfont Bitstream Vera Sans Mono:size=8
+#xftfont Terminus:size=8
+xftalpha 1 # Text alpha when using Xft
+update_interval 2.0 # Update interval in seconds
+font comic sans ms:size=8
+short_units yes
+total_run_times 0
+own_window_argb_visual yes
+own_window_argb_value 0
+own_window yes
+own_window_type normal
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+double_buffer yes # Use double buffering (reduces flicker, may not work for everyone)
+maximum_width 300
+minimum_size 200 1000
+draw_shades no
+draw_outline no
+draw_borders no
+stippled_borders 8
+border_width 0
+format_human_readable yes
+default_color 7BdDcB
+alignment tr
+gap_x 5
+gap_y 5
+template0 \n
+no_buffers yes
+uppercase no
+cpu_avg_samples 4
+net_avg_samples 5
+override_utf8_locale no
+use_spacer right
+
+TEXT
+${color #97EA0E}SYSTEM & CPU ${hr 2}${color}
+${offset 2}${color #0077ff}UpTime: ${color #7BdDcB}${uptime}
+${offset 2}${color #0077ff}Battry: ${color #7BdDcB}${battery}
+${offset 2}${color #0077ff}CPU:${color #7BdDcB} $cpu% | ${color #0077ff}${color #7BdDcB}${exec sensors | grep -o [1-9][0-9] |head -n1}C${alignr}${color #0077ff}HDD Temp: ${color #7BdDcB}${hddtemp}C
+${color #0077ff}${alignc}${cpugraph 16,195 #0077ff #ffffff}
+${offset 2}${color #0077ff}Total Procs: ${color #7BdDcB}${processes}${alignr}${color #0077ff}Running Procs: ${color #7BdDcB}${running_processes}
+
+${offset 2}${color #0077ff}Highest CPU
+${offset 2}${color #ddaa00} ${top name 1}${alignr}${top cpu 1}    ${top time 1}
+${offset 2}${color #7BdDcB} ${top name 2}${alignr}${top cpu 2}    ${top time 2}
+${offset 2}${color #7BdDcB} ${top name 3}${alignr}${top cpu 3}    ${top time 3}
+${offset 2}${color #7BdDcB} ${top name 4}${alignr}${top cpu 4}    ${top time 4}
+${color #97EA0E}MEM ${hr 2}${color}
+${offset 2}${color #0077ff}Highest MEM
+${offset 2}${color #ddaa00} ${top_mem name 1}${alignr 2}${top_mem mem_res 1}
+${offset 2}${color #7BdDcB} ${top_mem name 2}${alignr 2}${top_mem mem_res 2}
+${offset 2}${color #7BdDcB} ${top_mem name 3}${alignr 2}${top_mem mem_res 3}
+${offset 2}${color #7BdDcB} ${top_mem name 4}${alignr 2}${top_mem mem_res 4}
+
+${offset 2}${color #0077ff}MEM:${alignr 2}${color #ddaa00} $memperc% ${color #7BdDcB}$mem/${color d7b2Ff}$memmax
+${offset 2}${membar 3,195}
+${offset 2}${color #0077ff}SWAP:${alignr 2}${color #ddaa00}$swapperc%${color #7BdDcB} $swap/${color d7b2Ff}$swapmax
+${offset 2}${swapbar 3,195}
+${offset 2}${color #0077ff}BUFF:  ${color #7BdDcB} ${buffers}${alignr}${color #0077ff}CACHE:  ${color #7BdDcB} ${cached}
+${color #97EA0E}HDD ${hr 2}${color}
+${offset 2}${color #0077ff}Highest HDD${alignr}Read             Write
+${offset 2}${color #ddaa00} ${top_io name 1}${alignr}${top_io io_read 1}           ${top_io io_write 1}
+${offset 2}${color #7BdDcB} ${top_io name 2}${alignr}${top_io io_read 2}           ${top_io io_write 2}
+
+${offset 2}${color #0077ff}Disk${alignr}Read             Write
+${offset 2}${color d7b2Ff} Root${color #7BdDcB}${alignr}${diskio_read sda7}             ${diskio_write sda7}
+${offset 2}${color d7b2Ff} C${color #7BdDcB}${alignr}${diskio_read sda2}             ${diskio_write sda2}
+${offset 2}${color d7b2Ff} D${color #7BdDcB}${alignr}${diskio_read sda5}             ${diskio_write sda5}
+${offset 2}${color d7b2Ff} E${color #7BdDcB}${alignr}${diskio_read sda6}             ${diskio_write sda6}
+${offset 2}${color d7b2Ff} F${color #7BdDcB}${alignr}${diskio_read sda8}             ${diskio_write sda8}
+${offset 2}${color d7b2Ff} G${color #7BdDcB}${alignr}${diskio_read sda9}             ${diskio_write sda9}${if_existing /dev/sdb1}${template0}${offset 2}${color #0077ff}Read sdb1	${color #7BdDcB}${diskio_read sdb1}  ${color #0077ff}Write sdb1: ${color #7BdDcB}${diskio_write sdb1}${endif}
+${color #97EA0E}NET ${hr 2}${color}
+${offset 2}${color #0077ff}NIC${alignr}UP               Down${if_up eth0}${template0}${offset 2}${color d7b2Ff} eth${alignr}${color #7BdDcB}${upspeed eth0}             ${downspeed eth0}${endif}${if_up eth0}${template0}${offset 2}${alignc}${color #0077ff}${upspeedgraph eth0 16,97 #0077ff #ffffff} ${color #0077ff}${downspeedgraph eth0 16,97 #0077ff #ffffff}${endif}${if_up eth0}${template0}${offset 2}${color #0077ff}Total Up: ${color #7BdDcB}${totalup eth0}${alignr}${color #0077ff}Total Down: ${color #7BdDcB}${totaldown eth0}${endif}${if_up wlp2s0}${template0}${offset 2}${color d7b2Ff} wlan${alignr}${color #7BdDcB}${upspeed wlp2s0}             ${downspeed wlp2s0}${endif}${if_up wlp2s0}${template0}${offset 2}${alignc}${color #0077ff}${upspeedgraph wlp2s0 16,97 #0077ff #ffffff} ${color #0077ff}${downspeedgraph wlp2s0 16,97 #0077ff #ffffff}${endif}${if_up wlp2s0}${template0}${offset 2}${color #0077ff}Total Up: ${color #7BdDcB}${totalup wlp2s0}${alignr}${color #0077ff}Total Down: ${color #7BdDcB}${totaldown wlp2s0}${endif}${if_up usb0}${template0}${offset 2}${color d7b2Ff} usb${alignr}${color #7BdDcB}${upspeed usb0}             ${downspeed usb0}${endif}${if_up usb0}${template0}${offset 2}${alignc}${color #0077ff}${upspeedgraph usb0 16,97 #0077ff #ffffff 25} ${color #0077ff}${downspeedgraph usb0 16,97 #0077ff #ffffff 25}${endif}${if_up usb0}${template0}${offset 2}${color #0077ff}Total Up: ${color #7BdDcB}${totalup usb0}${alignr}${color #0077ff}Total Down: ${color #7BdDcB}${totaldown usb0}${endif}${if_up ppp0}${template0}${offset 2}${color d7b2Ff} ppp${alignr}${color #7BdDcB}${upspeed ppp0}             ${downspeed ppp0}${endif}${if_up ppp0}${template0}${offset 2}${alignc}${color #0077ff}${upspeedgraph ppp0 16,97 #0077ff #ffffff 30} ${color #0077ff}${downspeedgraph ppp0 16,97 #0077ff #ffffff 30}${endif}${if_up ppp0}${template0}${offset 2}${color #0077ff}Total Up: ${color #7BdDcB}${totalup ppp0}${alignr}${color #0077ff}Total Down: ${color #7BdDcB}${totaldown ppp0}${endif}
+${offset 2}${color #0077ff}Established  Connections:
+${offset 2}${color #7BdDcB} ${exec netstat -enpt | grep ESTAB | awk '{print $9}' | cut -d: -f1 | sort | uniq -c | grep -oP '\d\s\d*/\w*' | sort -nr}

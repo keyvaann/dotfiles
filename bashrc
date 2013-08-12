@@ -30,7 +30,7 @@ export TERM=xterm-256color
 # Set a fancy prompt
 force_color_prompt=yes
 color_prompt=yes
-PS1="\`if [ \$? = 0 ]; then echo \[\e[33m\]^_^ ; else echo \[\e[31m\]O_O ; fi\`\[\033[0;33m\][\!] \[\033[1;36m\]\u \[\033[32m\]$(__git_ps1 "(%s)") \w\n\[\033[1;36m\]-> \[\033[1;34m\]"
+PS1="\`if [ \$? = 0 ]; then echo \[\e[33m\]^_^ ; else echo \[\e[31m\]O_O ; fi\`\[\033[0;33m\][\!] \[\033[1;36m\]\u \[\033[32m\]\`__git_ps1 '(%s)'\` \w\n\[\033[1;36m\]-> \[\033[1;34m\]"
 unset color_prompt force_color_prompt
 
 if [ -f ~/.bash_aliases ]; then

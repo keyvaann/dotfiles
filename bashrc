@@ -23,7 +23,7 @@ export TERM=xterm-256color
 # Set a fancy prompt
 force_color_prompt=yes
 color_prompt=yes
-PS1="\`if [ \$? = 0 ]; then echo \[\e[33m\]^_^ ; else echo \[\e[31m\]O_O ; fi\`\[\033[0;33m\][\!] \[\033[1;36m\]\u \[\033[32m\]\w\n\[\033[1;36m\]-> \[\033[1;34m\]"
+PS1="\`if [ \$? = 0 ]; then echo \[\e[33m\]^_^ ; else echo \[\e[31m\]O_O ; fi\`\[\033[0;33m\][\!] \[\033[1;36m\]\u \[\033[32m\]$(__git_ps1 "(%s)") \w\n\[\033[1;36m\]-> \[\033[1;34m\]"
 unset color_prompt force_color_prompt
 
 if [ -f ~/.bash_aliases ]; then
@@ -35,6 +35,12 @@ fi
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+
+# Usefull staff for git
+source ~/.git-completion.sh
+export GIT_PS1_SHOWDIRTYSTATE=True
+export GIT_PS1_SHOWUNTRACKEDFILES=True
+export GIT_PS1_SHOWUPSTREAM=auto
 
 # Some useful functions
 # Also see http://gotux.net/arch-linux/custom-bash-commands-functions/

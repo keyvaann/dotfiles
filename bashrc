@@ -1,13 +1,16 @@
 #
 # ~/.bashrc
-#
+# Some of these got from https://github.com/durdn/cfg/blob/master/.bashrc
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 # Force ignoredups and ignorespace and increace history file size
 HISTCONTROL=ignoreboth
-HISTFILESIZE=5000
+export HISTFILESIZE=999999
+export HISTSIZE=999999
+#make sure the history is updated at every command
+export PROMPT_COMMAND="history -a; history -n;"
 
 # For personal use, you can remove it.
 CDPATH=/run/media/mrgee
@@ -15,6 +18,8 @@ CDPATH=/run/media/mrgee
 # Colors are good :)
 dircolors -b $HOME/.dircolors > /dev/null
 
+#set the terminal type to 256 colors
+export TERM=xterm-256color
 # Set a fancy prompt
 force_color_prompt=yes
 color_prompt=yes
@@ -27,6 +32,9 @@ fi
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
+
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Some useful functions
 # Also see http://gotux.net/arch-linux/custom-bash-commands-functions/

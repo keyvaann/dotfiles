@@ -1,3 +1,4 @@
+# https://github.com/joejag/dotfiles/blob/master/bash/aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto -Fh'
@@ -17,6 +18,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+# show most commonly used commands
+alias profileme="history | awk '{print \$2}' | awk 'BEGIN{FS=\"|\"}{print \$1}' | sort | uniq -c | sort -n | tail -n 20 | sort -nr"
+alias ducurr='du -cksh *' # file sizes for current directory
+alias reload='. ~/.bashrc'  # reload
 alias locate="locate -eiA"
 alias du="du -hc"
 alias du1='du --max-depth=1'

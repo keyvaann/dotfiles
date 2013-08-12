@@ -187,7 +187,7 @@ shopt -u failglob
 shopt -s force_fignore
 shopt -s globstar
 shopt -u gnu_errfmt
-shopt -s histappend
+shopt -s histappend # Append to the Bash history file, rather than overwriting it
 shopt -s histreedit
 shopt -s histverify
 shopt -u hostcomplete

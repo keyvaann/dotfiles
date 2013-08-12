@@ -37,6 +37,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # Usefull staff for git
+# https://github.com/joejag/dotfiles/blob/master/bash/completion/git
 source ~/.git-completion.sh
 export GIT_PS1_SHOWDIRTYSTATE=True
 export GIT_PS1_SHOWUNTRACKEDFILES=True

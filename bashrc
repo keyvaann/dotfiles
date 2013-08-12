@@ -15,6 +15,13 @@ export PROMPT_COMMAND="history -a; history -n;"
 # For personal use, you can remove it.
 CDPATH=/run/media/mrgee
 
+# Usefull staff for git
+# https://github.com/joejag/dotfiles/blob/master/bash/completion/git
+source ~/.git-completion.sh
+export GIT_PS1_SHOWDIRTYSTATE=True
+export GIT_PS1_SHOWUNTRACKEDFILES=True
+export GIT_PS1_SHOWUPSTREAM=verbose
+
 # Colors are good :)
 dircolors -b $HOME/.dircolors > /dev/null
 
@@ -35,13 +42,6 @@ fi
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-
-# Usefull staff for git
-# https://github.com/joejag/dotfiles/blob/master/bash/completion/git
-source ~/.git-completion.sh
-export GIT_PS1_SHOWDIRTYSTATE=True
-export GIT_PS1_SHOWUNTRACKEDFILES=True
-export GIT_PS1_SHOWUPSTREAM=auto
 
 # Some useful functions
 # Also see http://gotux.net/arch-linux/custom-bash-commands-functions/

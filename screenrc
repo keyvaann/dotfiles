@@ -1,0 +1,68 @@
+# https://bbs.archlinux.org/viewtopic.php?id=55618
+# https://wiki.archlinux.org/index.php/GNU_Screen
+
+# don't display the copyright page
+startup_message off
+
+# detach on hangup
+autodetach on
+
+#Fix for residual editor text
+altscreen on
+
+activity "%c activity -> %n%f %t"
+
+vbell off
+vbell_msg ""
+bell_msg "!!! Ding !!!"
+
+msgwait 1
+nethack on # print wackier status messages
+defscrollback 10000
+defflow auto
+
+nonblock on    # If a window goes unresponsive, don't block the whole session waiting for it.
+defnonblock 5  # flaky/slow ssh lines
+
+# terminfo and termcap for nice 256 color terminal
+termcapinfo xterm*|rxvt-* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+termcapinfo xterm*|rxvt-* 'hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
+termcapinfo xterm*|rxvt-* ti@:te=\E[3J
+termcapinfo xterm*|rxvt-* hs@:cs=\E[%i%d;%dr:im=\E[4h:ei=\E[4l
+termcapinfo xterm*|rxvt-* hs@:cs=\E[%i%p1%d;%p2%dr:im=\E[4h:ei=\E[4l
+attrcolor b ".I"        # allow bold colors - necessary for some reason
+term 'xterm-256color'   # 256 terminal for xterm
+
+#Use X scrolling mechanism
+termcapinfo xterm* ti@:te@
+
+#Causes screen to reload the .screenrc file when Ctrl-A Shift-R is pressed
+bind R eval "source $HOME/.screenrc" "echo '.screenrc reloaded!'"
+
+setenv LC_CTYPE en_US.UTF-8
+defutf8 on
+defencoding UTF-8
+
+bind j focus down
+bind k focus up
+
+# make life easier, f1-f10 selects screens 0-9
+bindkey -k k1 select 0
+bindkey -k k2 select 1
+bindkey -k k3 select 2
+bindkey -k k4 select 3
+bindkey -k k5 select 4
+bindkey -k k6 select 5
+
+bindkey -k k7 next   # bind F7 to move to previous window
+bindkey -k k8 prev   # bind F8 to move to next window
+bindkey -k k9 screen # bind F9  to create a new screen
+
+
+hardstatus on
+hardstatus alwayslastline
+#sorendition kw
+#sorendition +b kG
+#caption always "%{= kb}[ %=%{w}%?%-Lw%?%{b}(%{W}%n*%f %t%?(%u)%?%{b})%{w}%?%+Lw%?%?%= %{b}][%{B} %H %{W}%l %{b}][%{B} %d.%m.%Y %{W}%0c %{b}]"
+#hardstatus string '%{gk}[ %{G}%H %{g}][%= %{wk}%?%-Lw%?%{=b kR}(%{W}%n*%f %t%?(%u)%?%{=b kR})%{= kw}%?%+Lw%?%?%= %{g}][%{Y}%l%{g}]%{=b C}[ %m/%d %c ]%{W} [%1`]'
+hardstatus alwayslastline "%{yk}( %{Y}%H %{y})%= %{wk}%?%-Lw%?%{R}(%{W}%n*%f %t%?(%u)%?%{R})%{w}%?%+Lw%?%?%= %{y}( %{Y}load: %l %{y})"

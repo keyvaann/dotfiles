@@ -6,6 +6,7 @@ ln -vsb $CurrDir/conkyrc ~/.conkyrc
 ln -vsb $CurrDir/dircolors ~/.dircolors
 ln -vsb $CurrDir/git-completion.sh ~/.git-completion.sh
 ln -vsb $CurrDir/gitconfig ~/.gitconfig
+ln -vsb $CurrDir/screenrc ~/.screenrc
 mkdir ~/.mplayer/
 mkfifo ~/.mplayer/inputpipe
 ln -vsb $CurrDir/mplayer/config ~/.mplayer/config

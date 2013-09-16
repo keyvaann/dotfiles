@@ -7,8 +7,8 @@
 
 # Force ignoredups and ignorespace and increace history file size
 HISTCONTROL=ignoreboth
-export HISTFILESIZE=999999
-export HISTSIZE=999999
+export HISTFILESIZE=9999
+export HISTSIZE=9999
 #make sure the history is updated at every command
 export PROMPT_COMMAND="history -a; history -n;"
 

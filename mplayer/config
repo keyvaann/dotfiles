@@ -35,6 +35,9 @@ vf=dsize=720:400:0
 # Fix dvd subtitles to look very good
 spuaa=4
 
+# Input pipe
+input=file=.mplayer/inputpipe
+
 # Disavle verbose output
 msglevel=all=0:cplayer=5:statusline=5
 

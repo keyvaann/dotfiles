@@ -29,6 +29,7 @@ alias df="df -Th"
 alias ln='ln -s'
 alias more='most'
 alias less='most'
+alias nano='vim'
 alias axel='axel -av'
 alias wget='wget --tries=40 --read-timeout=20 '
 alias cp="cp -iv"      # interactive, verbose, Sorry for that ;)

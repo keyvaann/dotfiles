@@ -163,7 +163,7 @@ function swap()
     mv $TMPFILE "$2"
 }
 
-export EDITOR="nano"
+export EDITOR="vim"
 export PAGER="/usr/bin/most -s"
 export DISPLAY=:0
 

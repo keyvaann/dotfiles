@@ -1,8 +1,8 @@
 # Orginally from: 
-#       https://github.com/durdn/cfg/blob/master/.gitconfig
-#       https://github.com/joejag/dotfiles/blob/master/git/gitconfig
-#       http://oli.jp/2012/git-powerup/
-#       http://www.mediawiki.org/wiki/Git/aliases
+#  https://github.com/durdn/cfg/blob/master/.gitconfig
+#  https://github.com/joejag/dotfiles/blob/master/git/gitconfig
+#  http://oli.jp/2012/git-powerup/
+#  http://www.mediawiki.org/wiki/Git/aliases
 # Merged and edited by me
 
 [core]
@@ -21,10 +21,10 @@
     helper = cache --timeout=3600
 
 [color]
+    ui = auto
     branch = auto
     diff = auto
     status = auto
-    ui = auto
     interactive = auto
 [color "branch"]
     current = red reverse
@@ -62,7 +62,7 @@
     st = status -sb
     cl = clone
     
-    #commit
+    # Commit
     ci = commit
     cm = commit -m
     cma = commit -a -m
@@ -71,7 +71,7 @@
     caa = commit -a --amend -C HEAD
     acma = !git add -v . && git commit -v -a -m
     
-    #see all the commits related to a file
+    # See all the commits related to a file
     filelog = log -u
     fl = log -u
 
@@ -84,41 +84,41 @@
     bra = branch -ra
     fetchall = fetch -v --all
     
-    #list commands
-    #default look for short git log
+    # List commands
+    # Default look for short git log
     le = log --oneline --decorate
-    #list commits showing changed files is invoked
+    # List commits showing changed files is invoked
     ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
-    #detailed history
+    # Detailed history
     lll = log --stat --abbrev-commit
-    #list oneline commits showing dates
+    # List oneline commits showing dates
     lds = log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short --graph
-    #list oneline commits showing relative dates
+    # List oneline commits showing relative dates
     ld = log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative --graph
-    #list commits in short form, with colors and branch/tag annotations. 
+    # List commits in short form, with colors and branch/tag annotations. 
     ls = log --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative
-    #list with no colors if you need to chain the out put with Unix pipes
+    # List with no colors if you need to chain the out put with Unix pipes
     lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
-    #list all aliases
+    # List all aliases
     la = "!git config -l | grep alias | cut -c 7-"
     log-me = !UN=$(git config user.name)&& git log --author="\"$UN\"" --pretty=format:'%h %cd %s' --date=short
     ls1 = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
 
-    # diff
+    # Diff
     diff = diff --word-diff
     d = diff --word-diff
     ds = diff --staged
     dc = diff --cached
-    #show modified files in last commit
+    # Show modified files in last commit
     dl = "!git ll -1"
-    #show a diff last commit
+    # Show a diff last commit
     dlc = diff --cached HEAD^
-    #show content (full diff) of a commit given a revision:
+    # Show content (full diff) of a commit given a revision:
     lc  = "!f() { git ll "$1"^.."$1"; }; f"
     dr  = "!f() { git diff -w "$1"^.."$1"; }; f"
     diffr  = "!f() { git diff "$1"^.."$1"; }; f"
 
-    #reset commands
+    # Reset commands
     r = reset
     r1 = reset HEAD^
     r2 = reset HEAD^^
@@ -126,12 +126,12 @@
     rh1 = reset HEAD^ --hard
     rh2 = reset HEAD^^ --hard
 
-    #git svn
+    # Git svn
     svnr = svn rebase
     svnd = svn dcommit
     svnl = svn log --oneline --show-commit
 
-    #stash
+    # Stash
     sa = stash apply
     sc = stash clear
     sd = stash drop
@@ -140,59 +140,61 @@
     ss = stash save
 
     cp = cherry-pick
-    #search/grep your entire codebase for a string
+    # Search/grep your entire codebase for a string
     grep = grep -Ii
     gr = grep -Ii
-    #grep from root folder
+    # Grep from root folder
     gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
 
-    #find a file path in codebase
+    # Find a file path in codebase
     f = "!git ls-files | grep -i"
 
-    #rename branch tree to done-
+    # Rename branch tree to done-
     done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f"
 
-    #assume aliases
-    #assume a file as unchanged
+    # Assume aliases
+    # Assume a file as unchanged
     assume = update-index --assume-unchanged
-    #unassume a file
+    # Unassume a file
     unassume = update-index --no-assume-unchanged
-    #show assumed files
+    # Show assumed files
     assumed = "!git ls-files -v | grep ^h | cut -c 3-"
-    #unassume all the assumed files
+    # Unassume all the assumed files
     unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
-    #assume all
+    # Assume all
     assumeall = "!git st -s | awk {'print $2'} | xargs git assume"
     
-    #show the last tag
+    # Show the last tag
     lasttag = describe --tags --abbrev=0
     lt = describe --tags --abbrev=0
 
-    #merges
+    # Merges
     ours = "!f() { git co --ours $@ && git add $@; }; f"
     theirs = "!f() { git co --theirs $@ && git add $@; }; f"
 
-    #list remotes
+    # List remotes
     rem="!git config -l | grep remote.*url | tail -n +2"
 
-    #apply patch from other local repo
+    # Apply patch from other local repo
     lap = "!f() { git --git-dir=$1 format-patch -k -1 --stdout $2 | git am -3 -k; }; f"
 
-    #subtree add
+    # Subtree add
     sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f" 
     
-    #total commits
+    # Total commits
     total= log -a --pretty=oneline | wc -l
     
-    #author total commits
+    # Author total commits
     author = shortlog -sn
     
     human = name-rev --name-only --refs=refs/heads/*
     
-    #Sometimes, you might have done something wrong in git. You think you've lost your commits, or something like that.
-    #Chances are, the information is still there--so the best course of action is to make an immediate backup, before you risk actually losing data.
+    # Sometimes, you might have done something wrong in git. You think you've lost your commits, or something like that.
+    # Chances are, the information is still there--so the best course of action is to make an immediate backup, before you risk actually losing data.
     panic = !tar cvf ../git_panic.tar *
     
-    #lists what you did in the last 24 hours
+    # Lists what you did in the last 24 hours
     standup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --since yesterday --author k1-hedayati
-# }}}
+    
+    # Good web interface
+    web = instaweb --httpd httpd

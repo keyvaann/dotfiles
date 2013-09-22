@@ -43,7 +43,7 @@ spuaa=4
 input=file=.mplayer/inputpipe
 
 # Disavle verbose output
-msglevel=all=0:cplayer=5:statusline=5:cache=6
+msglevel=all=0:cplayer=5:statusline=5
 
 # disable lirc
 lirc=no

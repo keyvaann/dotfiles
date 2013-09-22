@@ -38,8 +38,10 @@ alias mv="mv -iv"       # interactive, verbose
 alias x="exit"
 alias ..='cd ..'
 alias ...='cd ../..'
+alias ....='cd ../../..'
 alias h='history' # Bash history
 alias hs='history | grep $1'
+alias pss='ps aux | grep $1'
 alias j='jobs -l' # Current running jobs
 alias mkdir='mkdir -pv' # Create parent directories on demand
 alias diff='colordiff' # install  colordiff package :)
@@ -50,19 +52,19 @@ alias chgrp='chgrp --preserve-root' # Parenting changing perms on / #
 alias psx="ps -auxw ¦ grep $1"
 alias path='echo -e ${PATH//:/\\n}'
 # pacman aliases (if necessary, replace 'pacman' with your favorite AUR helper and adapt the commands accordingly)
-alias pac="sudo /usr/bin/pacman -S"		# default action	- install one or more packages
-alias pacu="/usr/bin/pacman -Syu"		# '[u]pdate'		- upgrade all packages to their newest version
-alias pacr="sudo /usr/bin/pacman -Rs"		# '[r]emove'		- uninstall one or more packages
-alias pacs="/usr/bin/pacman -Ss"		# '[s]earch'		- search for a package using one or more keywords
-alias paci="/usr/bin/pacman -Si"		# '[i]nfo'		- show information about a package
-alias paclo="/usr/bin/pacman -Qdt"		# '[l]ist [o]rphans'	- list all packages which are orphaned
-alias pacc="sudo /usr/bin/pacman -Scc"		# '[c]lean cache'	- delete all not currently installed package files
-alias paclf="/usr/bin/pacman -Ql"		# '[l]ist [f]iles'	- list all files installed by a given package
-alias pacof="/usr/bin/pacman -Qo"               # '[o]wn [f]iles'       - Search for packages that own the specified file(s)
-alias pacexpl="/usr/bin/pacman -D --asexp"	# 'mark as [expl]icit'	- mark one or more packages as explicitly installed 
-alias pacimpl="/usr/bin/pacman -D --asdep"	# 'mark as [impl]icit'	- mark one or more packages as non explicitly installed
-                                                # '[r]emove [o]rphans' - recursively remove ALL orphaned packages
-alias pacro="/usr/bin/pacman -Qtdq > /dev/null && sudo /usr/bin/pacman -Rs \$(/usr/bin/pacman -Qtdq | sed -e ':a;N;$!ba;s/\n/ /g')"
+alias pac="sudo pacman -S"              # default action        - install one or more packages
+alias pacu="sudo pacman -Syu"           # '[u]pdate'            - upgrade all packages to their newest version
+alias pacr="sudo pacman -Rs"            # '[r]emove'            - uninstall one or more packages
+alias pacs="pacman -Ss"                 # '[s]earch'            - search for a package using one or more keywords
+alias paci="pacman -Si"                 # '[i]nfo'              - show information about a package
+alias paclo="pacman -Qdt"               # '[l]ist [o]rphans'    - list all packages which are orphaned
+alias pacc="sudo pacman -Scc"           # '[c]lean cache'       - delete all not currently installed package files
+alias paclf="pacman -Ql"                # '[l]ist [f]iles'      - list all files installed by a given package
+alias pacof="pacman -Qo"                # '[o]wn [f]iles'       - Search for packages that own the specified file(s)
+alias pacexpl="pacman -D --asexp"       # 'mark as [expl]icit'  - mark one or more packages as explicitly installed 
+alias pacimpl="pacman -D --asdep"       # 'mark as [impl]icit'  - mark one or more packages as non explicitly installed
+                                        # '[r]emove [o]rphans' - recursively remove ALL orphaned packages
+alias pacro="pacman -Qtdq > /dev/null && sudo pacman -Rs \$(pacman -Qtdq | sed -e ':a;N;$!ba;s/\n/ /g')"
 
 # incase I need to type yaourt..
 alias yoaurt='yaourt'
@@ -74,5 +76,5 @@ alias yuoart='yaourt'
 # These are just for personal use, you can remove them.
 alias m='mfind'
 alias netstart="sudo netcfg MrGee"
-alias unlock="sudo truecrypt /run/media/mrgee/f/data /home/mrgee/tmp/"
+alias unlock="sudo truecrypt /run/media/mrgee/f/data /home/mrgee/.tmp/"
 alias lock="sudo truecrypt -d"

@@ -1,19 +1,22 @@
-#
-# ~/.bashrc
 # Some of these got from https://github.com/durdn/cfg/blob/master/.bashrc
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# Force ignoredups and ignorespace and increace history file size
-HISTCONTROL=ignoreboth
+# Force ignoredups and erase duplicates across the whole history which is good for desktop and bad for server
+export HISTCONTROL=ignoredups:erasedups
+# Increace history file size 
 export HISTFILESIZE=9999
-export HISTSIZE=9999
-#make sure the history is updated at every command
+export HISTSIZE=2000
+# Display TIMESTAMP in history, for auditing purpose
+export HISTTIMEFORMAT='%F %T '
+#make sure the history is updated at every command.
 export PROMPT_COMMAND="history -a; history -n;"
 
 # For personal use, you can remove it.
 CDPATH=/run/media/mrgee
+
+export PATH=$PATH:~/.bin
 
 # Usefull staff for git
 # https://github.com/joejag/dotfiles/blob/master/bash/completion/git
@@ -25,13 +28,12 @@ export GIT_PS1_SHOWUPSTREAM=verbose
 # Colors are good :)
 dircolors -b $HOME/.dircolors > /dev/null
 
-#set the terminal type to 256 colors
+# Set the terminal type to 256 colors
 export TERM=xterm-256color
+
 # Set a fancy prompt
-force_color_prompt=yes
-color_prompt=yes
-PS1="\`if [ \$? = 0 ]; then echo \[\e[33m\]^_^ ; else echo \[\e[31m\]O_O ; fi\`\[\033[0;33m\][\!] \[\033[1;36m\]\u \[\033[32m\]\`__git_ps1 '(%s)'\` \w\n\[\033[1;36m\]-> \[\033[1;34m\]"
-unset color_prompt force_color_prompt
+BROWN='\[\033[1\;33m\]'; RED='\[\033[31m\]'; DARKBROWN='\[\033[0;33m\]'; CYAN='\[\033[1;36m\]'; GREEN='\[\033[1;32m\]'; BLUE='\[\033[1;34m\]'; WHITE='\[\033[0;38m\]';
+PS1="\`if [ \$? = 0 ]; then echo $BROWN\:\) ; else echo $RED\:\( ; fi\` $DARKBROWN[\!] $CYAN\u $GREEN\w $WHITE\@ \`__git_ps1 '(%s)'\`\n$CYAN-> $BLUE"
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -83,7 +85,7 @@ extract() {
     return $e
 }
 
-# cd and ls in one
+# Cd and ls in one
 cl() {
     if [ -d "$1" ]; then
         cd "$1"
@@ -102,7 +104,7 @@ dirsize ()
     rm /tmp/list
 }
 
-# do sudo, or sudo the last command if no argument given
+# Do sudo, or sudo the last command if no argument given
 s() { 
     if [[ $# == 0 ]]; then
         sudo $(history -p '!!')
@@ -147,7 +149,7 @@ xargs -0 egrep --color=always -sn ${case} "$1" 2>&- | more
 
 }
 
-# enquote: surround lines with quotes (useful in pipes) - from mervTormel
+# Enquote: surround lines with quotes (useful in pipes) - from mervTormel
 enquote () { /usr/bin/sed 's/^/"/;s/$/"/' ; }
 
 function swap()

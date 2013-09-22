@@ -32,7 +32,13 @@ dircolors -b $HOME/.dircolors > /dev/null
 export TERM=xterm-256color
 
 # Set a fancy prompt
-BROWN='\[\033[1\;33m\]'; RED='\[\033[31m\]'; DARKBROWN='\[\033[0;33m\]'; CYAN='\[\033[1;36m\]'; GREEN='\[\033[1;32m\]'; BLUE='\[\033[1;34m\]'; WHITE='\[\033[0;38m\]';
+export BROWN='\[\033[1\;33m\]'; 
+export RED='\[\033[31m\]'; 
+export DARKBROWN='\[\033[0;33m\]'; 
+export CYAN='\[\033[1;36m\]'; 
+export GREEN='\[\033[1;32m\]'; 
+export BLUE='\[\033[1;34m\]'; 
+export WHITE='\[\033[0;38m\]';
 PS1="\`if [ \$? = 0 ]; then echo $BROWN\:\) ; else echo $RED\:\( ; fi\` $DARKBROWN[\!] $CYAN\u $GREEN\w $WHITE\@ \`__git_ps1 '(%s)'\`\n$CYAN-> $BLUE"
 
 if [ -f ~/.bash_aliases ]; then
@@ -44,6 +50,9 @@ fi
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export EDITOR="vim"
+export PAGER="/usr/bin/most -s"
+export DISPLAY=:0
 
 # Some useful functions
 # Also see http://gotux.net/arch-linux/custom-bash-commands-functions/
@@ -164,11 +173,6 @@ function swap()
     mv "$2" "$1"
     mv $TMPFILE "$2"
 }
-
-export EDITOR="vim"
-export PAGER="/usr/bin/most -s"
-export DISPLAY=:0
-
 
 ################
 ###Tune Shopt###

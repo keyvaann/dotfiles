@@ -6,6 +6,7 @@ ln -vsb $currDir/conkyrc ~/.conkyrc
 ln -vsb $currDir/dircolors ~/.dircolors
 ln -vsb $currDir/git-completion.sh ~/.git-completion.sh
 ln -vsb $currDir/gitconfig ~/.gitconfig
+ln -vsb $currDir/gitignore ~/.gitignore
 ln -vsb $currDir/screenrc ~/.screenrc
 sudo ln -vsb $currDir/bashrc /root/.bashrc
 sudo ln -vsb $currDir/bash_aliases /root/.bash_aliases

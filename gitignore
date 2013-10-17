@@ -1,0 +1,40 @@
+# https://github.com/trapd00r/gitignore
+
+# Emacs.gitignore
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+
+# Linux.gitignore
+.*
+!.gitignore
+*~
+*.sw[a-p]
+
+# KDE
+.directory
+
+# Python.gitignore
+*.py[co]
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+develop-eggs
+.installed.cfg
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox

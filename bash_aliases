@@ -1,23 +1,36 @@
 # https://github.com/joejag/dotfiles/blob/master/bash/aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto -Fh'
-    alias l='ls --color=auto -Fh'
-    alias lr='ls --color=auto -FhR'     # recursive ls
-    alias la='ls --color=auto -Fah'
-    alias ll='ls --color=auto -Fahl'
-    alias lx='ls --color=auto -lXB' # Sort by extension
-    alias lk='ls --color=auto -lSr' # Sort by size (small to big)
-    alias lc='ls --color=auto -ltcr' # Sort by change time (old to new)
-    alias lu='ls --color=auto -ltur' # Sort by change time (new to old)
-    alias lt='ls --color=auto -ltr' # Sort by date (old to new)
-    alias l.='ls --color=auto -d .* --color=auto' # Show hidden files
+    alias ls='ls --color=auto --group-directories-first -Fh'
+    alias l='ls --color=auto --group-directories-first -Fh'
+    alias lr='ls --color=auto --group-directories-first -FhR'     # recursive ls
+    alias la='ls --color=auto --group-directories-first -Fah'
+    alias ll='ls --color=auto --group-directories-first -Fahl'
+    alias lx='ls --color=auto --group-directories-first -lXB' # Sort by extension
+    alias lk='ls --color=auto --group-directories-first -lSr' # Sort by size (small to big)
+    alias lc='ls --color=auto --group-directories-first -ltcr' # Sort by change time (old to new)
+    alias lu='ls --color=auto --group-directories-first -ltur' # Sort by change time (new to old)
+    alias lt='ls --color=auto --group-directories-first -ltr' # Sort by date (old to new)
+    alias l.='ls --color=auto --group-directories-first -d .* --color=auto' # Show hidden files
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
+# Easier navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias -- -="cd -"
+
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+alias em='emacsclient -nc -a ""'
+alias emc='emacsclient -t -a ""'
+alias nano='emacsclient -t -a ""'
 # show most commonly used commands
 alias profileme="history | awk '{print \$2}' | awk 'BEGIN{FS=\"|\"}{print \$1}' | sort | uniq -c | sort -n | tail -n 20 | sort -nr"
 alias ducurr='du -cksh *' # file sizes for current directory
@@ -29,16 +42,11 @@ alias df="df -Th"
 alias ln='ln -s'
 alias more='most'
 alias less='most'
-alias nano='vim'
 alias axel='axel -av'
-alias wget='wget --tries=40 --read-timeout=20 '
 alias cp="cp -iv"      # interactive, verbose, Sorry for that ;)
 alias rm="rm -iI --preserve-root"      # do not delete / or prompt if deleting more than 3 files at a time, Shame on me :)
-alias mv="mv -iv"       # interactive, verbose 
+alias mv="mv -iv"       # interactive, verbose
 alias x="exit"
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
 alias h='history' # Bash history
 alias hs='history | grep $1'
 alias pss='ps aux | grep $1'
@@ -61,7 +69,7 @@ alias paclo="pacman -Qdt"               # '[l]ist [o]rphans'    - list all packa
 alias pacc="sudo pacman -Scc"           # '[c]lean cache'       - delete all not currently installed package files
 alias paclf="pacman -Ql"                # '[l]ist [f]iles'      - list all files installed by a given package
 alias pacof="pacman -Qo"                # '[o]wn [f]iles'       - Search for packages that own the specified file(s)
-alias pacexpl="pacman -D --asexp"       # 'mark as [expl]icit'  - mark one or more packages as explicitly installed 
+alias pacexpl="pacman -D --asexp"       # 'mark as [expl]icit'  - mark one or more packages as explicitly installed
 alias pacimpl="pacman -D --asdep"       # 'mark as [impl]icit'  - mark one or more packages as non explicitly installed
                                         # '[r]emove [o]rphans' - recursively remove ALL orphaned packages
 alias pacro="pacman -Qtdq > /dev/null && sudo pacman -Rs \$(pacman -Qtdq | sed -e ':a;N;$!ba;s/\n/ /g')"

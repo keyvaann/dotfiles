@@ -5,13 +5,13 @@
 
 # Force ignoredups and erase duplicates across the whole history which is good for desktop and bad for server
 export HISTCONTROL=ignoredups:erasedups
-# Increace history file size 
+# Increace history file size
 export HISTFILESIZE=9999
 export HISTSIZE=2000
 # Display TIMESTAMP in history, for auditing purpose
 export HISTTIMEFORMAT='%F %T '
-#make sure the history is updated at every command.
-export PROMPT_COMMAND="history -a; history -n;"
+# Make sure the history is updated at every command.
+export PROMPT_COMMAND='history -a;'
 
 # For personal use, you can remove it.
 CDPATH=/run/media/mrgee
@@ -26,31 +26,37 @@ export GIT_PS1_SHOWUNTRACKEDFILES=True
 export GIT_PS1_SHOWUPSTREAM=verbose
 
 # Colors are good :)
+# https://github.com/trapd00r/LS_COLORS
 dircolors -b $HOME/.dircolors > /dev/null
 
 # Set the terminal type to 256 colors
 export TERM=xterm-256color
 
 # Set a fancy prompt
-export BROWN='\[\033[1\;33m\]'; 
-export RED='\[\033[31m\]'; 
-export DARKBROWN='\[\033[0;33m\]'; 
-export CYAN='\[\033[1;36m\]'; 
-export GREEN='\[\033[1;32m\]'; 
-export BLUE='\[\033[1;34m\]'; 
-export WHITE='\[\033[0;38m\]';
-PS1="\`if [ \$? = 0 ]; then echo $BROWN\:\) ; else echo $RED\:\( ; fi\` $DARKBROWN[\!] $CYAN\u $GREEN\w $WHITE\@ \`__git_ps1 '(%s)'\`\n$CYAN-> $BLUE"
+export BBrown='\[\033[1\;33m\]';
+export BRed='\[\033[1\;31m\]';
+export Brown='\[\033[0;33m\]';
+export BCyan='\[\033[1;36m\]';
+export BGreen='\[\033[1;32m\]';
+export BBlue='\[\033[1;34m\]';
+export White='\[\033[0;38m\]';
+PS1="\$(if [ \$? = 0 ]; then echo $BBrown\:\) ; else echo $BRed\:\( ; fi) $Brown[\!] $BCyan\u $BGreen\w $White\@ \$(__git_ps1 '(%s)')\n$BCyan-> $BBlue"
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
-fi
+[ -r ~/.bash_aliases ] && . ~/.bash_aliases
+
+# Try to enable the auto-completion (type: "pacman -S bash-completion" to install it).
+[ -r /usr/share/bash-completion/bash_completion ] && . /usr/share/bash-completion/bash_completion
+
+# Try to enable the "Command not found" hook ("pacman -S pkgfile" to install it).
+# See also: https://wiki.archlinux.org/index.php/Bash#The_.22command_not_found.22_hook
+[ -r /usr/share/doc/pkgfile/command-not-found.bash ] && . /usr/share/doc/pkgfile/command-not-found.bash
+
+# Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
+[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-export EDITOR="vim"
+export EDITOR='emacsclient -a ""'
 export PAGER="/usr/bin/most -s"
 export DISPLAY=:0
 
@@ -94,6 +100,49 @@ extract() {
     return $e
 }
 
+# Get a character’s Unicode code point
+function codepoint() {
+        perl -e "use utf8; print sprintf('U+%04X', ord(\"$@\"))"
+        # print a newline unless we’re piping the output to another program
+        if [ -t 1 ]; then
+                echo # newline
+        fi
+}
+
+# Show all the names (CNs and SANs) listed in the SSL certificate
+# for a given domain
+function getcertnames() {
+        if [ -z "${1}" ]; then
+                echo "ERROR: No domain specified."
+                return 1
+        fi
+
+        local domain="${1}"
+        echo "Testing ${domain}…"
+        echo # newline
+
+        local tmp=$(echo -e "GET / HTTP/1.0\nEOT" \
+                | openssl s_client -connect "${domain}:443" 2>&1);
+
+        if [[ "${tmp}" = *"-----BEGIN CERTIFICATE-----"* ]]; then
+                local certText=$(echo "${tmp}" \
+                        | openssl x509 -text -certopt "no_header, no_serial, no_version, \
+                        no_signame, no_validity, no_issuer, no_pubkey, no_sigdump, no_aux");
+                        echo "Common Name:"
+                        echo # newline
+                        echo "${certText}" | grep "Subject:" | sed -e "s/^.*CN=//";
+                        echo # newline
+                        echo "Subject Alternative Name(s):"
+                        echo # newline
+                        echo "${certText}" | grep -A 1 "Subject Alternative Name:" \
+                                | sed -e "2s/DNS://g" -e "s/ //g" | tr "," "\n" | tail -n +2
+                        return 0
+        else
+                echo "ERROR: Certificate not found.";
+                return 1
+        fi
+}
+
 # Cd and ls in one
 cl() {
     if [ -d "$1" ]; then
@@ -102,6 +151,20 @@ cl() {
         else
         echo "bash: cl: '$1': Directory not found"
     fi
+}
+
+# Determine size of a file or total size of a directory
+function fs() {
+        if du -b /dev/null > /dev/null 2>&1; then
+                local arg=-sbh
+        else
+                local arg=-sh
+        fi
+        if [[ -n "$@" ]]; then
+                du $arg -- "$@"
+        else
+                du $arg .[^.]* *
+        fi
 }
 
 dirsize ()
@@ -114,7 +177,7 @@ dirsize ()
 }
 
 # Do sudo, or sudo the last command if no argument given
-s() { 
+s() {
     if [[ $# == 0 ]]; then
         sudo $(history -p '!!')
     else
@@ -180,7 +243,7 @@ function swap()
 
 shopt -s autocd
 shopt -u cdable_vars
-shopt -s cdspell
+shopt -s cdspell # Autocorrect typos in path names when using `cd`
 shopt -u checkhash
 shopt -s checkjobs
 shopt -s checkwinsize
@@ -211,7 +274,7 @@ shopt -u lithist
 shopt -u login_shell
 shopt -u mailwarn
 shopt -u no_empty_cmd_completion
-shopt -s nocaseglob
+shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
 shopt -u nocasematch
 shopt -u nullglob
 shopt -s progcomp

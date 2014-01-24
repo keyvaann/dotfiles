@@ -1,28 +1,26 @@
-# Write your default config options here!
-# default configuration that applies to every file
 [default]
 
 # use X11 for video output, use a framebuffer as fallback
-vo=xv,directfb
+vo=opengl-old,xv,directfb
+
+# enforces a fixed video system for multiple files
+fixed-vo=yes
 
 # use alsa for audio output, choose oss4 as fallback
 ao=alsa,oss
 
 # multithreaded decoding of H264/MPEG-1/2 (valid: 1-8)
-lavdopts=threads=2
+#lavdopts=threads=2
 
 # Get rid of lag and delay
-cache = 16000
-cache-min = 20
+#cache = 16000
+#cache-min = 20
 
 # prefer using six channels audio
-channels = 2
+channels=2
 
 # Keep the player window on top of all other windows.
 ontop=yes
-
-# scale the subtitles to the 3% of the screen size
-subfont-text-scale = 3
 
 # color output
 msgcolor=yes
@@ -37,13 +35,13 @@ geometry=100%:100%
 vf=dsize=720:400:0
 
 # Fix dvd subtitles to look very good
-spuaa=4
+sub-gauss=3
 
 # Input pipe
-input=file=.mplayer/inputpipe
+input=file="/home/mrgee/.mpv/inputpipe"
 
 # Disavle verbose output
-msglevel=all=0:cplayer=5:statusline=5
+msglevel=all=warn:cplayer=warn:statusline=status
 
 # disable lirc
 lirc=no
@@ -52,23 +50,26 @@ lirc=no
 joystick=no
 
 # sub-fuzziness
-sub-fuzziness=1
+autosub=yes
+autosub-match=all
 
 # set the window title using the media filename, when not set with --title.
-use-filename-title=yes
-
+title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
+#status-msg='${filename}${status-msg}'
 # add black borders so the movies have the same aspect ratio of the monitor for wide screen monitors
-vf-add=expand=::::1:16/9:16
+#vf-add=expand=::::1:16/9:16
 
 # for non wide screen traditional monitors
 #vf-add=expand=::::1:4/3:16
+
+subcp=utf8:cp1256
 
 # disable screensaver
 #heartbeat-cmd="xscreensaver-command -deactivate &" # stop xscreensaver
 #stop-xscreensaver="yes" # stop gnome-screensaver
 
 # correct pitch when speed is faster or slower than 1.0
-af=scaletempo
+#af=scaletempo
 
 # allow to seek in a file which is still downloading whilst watching it
 idx=yes
@@ -79,12 +80,21 @@ framedrop=yes
 # more intense frame dropping (breaks decoding)
 #hardframedrop=yes
 
+audio-display=no
+#save-position-on-quit=yes
+
+osd-font='Negotiate Free'           # osd font
+ass-force-style='Fontname=Negotiate Free,Default.Bold=1'
+#osd-blur=2.5
+#sub-scale=3
+#sub-pos=90                      # align to bottom of screen
+
 # profile for up-mixing two channels audio to six channels
 # use -profile 2chto6ch to activate
 [2chto6ch]
-af-add=pan=6:1:0:.4:0:.6:2:0:1:0:.4:.6:2
+#af-add=pan=6:1:0:.4:0:.6:2:0:1:0:.4:.6:2
 
 # profile to down-mixing six channels audio to two channels
 # use -profile 6chto2ch to activate
 [6chto2ch]
-af-add=pan=2:0.7:0:0:0.7:0.5:0:0:0.5:0.6:0.6:0:0
+#af-add=pan=2:0.7:0:0:0.7:0.5:0:0:0.5:0.6:0.6:0:0

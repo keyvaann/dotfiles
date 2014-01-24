@@ -27,18 +27,18 @@
     # Use colors in Git commands that are capable of colored output when
     # outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
     ui = auto
-    
+
 [color "branch"]
     current = yellow reverse
     local = yellow
     remote = green
-    
+
 [color "diff"]
     meta = yellow bold
     frag = magenta bold
     old = red bold
     new = green bold
-    
+
 [color "status"]
     added = yellow
     changed = green
@@ -46,16 +46,16 @@
 
 [push]
     default = upstream
-    
+
 [pull]
     default = current
-    
+
 [diff]
     memonicprefix = true
-    
+
 [branch]
     autosetuprebase = always
-    
+
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
     log = true
@@ -63,7 +63,7 @@
 [rerere]
     enabled = 1
     autoupdate = 1
-    
+
 # URL shorthands
 [url "git@github.com:"]
     insteadOf = "gh:"
@@ -71,7 +71,7 @@
     pushInsteadOf = "git://github.com/"
 [url "git://github.com/"]
     insteadOf = "github:"
-    
+
 [url "git@gist.github.com:"]
     insteadOf = "gst:"
     pushInsteadOf = "gist:"
@@ -116,7 +116,7 @@
     difflog = log -p --cc --graph --decorate
     # List all aliases
     la = "!git config -l | grep alias | cut -c 7-"
-    
+
     # Diff
     diff = diff --word-diff --find-renames --find-copies
     d = diff --word-diff --find-renames --find-copies

@@ -7,16 +7,30 @@
 export HISTCONTROL=ignoredups:erasedups
 # Increace history file size
 export HISTFILESIZE=9999
-export HISTSIZE=2000
+export HISTSIZE=5000
 # Display TIMESTAMP in history, for auditing purpose
 export HISTTIMEFORMAT='%F %T '
 # Make sure the history is updated at every command.
-export PROMPT_COMMAND='history -a;'
+export PROMPT_COMMAND='history -a; history -n'
+
+# Safe default permissions
+#umask 077
 
 # For personal use, you can remove it.
-CDPATH=/run/media/mrgee
+CDPATH=/run/media/mrgee:$HOME/git
 
-export PATH=$PATH:~/.bin
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH=~/.bin:~/.rbenv/bin:$PYENV_ROOT/bin:$PATH
+eval "$(rbenv init -)"
+eval "$(pyenv init -)"
+
+# virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/git
+source /usr/bin/virtualenvwrapper.sh
+source ~/.autoenv/activate.sh
+
+stty -ixon		# disable XON/XOFF flow control (^s/^q)
 
 # Usefull staff for git
 # https://github.com/joejag/dotfiles/blob/master/bash/completion/git
@@ -25,12 +39,20 @@ export GIT_PS1_SHOWDIRTYSTATE=True
 export GIT_PS1_SHOWUNTRACKEDFILES=True
 export GIT_PS1_SHOWUPSTREAM=verbose
 
+# git
+export GIT_AUTHOR_EMAIL="tom@tomcort.com"
+export GIT_COMMITTER_EMAIL="tom@tomcort.com"
+
 # Colors are good :)
 # https://github.com/trapd00r/LS_COLORS
 dircolors -b $HOME/.dircolors > /dev/null
 
+# ctrl+w and slashes
+stty werase undef
+bind '"\C-w": unix-filename-rubout'
+
 # Set the terminal type to 256 colors
-export TERM=xterm-256color
+#export TERM=xterm-256color
 
 # Set a fancy prompt
 export BBrown='\[\033[1\;33m\]';
@@ -40,7 +62,16 @@ export BCyan='\[\033[1;36m\]';
 export BGreen='\[\033[1;32m\]';
 export BBlue='\[\033[1;34m\]';
 export White='\[\033[0;38m\]';
-PS1="\$(if [ \$? = 0 ]; then echo $BBrown\:\) ; else echo $BRed\:\( ; fi) $Brown[\!] $BCyan\u $BGreen\w $White\@ \$(__git_ps1 '(%s)')\n$BCyan-> $BBlue"
+
+case ${TERM} in
+  xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+    PS1="\$(if [ \$? = 0 ]; then echo $BBrown\:\) ; else echo $BRed\:\( ; fi) $Brown[\!] $BCyan\u $BGreen\w $White\@ \$(__git_ps1 '(%s)')\n$BCyan-> $BBlue"
+
+    ;;
+  screen)
+    PS1="\$(if [ \$? = 0 ]; then echo \:\) ; else echo \:\( ; fi) [\!] \u \w \@ \$(__git_ps1 '(%s)')\n-> "
+    ;;
+esac
 
 [ -r ~/.bash_aliases ] && . ~/.bash_aliases
 
@@ -54,14 +85,67 @@ PS1="\$(if [ \$? = 0 ]; then echo $BBrown\:\) ; else echo $BRed\:\( ; fi) $Brown
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
+# automatically log out after 2 hours of inactivity
+#export TMOUT=7200
+
+# Security: close root shells after n seconds of inactivity
+[ "$UID" = 0 ] && export TMOUT=180
+
+# ^d must be pressed twice to exit shell
+export IGNOREEOF=1
+
+set -o notify          # Don't wait for job termination notification
+
+# ulimit settings are per-process, 'man bash', not 'man ulimit'
+ulimit -c 0		# create no core files
+ulimit -m 500000
+
+# Tab (readline) completion settings
+set completion-ignore-case on # Set tab-completion to be case-insensitive
+set match-hidden-files on
+set show-all-if-ambiguous on # Show all tab-completed matches
+set show-all-symlinked-directories on # Set all symlinked-directories to be shown
+
+# fixtty : reset TTY after user cat'ed a binary file
+fixtty () {
+	stty sane
+	reset
+}
+
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export EDITOR='emacsclient -a ""'
 export PAGER="/usr/bin/most -s"
 export DISPLAY=:0
+#http://bash.blogsky.com/1392/09/13/post-213/%D9%BE%DB%8C%D8%B4%E2%80%8C%DA%AF%DB%8C%D8%B1%DB%8C-%D8%A7%D8%B2-%D8%B1%D9%88%D9%86%D9%88%DB%8C%D8%B3%DB%8C-%D9%86%D8%A7%D8%AE%D9%88%D8%A7%D8%B3%D8%AA%D9%87-%D9%81%D8%A7%DB%8C%D9%84
+set -o noclobber
+
+#stops ctrl+d from logging me out
+#set -o ignoreeof
 
 # Some useful functions
 # Also see http://gotux.net/arch-linux/custom-bash-commands-functions/
+
+# https://wiki.archlinux.org/index.php/Proxy_settings
+assignProxy(){
+    PROXY_ENV="http_proxy ftp_proxy https_proxy all_proxy no_proxy HTTP_PROXY HTTPS_PROXY FTP_PROXY NO_PROXY ALL_PROXY"
+    for envar in $PROXY_ENV
+    do
+        export $envar=$1
+    done
+}
+
+clrProxy(){
+    assignProxy "" # This is what 'unset' does.
+}
+
+myProxy(){
+    # user=YourUserName
+    # read -p "Password: " -s pass &&  echo -e " "
+    proxy_value="http://127.0.0.1:8888"
+    assignProxy $proxy_value
+}
+
 
 # Extract almost any archive file
 extract() {
@@ -143,6 +227,11 @@ function getcertnames() {
         fi
 }
 
+mcd ()
+{
+	mkdir "$@" && cd "${!#}"
+}
+
 # Cd and ls in one
 cl() {
     if [ -d "$1" ]; then
@@ -184,6 +273,13 @@ s() {
         sudo "$@"
     fi
 }
+complete -F _root_command s
+
+iopri() {
+    # 0 for none, 1 for realtime, 2 for best-effort, 3 for idle
+    pgrep -d ' ' $1 | sudo xargs ionice -c $2 -p
+    pgrep -d ' ' $1 | sudo xargs ionice -p
+}
 
 #-------------------------------------------------------------
 # File & strings related functions:
@@ -221,8 +317,73 @@ xargs -0 egrep --color=always -sn ${case} "$1" 2>&- | more
 
 }
 
+# Runs configure make and make install with dumb error handling
+function install_source {
+    if [[ $# != 1 ]]; then
+        echo "Using $PWD as source location."
+    elif [[ $# == 2 ]]; then
+        cd $2
+    fi
+
+    if [[ ! -x ./configure ]]; then
+        echo "Could not find configure script in $PWD!"
+        return 1
+    fi
+
+    ./configure
+    if [[ $? != 0 ]]; then
+        echo -e "\nA problem occured with the automated configuration.\n"
+        return 1
+    fi
+
+    make
+    if [[ $? != 0 ]]; then
+        echo -e "\nA problem happened while making this program.\n"
+        return 1
+    fi
+
+    make install
+    if [[ $? != 0 ]]; then
+        echo -e "\nA problem happened while installing the program.\n"
+        return 1
+    fi
+}
+
 # Enquote: surround lines with quotes (useful in pipes) - from mervTormel
 enquote () { /usr/bin/sed 's/^/"/;s/$/"/' ; }
+
+# processes
+function p_cpu()
+{
+    ps -e -o pcpu,cpu,nice,state,cputime,args --sort pcpu \
+        | sed '/^ 0.0 /d' | pr -TW$COLUMNS
+}
+function p_mem()
+{
+    ps -e -orss=,args= | sort -b -k1,1n | pr -TW$COLUMNS
+}
+function p_user() { ps aux | grep "^$USER" | pr -TW$COLUMNS; }
+
+# mkmine - recursively change ownership to $USER:$USER
+# usage:  mkmine, or
+#         mkmine <filename | dirname>
+function mkmine() { sudo chown -R ${USER}:${USER} ${1:-.}; }
+
+# sanitize - set file/directory owner and permissions to normal values (644/755)
+# usage: sanitize <file>
+sanitize()
+{
+  chmod -R u=rwX,go=rX "$@"
+  chown -R ${USER}:users "$@"
+}
+
+
+# nohup - run command detached from terminal and without output
+# usage: nh <command>
+nh()
+{
+  nohup "$@" &>/dev/null &
+}
 
 function swap()
 { # Swap 2 filenames around, if they exist (from Uzi's bashrc).
@@ -242,38 +403,38 @@ function swap()
 ################
 
 shopt -s autocd
-shopt -u cdable_vars
+shopt -s cdable_vars # if cd arg is not valid, assumes its a var defining a dir
 shopt -s cdspell # Autocorrect typos in path names when using `cd`
 shopt -u checkhash
 shopt -s checkjobs
-shopt -s checkwinsize
-shopt -s cmdhist
+shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
+shopt -s cmdhist # multiline commands saved in history as oneliners
 shopt -u compat31
 shopt -u compat32
 shopt -u compat40
 shopt -u compat41
 shopt -s dirspell
-shopt -s dotglob
-shopt -u execfail
-shopt -s expand_aliases
+shopt -s dotglob # files beginning with . to be returned in the results of path-name expansion.
+shopt -s execfail # failed execs don't exit shell
+shopt -s expand_aliases # expand aliases
 shopt -u extdebug
-shopt -s extglob
+shopt -s extglob # bonus regex globbing!
 shopt -s extquote
 shopt -u failglob
-shopt -s force_fignore
+shopt -u force_fignore # Expand to complete an ignored word, if no other words match.
 shopt -s globstar
 shopt -u gnu_errfmt
 shopt -s histappend # Append to the Bash history file, rather than overwriting it
-shopt -s histreedit
-shopt -s histverify
-shopt -u hostcomplete
+shopt -s histreedit # allow re-editing of a history command substitution, if the previous run failed
+shopt -s histverify # good for double-checking history substitutions
+shopt -s hostcomplete # tab-complete words containing @ as hostnames
 shopt -u huponexit
 shopt -s interactive_comments
 shopt -u lastpipe
 shopt -u lithist
 shopt -u login_shell
-shopt -u mailwarn
-shopt -u no_empty_cmd_completion
+shopt -u mailwarn # No messages about new e-mail
+shopt -s no_empty_cmd_completion # Don't try to find all the command possibilities when hitting TAB on an empty line.
 shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
 shopt -u nocasematch
 shopt -u nullglob
@@ -283,3 +444,15 @@ shopt -u restricted_shell
 shopt -u shift_verbose
 shopt -s sourcepath
 shopt -u xpg_echo
+
+
+
+# ----------------------------------------------------------------------
+# ifconfig completes to interfaces output by 'ifconfig -a'.
+
+_ifconfig()
+{
+    COMPREPLY=( $( compgen -W '$( ifconfig -a | perl -lne"print \$1 if /^(\w+):/" )' -- ${COMP_WORDS[COMP_CWORD]} ) )
+    return 0
+}
+complete -F _ifconfig ifconfig

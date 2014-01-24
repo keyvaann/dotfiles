@@ -1,0 +1,157 @@
+set convert-meta on
+  # Essential for Meta compositions to function on a terminal
+  # working with the 8th bit. Use C-v for special characters.
+  # (this is the default setting)
+set bell-style none
+set horizontal-scroll-mode on
+set completion-ignore-case on
+set mark-symlinked-directories on
+# Standard completion
+set completion-query-items 30
+set show-all-if-ambiguous on
+set visible-stats on
+set mark-modified-lines on
+# first <TAB> suggests ambiguous variants, instead of <TAB><TAB>
+set show-all-if-ambiguous on
+# show file types while completing
+set visible-stats on
+# changes the case of typed text to applicable on <TAB>
+set completion-ignore-case on
+# when <TAB> don't show hidden, to show hidden type "." first
+set match-hidden-files off
+set meta-flag on
+set input-meta on
+set convert-meta off
+set output-meta on
+
+# ~/.inputrc
+# $Id: inputrc 1742 2006-04-25 06:39:49Z adamm $
+$include /etc/inputrc
+
+# don't match hidden files when performing tab completion, except when a
+# leading '.' is used
+set match-hidden-files Off
+
+# never ring the terminal bell
+set bell-style none
+
+# hit the <Tab> key ONCE to produce a list of all possible completions
+set show-all-if-ambiguous on
+
+
+# GNU readline .inputrc
+# Brendan O'Connor (dotfiles.org/~brendano) (brenocon at gmail)
+#
+# Prefix search!  Type "s" then press up -- only search through history that
+# started with "s" -- e.g. "ssh", "source", etc.
+#
+# Since this is .inputrc, this is automatically turned on for many different
+# programs: bash, irb, python, mysql, octave, etc etc.  sweet.
+#
+# For any of these programs, if you configure history to persist across
+# sessions, then this becomes a usage search feature.  For example, I type "ss"
+# then start pressing up to scroll through all machines I've ssh'd to in the
+# last several months.  (C-r reverse search can do this too, but for some
+# reason prefix search feels much nicer.)  If I can't remember how to type a
+# specific command, I can just prefix search for its beginning, e.g. "ki"
+# reveals "kill -9 %1".
+#
+# dotfiles.org/~brendano has bash, irb, and zsh configuration for persistent
+# history.
+
+# i cant believe this is not default
+set blink-matching-paren on
+
+# Get bash filename completion to be case insesitive - see also .bashrc
+set completion-ignore-case on
+
+# Allow 8-bit input/output
+#set meta-flag on
+#set convert-meta off
+#set input-meta on
+#set output-meta on
+
+# Expand homedir name
+set expand-tilde on
+
+# Append "/" to all dirnames
+set mark-directories on
+set mark-symlinked-directories on
+
+# Match all files
+set match-hidden-files on
+
+set meta-flag on
+set convert-meta off
+set input-meta on
+set output-meta on
+
+# History search when using up/down keys
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[C": forward-char
+"\e[D": backward-char
+
+
+#This allows you to search through your history using the up and down arrows … i.e. type "cd /" and press the up arrow and you'll search through everything in your history that starts with "cd /".
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# NOTE:
+# Use <C-v><key> to insert quoted key (e.g., <C-v><F1> = *[11~] = \e[11~)
+# Use `bind -v` to get current bindings
+
+set convert-meta off
+set input-meta on
+set meta-flag on
+set output-meta on
+set visible-stats on
+set match-hidden-files off
+set bind-tty-special-chars off
+
+#"\Control-o": "cat <<-EOF > "
+#"\Control-i": menu-complete
+#"\e[3~": forward-backward-delete-char
+
+
+#"\Control-u": universal-argument
+#"\Control-x\Control-r": re-read-init-file
+
+# help (F1)
+#"\e[11~": "man $SHELL\C-m"
+# open (F5). Inserts cursor between ""
+#"\e[15~": "\"\"\e[D"
+
+Meta-l: clear-screen
+Meta-k: dynamic-complete-history
+
+Control-b: "| most"
+Meta-a: "\eOD\M-\C-] \eOC"
+  # <Left>, back to the last space, <Right>
+
+Meta-e: "\C-] \eOC"
+  # Forward to the next space, <Right>
+
+Meta-g: "| grep "
+Meta-m: "\eb'*\ef*'"
+  # word[] -> '*word*'[], for simple words
+
+Meta-;: "<()\eOD"
+Meta-=: "$()\eOD"
+Meta-]: ">/dev/null"
+
+Meta-0: "/var/log/"
+
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\eOA": history-search-backward
+"\eOB": history-search-forward
+
+
+# 'Magic Space'
+# Insert a space character then performs
+# a history expansion in the line
+Space: magic-space
+
+# follow Sofeng's tips on how to make copy/paste work -myer
+Control-v: paste-from-clipboard

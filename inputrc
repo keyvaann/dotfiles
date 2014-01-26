@@ -1,44 +1,3 @@
-set convert-meta on
-  # Essential for Meta compositions to function on a terminal
-  # working with the 8th bit. Use C-v for special characters.
-  # (this is the default setting)
-set bell-style none
-set horizontal-scroll-mode on
-set completion-ignore-case on
-set mark-symlinked-directories on
-# Standard completion
-set completion-query-items 30
-set show-all-if-ambiguous on
-set visible-stats on
-set mark-modified-lines on
-# first <TAB> suggests ambiguous variants, instead of <TAB><TAB>
-set show-all-if-ambiguous on
-# show file types while completing
-set visible-stats on
-# changes the case of typed text to applicable on <TAB>
-set completion-ignore-case on
-# when <TAB> don't show hidden, to show hidden type "." first
-set match-hidden-files off
-set meta-flag on
-set input-meta on
-set convert-meta off
-set output-meta on
-
-# ~/.inputrc
-# $Id: inputrc 1742 2006-04-25 06:39:49Z adamm $
-$include /etc/inputrc
-
-# don't match hidden files when performing tab completion, except when a
-# leading '.' is used
-set match-hidden-files Off
-
-# never ring the terminal bell
-set bell-style none
-
-# hit the <Tab> key ONCE to produce a list of all possible completions
-set show-all-if-ambiguous on
-
-
 # GNU readline .inputrc
 # Brendan O'Connor (dotfiles.org/~brendano) (brenocon at gmail)
 #
@@ -56,8 +15,33 @@ set show-all-if-ambiguous on
 # specific command, I can just prefix search for its beginning, e.g. "ki"
 # reveals "kill -9 %1".
 #
-# dotfiles.org/~brendano has bash, irb, and zsh configuration for persistent
-# history.
+$include /etc/inputrc
+set convert-meta on
+  # Essential for Meta compositions to function on a terminal
+  # working with the 8th bit. Use C-v for special characters.
+  # (this is the default setting)
+#set horizontal-scroll-mode on
+# Standard completion
+set completion-query-items 30
+set visible-stats on
+# show file types while completing
+set visible-stats on
+# when <TAB> don't show hidden, to show hidden type "." first
+set match-hidden-files off
+set meta-flag on
+set input-meta on
+#set convert-meta off
+set output-meta on
+
+# don't match hidden files when performing tab completion, except when a
+# leading '.' is used
+set match-hidden-files Off
+
+# never ring the terminal bell
+set bell-style none
+
+# hit the <Tab> key ONCE to produce a list of all possible completions
+set show-all-if-ambiguous on
 
 # i cant believe this is not default
 set blink-matching-paren on
@@ -78,41 +62,22 @@ set expand-tilde on
 set mark-directories on
 set mark-symlinked-directories on
 
-# Match all files
-set match-hidden-files on
-
-set meta-flag on
-set convert-meta off
-set input-meta on
-set output-meta on
-
-# History search when using up/down keys
+#This allows you to search through your history using the up and down arrows … i.e. type "cd /" and press the up arrow and you'll search through everything in your history that starts with "cd /".
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 "\e[C": forward-char
 "\e[D": backward-char
 
-
-#This allows you to search through your history using the up and down arrows … i.e. type "cd /" and press the up arrow and you'll search through everything in your history that starts with "cd /".
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-
 # NOTE:
 # Use <C-v><key> to insert quoted key (e.g., <C-v><F1> = *[11~] = \e[11~)
 # Use `bind -v` to get current bindings
 
-set convert-meta off
-set input-meta on
-set meta-flag on
-set output-meta on
 set visible-stats on
-set match-hidden-files off
 set bind-tty-special-chars off
 
 #"\Control-o": "cat <<-EOF > "
 #"\Control-i": menu-complete
 #"\e[3~": forward-backward-delete-char
-
 
 #"\Control-u": universal-argument
 #"\Control-x\Control-r": re-read-init-file
@@ -142,16 +107,59 @@ Meta-]: ">/dev/null"
 
 Meta-0: "/var/log/"
 
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-"\eOA": history-search-backward
-"\eOB": history-search-forward
-
-
 # 'Magic Space'
 # Insert a space character then performs
 # a history expansion in the line
-Space: magic-space
+#Space: magic-space
 
 # follow Sofeng's tips on how to make copy/paste work -myer
 Control-v: paste-from-clipboard
+
+
+# set meta-flag on
+# set convert-meta off
+# set input-meta on
+# set output-meta on
+
+# set bell-style visible
+# set editing-mode emacs
+# set keymap emacs
+# set mark-modified-lines On
+
+# $if Bash
+# # Quote the current or previous word
+# "\C-xq": "\eb\"\ef\""
+# "\C-\M-t": dump-macros
+# "\C-u": universal-argument
+# "\C-x\C-r": re-read-init-file
+# "\C-\M-_": copy-backward-word
+# Control-i: menu-complete
+# TAB: complete
+# $endif
+
+# #"\C-Tab": complete-hostname
+# #\C-\M-Tab: menu-complete
+
+# "\e[11~": menu-complete
+
+# "\e[12~": dump-variables 1
+# "\e[13~": dump-macros
+# "\e[14~": dump-functions
+
+# $if Bash
+# # Quote the current or previous word
+# "\C-xq": "\eb\"\ef\""
+# "\C-xd": "\eb\C-k\C-y \C-y"
+# # to exit through calling exit function which will archive the history
+# "\C-x\C-x": "exit\n"
+# "\C-x\C-w": "archive_history\n"
+# $endif
+
+# #"\e[11~": "cd ~/\n"			       #F1
+# #"\e[12~": "/home/yoh/bin/draftpaper.sh"        #F2
+# #"\e[13~": "cd ~/progr/\n"
+# #"\e[14~": "cd ~/rutg/fusion/rfusion/\n"        #F4
+# #"\e[15~": "cd ~/rutg/rumba/ \n"		       #F5
+# #"\e[17~": "cd ~/progr/matlab/newappr \n"       #F6
+# "\e[18~": "cd ~/progr/meg \n"		       #F7
+# "\e[19~": "cd ~/rutg/fusion/lp/mosek \n"       #F8

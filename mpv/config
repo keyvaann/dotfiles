@@ -12,9 +12,9 @@ ao=alsa,oss
 # multithreaded decoding of H264/MPEG-1/2 (valid: 1-8)
 #lavdopts=threads=2
 
-# Get rid of lag and delay
-#cache = 16000
-#cache-min = 20
+#Get rid of lag and delay
+cache = 16000
+cache-min = 20
 
 # prefer using six channels audio
 channels=2
@@ -41,7 +41,7 @@ sub-gauss=3
 input=file="/home/mrgee/.mpv/inputpipe"
 
 # Disavle verbose output
-msglevel=all=warn:cplayer=warn:statusline=status
+msglevel=all=fatal:cplayer=fatal:statusline=v:file=v
 
 # disable lirc
 lirc=no

@@ -20,7 +20,7 @@ export PROMPT_COMMAND='history -a; history -n'
 CDPATH=/run/media/mrgee:$HOME/git
 
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH=~/.bin:~/.rbenv/bin:$PYENV_ROOT/bin:$PATH
+export PATH=~/.bin:~/.rbenv/bin:$PYENV_ROOT/bin:/usr/local/heroku/bin:$PATH
 eval "$(rbenv init -)"
 eval "$(pyenv init -)"
 
@@ -135,11 +135,11 @@ assignProxy(){
     done
 }
 
-clrProxy(){
+proxyoff(){
     assignProxy "" # This is what 'unset' does.
 }
 
-myProxy(){
+proxyon(){
     # user=YourUserName
     # read -p "Password: " -s pass &&  echo -e " "
     proxy_value="http://127.0.0.1:8888"
@@ -383,6 +383,15 @@ sanitize()
 nh()
 {
   nohup "$@" &>/dev/null &
+}
+
+# Create a data URL from a file
+function dataurl() {
+        local mimeType=$(file -b --mime-type "$1")
+        if [[ $mimeType == text/* ]]; then
+                mimeType="${mimeType};charset=utf-8"
+        fi
+        echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')"
 }
 
 function swap()

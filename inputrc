@@ -1,5 +1,4 @@
 # GNU readline .inputrc
-# Brendan O'Connor (dotfiles.org/~brendano) (brenocon at gmail)
 #
 # Prefix search!  Type "s" then press up -- only search through history that
 # started with "s" -- e.g. "ssh", "source", etc.
@@ -16,22 +15,10 @@
 # reveals "kill -9 %1".
 #
 $include /etc/inputrc
-set convert-meta on
-  # Essential for Meta compositions to function on a terminal
-  # working with the 8th bit. Use C-v for special characters.
-  # (this is the default setting)
-#set horizontal-scroll-mode on
 # Standard completion
 set completion-query-items 30
-set visible-stats on
 # show file types while completing
 set visible-stats on
-# when <TAB> don't show hidden, to show hidden type "." first
-set match-hidden-files off
-set meta-flag on
-set input-meta on
-#set convert-meta off
-set output-meta on
 
 # don't match hidden files when performing tab completion, except when a
 # leading '.' is used
@@ -50,10 +37,10 @@ set blink-matching-paren on
 set completion-ignore-case on
 
 # Allow 8-bit input/output
-#set meta-flag on
-#set convert-meta off
-#set input-meta on
-#set output-meta on
+set meta-flag on
+set convert-meta off
+set input-meta on
+set output-meta on
 
 # Expand homedir name
 set expand-tilde on
@@ -72,30 +59,28 @@ set mark-symlinked-directories on
 # Use <C-v><key> to insert quoted key (e.g., <C-v><F1> = *[11~] = \e[11~)
 # Use `bind -v` to get current bindings
 
-set visible-stats on
-set bind-tty-special-chars off
-
 #"\Control-o": "cat <<-EOF > "
 #"\Control-i": menu-complete
 #"\e[3~": forward-backward-delete-char
 
 #"\Control-u": universal-argument
-#"\Control-x\Control-r": re-read-init-file
 
 # help (F1)
-#"\e[11~": "man $SHELL\C-m"
+"\e[11~": "man $SHELL\C-m"
 # open (F5). Inserts cursor between ""
 #"\e[15~": "\"\"\e[D"
 
-Meta-l: clear-screen
-Meta-k: dynamic-complete-history
+"M-l": clear-screen
+Meta-k: "dynamic-complete-history"
 
+# Perform alias expansion on the current line.
+# Control-s: alias-expand-line
 Control-b: "| most"
 Meta-a: "\eOD\M-\C-] \eOC"
   # <Left>, back to the last space, <Right>
 
 Meta-e: "\C-] \eOC"
-  # Forward to the next space, <Right>
+# Forward to the next space, <Right>
 
 Meta-g: "| grep "
 Meta-m: "\eb'*\ef*'"

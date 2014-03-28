@@ -20,34 +20,41 @@
   )
 
 ;; Uncomment this line if you want to debug an error
-;; (toggle-debug-on-error)
+(toggle-debug-on-error)
 
 (setq kuso:el-get-packages
       '(kuso-base
-        kuso-python
-        kuso-ruby)
+        kuso-python)
+        ;;kuso-ruby)
       )
 
 (el-get 'sync kuso:el-get-packages)
 ;; ===================================================================
 
+
 (message "0. KusoIDE successfully loaded.")
 
-;; (require 'server)
-;; (unless (server-running-p) (server-start))
+(setq k1/el-get-packages
+  '(
+    desktop-recover
+    idomenu
+    pylookup
+    smex
+    undo-tree
+    )
+)
 
-(let ((default-directory "~/.emacs.d/my-packages/"))
-  (normal-top-level-add-subdirs-to-load-path))
+(el-get 'sync k1/el-get-packages)
 
 (require 'bs)                           ; a better show-buffer C-x C-b
 (require 'desktop)
+(require 'desktop-recover)
 (require 'find-dired)
 (require 'midnight)
 (require 'recentf)
-(require 'saveplace)
+(require 'saveplace)                    ; http://whattheemacsd.com/init.el-03.html
+(require 'undo-tree)                    ; http://www.dr-qubit.org/undo-tree/undo-tree.el
 (require 'uniquify)
-;; (require 'discover)
-;; (require 'multiple-cursors)
 
 (message "1. Requires successfully loaded.")
 
@@ -89,14 +96,6 @@
     (when filename
       (find-file (cdr (assoc filename
                              file-assoc-list))))))
-
-(defun reload-dot-emacs()
-  "Reload .emacs on the fly"
-  (interactive)
-  (if(bufferp (get-file-buffer ".emacs"))
-      (save-buffer(get-buffer ".emacs")))
-  (load-file "~/.emacs")
-  (message ".emacs reloaded successfully"))
 
 (defun python-auto-fill-comments-only ()
   "Autofill inside of comments"
@@ -181,32 +180,23 @@
        (regexp-opt '(")" "]" "}" ">" "〕" "】" "〗" "〉" "》" "」" "』" "”" "’" "›" "»"))) nil t number)
     (forward-char 1)))
 
-(defun ergoemacs-forward-block ()
-  "Move cursor forward to the beginning of next text block.
-   A text block is separated by 2 empty lines (or line with just whitespace).
-   In most major modes, this is similar to `forward-paragraph', but this command's behavior is the same regardless of syntax table."
+(defun cleanup-buffer-safe ()
+  "Perform a bunch of safe operations on the whitespace content of a buffer.
+Does not indent buffer, because it is used for a before-save-hook, and that
+might be bad.
+   http://whattheemacsd.com/buffer-defuns.el-01.html"
   (interactive)
-  (if (search-forward-regexp "\n[[:blank:]\n]*\n+" nil "NOERROR")
-      (progn (backward-char))
-    (progn (goto-char (point-max)) )))
-
-(defun ergoemacs-backward-block ()
-  "Move cursor backward to previous text block.
-   See: `ergoemacs-forward-block'"
-  (interactive)
-  (if (search-backward-regexp "\n[\t\n ]*\n+" nil "NOERROR")
-      (progn
-        (skip-chars-backward "\n\t ")
-        (forward-char 1)
-        )
-    (progn (goto-char (point-min)) )))
+  (untabify (point-min) (point-max))
+  (delete-trailing-whitespace)
+  (set-buffer-file-coding-system 'utf-8))
 
 (defun iwb ()
-  "indent whole buffer"
+  "Perform a bunch of operations on the whitespace content of a buffer.
+   Including indent-buffer, which should not be called automatically on save.
+   http://whattheemacsd.com/buffer-defuns.el-01.html"
   (interactive)
-  (delete-trailing-whitespace)
-  (indent-region (point-min) (point-max) nil)
-  (untabify (point-min) (point-max)))
+  (cleanup-buffer-safe)
+  (indent-region (point-min) (point-max)))
 
 (defun edit-dot-emacs ()
   "Edits the user's .emacs file"
@@ -215,15 +205,13 @@
     (find-file (or user-init-file "~/.emacs"))
     (or (eq major-mode (quote emacs-lisp-mode)) (emacs-lisp-mode))))
 
-(defun emacs-process-p (pid)
-  "If pid is the process ID of an emacs process, return t, else nil.
-Also returns nil if pid is nil."
-  (when pid
-    (let ((attributes (process-attributes pid)) (cmd))
-      (dolist (attr attributes)
-        (if (string= "comm" (car attr))
-            (setq cmd (cdr attr))))
-      (if (and cmd (or (string= "emacs" cmd) (string= "emacs.exe" cmd))) t))))
+(defun reload-dot-emacs()
+  "Reload .emacs on the fly"
+  (interactive)
+  (if(bufferp (get-file-buffer ".emacs"))
+      (save-buffer(get-buffer ".emacs")))
+  (load-file "~/.emacs")
+  (message ".emacs reloaded successfully"))
 
 (defun dos2unix ()
   "convert a buffer from dos ^M end of lines to unix end of lines"
@@ -280,7 +268,8 @@ Also returns nil if pid is nil."
   (dired-next-line -1))
 
 (defun delete-current-buffer-file ()
-  "Removes file connected to current buffer and kills buffer."
+  "Removes file connected to current buffer and kills buffer.
+   http://whattheemacsd.com/file-defuns.el-02.html"
   (interactive)
   (let ((filename (buffer-file-name))
         (buffer (current-buffer))
@@ -293,7 +282,8 @@ Also returns nil if pid is nil."
         (message "File '%s' successfully removed" filename)))))
 
 (defun rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
+  "Renames current buffer and file it is visiting.
+   http://whattheemacsd.com/file-defuns.el-01.html"
   (interactive)
   (let ((name (buffer-name))
         (filename (buffer-file-name)))
@@ -309,7 +299,6 @@ Also returns nil if pid is nil."
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
-
 (defun search-keybind (regexp &optional nlines)
   "Occur search the full list of keybinds & their commands."
   (interactive (occur-read-primary-args))
@@ -318,7 +307,6 @@ Also returns nil if pid is nil."
     (set-buffer "*Help*")
     (occur regexp nlines)
     (delete-windows-on "*Help*")))
-
 
 (defun diff-buffer-with-associated-file ()
   "View the differences between BUFFER and its associated file.
@@ -384,6 +372,8 @@ Returns nil if no differences found, 't otherwise."
     (comment-dwim arg)))
 
 (defun move-line-down ()
+  "When programming I tend to shuffle lines around a lot.
+   http://whattheemacsd.com/editing-defuns.el-02.html"
   (interactive)
   (let ((col (current-column)))
     (save-excursion
@@ -393,26 +383,14 @@ Returns nil if no differences found, 't otherwise."
     (move-to-column col)))
 
 (defun move-line-up ()
+  "When programming I tend to shuffle lines around a lot.
+   http://whattheemacsd.com/editing-defuns.el-02.html"
   (interactive)
   (let ((col (current-column)))
     (save-excursion
       (forward-line)
       (transpose-lines -1))
     (move-to-column col)))
-
-(defun open-line-below ()
-  (interactive)
-  (end-of-line)
-  (newline)
-  (indent-for-tab-command))
-
-(defun open-line-above ()
-  (interactive)
-  (beginning-of-line)
-  (newline)
-  (forward-line -1)
-  (indent-for-tab-command))
-
 
 (defun de-context-kill (arg)
   "Kill buffer, taking gnuclient into account. I use the following code (some of it modified from ibuffer.el) to display a diff of the buffer with its associated file when I try and kill a buffer that has unsaved changes. If I decide I don’t want the buffer anyway, hitting c-u <killkey> will kill the file unconditionally and also tidy up the diff buffer. http://www.emacswiki.org/emacs/KillKey"
@@ -470,7 +448,9 @@ Returns nil if no differences found, 't otherwise."
            (skip-chars-backward " \t")))))
 
 (defun toggle-window-split ()
-  "toggles between horizontal and vertical layout of two windows."
+  "Annoyed when Emacs opens the window below instead at the side?
+  http://whattheemacsd.com/buffer-defuns.el-03.html
+  toggles between horizontal and vertical layout of two windows."
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
@@ -495,6 +475,34 @@ Returns nil if no differences found, 't otherwise."
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
+(defun rotate-windows ()
+  "Ever open a file in the wrong window?
+   This snippet flips a two-window frame, so that left is right, or up is down.
+   http://whattheemacsd.com/buffer-defuns.el-02.html
+   Rotate your windows"
+  (interactive)
+  (cond ((not (> (count-windows)1))
+         (message "You can't rotate a single window!"))
+        (t
+         (setq i 1)
+         (setq numWindows (count-windows))
+         (while  (< i numWindows)
+           (let* (
+                  (w1 (elt (window-list) i))
+                  (w2 (elt (window-list) (+ (% i numWindows) 1)))
+
+                  (b1 (window-buffer w1))
+                  (b2 (window-buffer w2))
+
+                  (s1 (window-start w1))
+                  (s2 (window-start w2))
+                  )
+             (set-window-buffer w1  b2)
+             (set-window-buffer w2 b1)
+             (set-window-start w1 s2)
+             (set-window-start w2 s1)
+             (setq i (1+ i)))))))
+
 (message "2. Functions successfully defined.")
 
 ;;Place all backup copies of files in a common location
@@ -514,6 +522,9 @@ Returns nil if no differences found, 't otherwise."
           (lambda ()
             (setq indent-tabs-mode nil)
             (auto-fill-mode 1)))
+
+;; Various superfluous white-space. Just say no.
+(add-hook 'before-save-hook 'cleanup-buffer-safe)
 
 ;; make scripts executable on save
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
@@ -546,9 +557,9 @@ Returns nil if no differences found, 't otherwise."
 
 (message "3. Hooks and puts successfully defined.")
 
-;; (setq url-proxy-services
-;;       '(("no_proxy" . "^\\(localhost\\|10.*\\)")
-;;         ("http" . "127.0.0.1:8888")))
+(setq url-proxy-services
+   '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+     ("socks" . "127.0.0.1:9050")))
 
 ;; ensure utf-8
 (set-default-coding-systems 'utf-8)
@@ -586,8 +597,7 @@ Returns nil if no differences found, 't otherwise."
  delete-old-versions t            ; Ask to delete excess backup versions?
  desktop-base-file-name "emacs-desktop"
  desktop-base-lock-name "emacs-desktop-lock"
- desktop-load-locked-desktop t
- desktop-save t
+ desktop-recover-location user-emacs-directory
  dired-recursive-deletes 'top ;; dired-recursive-deletes, http://emacsblog.org/2007/02/08/quick-tip-dired-recursive-deletes/
  echo-keystrokes 0.1                 ;; See what you are typing.
  enable-recursive-minibuffers t         ;; enable multiple minibuffers:
@@ -599,6 +609,13 @@ Returns nil if no differences found, 't otherwise."
  ido-enable-flex-matching t
  ido-everywhere t
  ido-save-directory-list-file (expand-file-name "ido.last" user-emacs-directory)
+ ido-ignore-buffers '("\\` " "^\\*ESS\\*" "^\\*Buffer" "^\\*epc con 3\\*$"
+                      "^\\*.*Completions\\*$" "^\\*Ediff" "^\\*tramp" "^\\*cvs-"
+                      "_region_" " output\\*$" "^TAGS$" "^\*Ido" "^\*GNU Emacs")
+ ido-ignore-directories '("\\__pycache__/" "\\.prv/" "\\`CVS/" "\\`\\.\\./" "\\`\\./")
+ ido-ignore-files '("\\`auto/" "\\.prv/" "_region_" "\\`CVS/" "\\`#" "\\`.#"
+                    "\\`\\.\\./" "\\`\\./")
+ ido-max-prospects 8
  imenu-auto-rescan t
  inhibit-eol-conversion t
  initial-scratch-message ""   ;; scratch should be scratch
@@ -613,8 +630,8 @@ Returns nil if no differences found, 't otherwise."
  mouse-wheel-scroll-amount '(1 ((shift) . 1))
  next-line-add-newlines t            ;; add a new line when going to the next line
  py-block-comment-prefix "#"
- py-imenu-create-index-p t
- py-imenu-show-method-args-p t
+ ;; py-imenu-create-index-p t
+ ;; py-imenu-show-method-args-p t
  py-tab-indents-region-p t
  read-file-name-completion-ignore-case 't ; Ignore case when completing file names
  recentf-auto-cleanup 'never  ;; disable before we start recentf!
@@ -622,11 +639,29 @@ Returns nil if no differences found, 't otherwise."
  recentf-save-file (expand-file-name "recentf" user-emacs-directory)
  redisplay-dont-pause t
  require-final-newline 't
+ py-closing-list-dedents-bos t
+ py-electric-colon-greedy-p t
+ py-empty-line-closes-p t
+ py-indent-honors-inline-comment t
+ py-shell-name "ipython"
+ py-split-windows-on-execute-p nil
+ py-start-run-ipython-shell t
+ py-tab-shifts-region-p t
+ python-shell-interpreter "ipython"
+ python-shell-interpreter-args ""
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
  save-interprogram-paste-before-kill t
  save-place-file (expand-file-name "saved-places" user-emacs-directory)
- scroll-conservatively 3             ; avoid recentering point when scrolling
+ scroll-conservatively 100000             ; avoid recentering point when scrolling
  scroll-margin 3
- scroll-preserve-screen-position t; Preserve point when scrolling
+ scroll-preserve-screen-position t ; Preserve point when scrolling
  scroll-step 3
  show-paren-style 'mixed ; Highlight text between parens
  smex-history-length 10
@@ -646,22 +681,18 @@ Returns nil if no differences found, 't otherwise."
 
 (message "4. Variables successfully defined.")
 
-;; bind Caps-Lock to M-x
-;; http://sachachua.com/wp/2008/08/04/emacs-caps-lock-as-m-x/
-;; of course, this disables normal Caps-Lock for *all* apps...
-;; (if (eq window-system 'x) (shell-command "xmodmap -e 'clear Lock' -e 'keycode 66 = F13'"))
-
 (global-set-key (kbd "<f1>") 'ispell-word)
 (global-set-key (kbd "C-'") 'de-context-kill)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-u") 'search-keybind)
+;; There are lots of neat ways of moving around quickly in a buffer.
+;; http://whattheemacsd.com/key-bindings.el-02.html
 (global-set-key (kbd "C-S-b") (lambda () (interactive) (ignore-errors (backward-char 10))))
-(global-set-key (kbd "C-S-<down>") 'move-line-down)
 (global-set-key (kbd "C-S-f") (lambda () (interactive) (ignore-errors (forward-char 10))))
 (global-set-key (kbd "C-S-n") (lambda () (interactive) (ignore-errors (next-line 10))))
 (global-set-key (kbd "C-S-p") (lambda () (interactive) (ignore-errors (previous-line 10))))
-(global-set-key (kbd "C-S-<return>") 'open-line-above)
+(global-set-key (kbd "C-S-<down>") 'move-line-down)
 (global-set-key (kbd "C-S-<up>") 'move-line-up)
 (global-set-key (kbd "C-a") 'back-to-indentation-or-beginning)
 (global-set-key (kbd "C-c a") 'list-matching-lines)
@@ -671,9 +702,10 @@ Returns nil if no differences found, 't otherwise."
 (global-set-key (kbd "C-h a") 'apropos)    ;The generic apropos (of any symbol) is MUCH more useful than apropos-command
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-<return>") 'open-line-below)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-<tab>") 'other-window)
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-S-w") 'kill-region)
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-x C-c") 'delete-frame) ;; the mnemonic is C-x REALLY QUIT
 (global-set-key (kbd "C-x C-e") 'rename-current-buffer-file)
@@ -689,20 +721,11 @@ Returns nil if no differences found, 't otherwise."
 (global-set-key (kbd "C-x t k") 'flyspell-prog-mode)
 (global-set-key (kbd "C-x t l") 'flyspell-mode)
 (global-set-key (kbd "M-;") 'comment-dwim-line)
+;; Here's one keybinding I could not live without.
+;; http://whattheemacsd.com/key-bindings.el-03.html
 (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1))) ; joins the following line onto this one.
 (global-set-key (kbd "M-x") 'smex)
-;; (global-set-key (kbd "f13") 'god-local-mode)
-;; (global-set-key (kbd "<f5>") 'comment-region)   ; comment
-;; (global-set-key (kbd "<f6>") 'set-mark-command) ; mark
-;; (global-set-key (kbd "<f7>") 'kill-ring-save)   ; copy
-;; (global-set-key (kbd "<f7>") 'query-replace-regexp)
-;; (global-set-key (kbd "<f8>") 'yank)             ; paste
-;; (global-set-key (kbd "<f9>") 'kill-region)      ; delete
-;; (global-set-key (kbd "C-.") 'kill-this-buffer)
-;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-z") 'repeat)
 
 ;; Add occur to isearch, http://emacsblog.org/2007/02/27/quick-tip-add-occur-to-isearch/
 (define-key isearch-mode-map (kbd "C-o")
@@ -718,9 +741,10 @@ Returns nil if no differences found, 't otherwise."
 (define-key global-map [(shift next)] 'scroll-up-in-place)
 (define-key global-map [(shift prior)] 'scroll-down-in-place)
 
+;; In dired, M-> and M-< never take me where I want to go.
+;; http://whattheemacsd.com/setup-dired.el-02.html
 (define-key dired-mode-map
   (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
-
 (define-key dired-mode-map
   (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 
@@ -734,75 +758,40 @@ Returns nil if no differences found, 't otherwise."
              '("\\`\\*Customize .*\\*\\'"
                "\\`\\*\\(Wo\\)?Man .*\\*\\'"))
 
-
-;; ;; Auto-indent yanked (pasted) code
-;; (dolist (command '(yank yank-pop))
-;;   (eval `(defadvice ,command (after indent-region activate)
-;;            (and (not current-prefix-arg)
-;;                 (member major-mode '(emacs-lisp-mode lisp-mode
-;;                                                      clojure-mode    scheme-mode
-;;                                                      haskell-mode    ruby-mode
-;;                                                      c-mode          c++-mode
-;;                                                      objc-mode       latex-mode
-;;                                                      plain-tex-mode))
-;;                 (let ((mark-even-if-inactive transient-mark-mode))
-;;                   (indent-region (region-beginning) (region-end) nil))))))
-
-;; (defadvice yank (around html-yank-indent)
-;;   "Indents after yanking."
-;;   (let ((point-before (point)))
-;;     ad-do-it
-;;     (when (eq major-mode 'html-mode) ;; check what mode we're in
-;;       (indent-region point-before (point)))))
-;; (ad-activate 'yank)
-
-
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
   (cl-flet ((process-list ())) ad-do-it))
 
-(defadvice desktop-owner (after pry-from-cold-dead-hands activate)
-  "Don't allow dead emacsen to own the desktop file."
-  (when (not (emacs-process-p ad-return-value))
-    (setq ad-return-value nil)))
-
-;; (defadvice desktop-restore-file-buffer
-;;   (around my-desktop-restore-file-buffer-advice)
-;;   (if (and (daemonp)
-;;            (not server-process))
-;;       (let ((noninteractive t))
-;;         ad-do-it) ad-do-it) )
-;; (ad-activate 'desktop-restore-file-buffer)
+;; Keep region when undoing in region
+;; http://whattheemacsd.com/my-misc.el-02.html
+(defadvice undo-tree-undo (around keep-region activate)
+  (if (use-region-p)
+      (let ((m (set-marker (make-marker) (mark)))
+            (p (set-marker (make-marker) (point))))
+        ad-do-it
+        (goto-char p)
+        (set-mark m)
+        (set-marker p nil)
+        (set-marker m nil))
+    ad-do-it))
 
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings)) ; shift+Arrow moves to other window
 
-(eval-after-load "sgml-mode"
+(eval-after-load "web-mode"
   '(progn
-     (define-key html-mode-map
+     (define-key web-mode-map
        [remap forward-paragraph] 'skip-to-next-blank-line)
 
-     (define-key html-mode-map
+     (define-key web-mode-map
        [remap backward-paragraph] 'skip-to-previous-blank-line)))
 
 (message "6. Other stuff successfully defined.")
 
-;; (defun my-kill ()
-;;   "Kill buffer, taking gnuclient into account."
-;;   (interactive)
-;;   (if (buffer-modified-p)
-;;       (error "Buffer has unsaved changes")
-;;     (if server-buffer-clients
-;;  (server-edit)
-;;       (kill-buffer (current-buffer)))))
-
-;; (global-set-key (kbd "C-,") 'my-kill)
-
-
 (abbrev-mode t)
-(desktop-save-mode 1)
 (global-auto-revert-mode 1)             ; revert buffers automatically when underlying files are changed externally
 (global-hl-line-mode t)
+(global-undo-tree-mode)
 (ido-mode 1)
 (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
 (recentf-mode t)         ;; enable recent files mode.
@@ -811,6 +800,7 @@ Returns nil if no differences found, 't otherwise."
 (temp-buffer-resize-mode 1)
 (tooltip-mode -1)
 (winner-mode 1)                         ; restore window configuration, C-c left, C-c right
-;(global-discover-mode 1)
 
 (message "7. Config file has successfully loaded.")
+
+;; (desktop-recover-interactive)

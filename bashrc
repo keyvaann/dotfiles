@@ -11,41 +11,44 @@ export HISTSIZE=5000
 # Display TIMESTAMP in history, for auditing purpose
 export HISTTIMEFORMAT='%F %T '
 # Make sure the history is updated at every command.
-export PROMPT_COMMAND='history -a; history -n'
+export PROMPT_COMMAND='history -a; history -n; '
 
 # Safe default permissions
 #umask 077
 
 # For personal use, you can remove it.
-CDPATH=/run/media/mrgee:$HOME/git
+CDPATH=/run/media/mrgee:~/git
 
+export PYTHONSTARTUP=$HOME/.pythonrc.py
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH=~/.bin:~/.rbenv/bin:$PYENV_ROOT/bin:/usr/local/heroku/bin:$PATH
 eval "$(rbenv init -)"
 eval "$(pyenv init -)"
+eval $(keychain --eval --agents ssh -Q --quiet id_rsa)
 
 # virtualenvwrapper
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/git
-source /usr/bin/virtualenvwrapper.sh
-source ~/.autoenv/activate.sh
+# export WORKON_HOME=$HOME/.virtualenvs
+# export PROJECT_HOME=$HOME/git
+# source /usr/bin/virtualenvwrapper.sh
+# source ~/.autoenv/activate.sh
 
-stty -ixon		# disable XON/XOFF flow control (^s/^q)
+stty -ixon      # disable XON/XOFF flow control (^s/^q)
 
 # Usefull staff for git
 # https://github.com/joejag/dotfiles/blob/master/bash/completion/git
-source ~/.git-completion.sh
+# https://github.com/git/git/blob/master/contrib/completion
+source ~/.git-prompt.sh
+source ~/.git-completion.bash
 export GIT_PS1_SHOWDIRTYSTATE=True
+export GIT_PS1_SHOWSTASHSTATE=True
 export GIT_PS1_SHOWUNTRACKEDFILES=True
+export GIT_PS1_SHOWCOLORHINTS=True
 export GIT_PS1_SHOWUPSTREAM=verbose
-
-# git
-export GIT_AUTHOR_EMAIL="tom@tomcort.com"
-export GIT_COMMITTER_EMAIL="tom@tomcort.com"
+export GIT_PS1_DESCRIBE_STYLE=branch
 
 # Colors are good :)
 # https://github.com/trapd00r/LS_COLORS
-dircolors -b $HOME/.dircolors > /dev/null
+dircolors -b ~/.dircolors > /dev/null
 
 # ctrl+w and slashes
 stty werase undef
@@ -55,21 +58,20 @@ bind '"\C-w": unix-filename-rubout'
 #export TERM=xterm-256color
 
 # Set a fancy prompt
-export BBrown='\[\033[1\;33m\]';
-export BRed='\[\033[1\;31m\]';
-export Brown='\[\033[0;33m\]';
-export BCyan='\[\033[1;36m\]';
-export BGreen='\[\033[1;32m\]';
-export BBlue='\[\033[1;34m\]';
-export White='\[\033[0;38m\]';
+export BBrown='\[\033[1\;33m\]'
+export BRed='\[\033[1\;31m\]'
+export Brown='\[\033[0;33m\]'
+export BCyan='\[\033[1;36m\]'
+export BGreen='\[\033[1;32m\]'
+export BBlue='\[\033[1;34m\]'
+export White='\[\033[0;38m\]'
 
 case ${TERM} in
   xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
-    PS1="\$(if [ \$? = 0 ]; then echo $BBrown\:\) ; else echo $BRed\:\( ; fi) $Brown[\!] $BCyan\u $BGreen\w $White\@ \$(__git_ps1 '(%s)')\n$BCyan-> $BBlue"
-
+    PS1="$Brown[\!] $BCyan\u $BGreen\w $White\@ \$(__git_ps1 '(%s)')\n$BCyan-> $BBlue"
     ;;
   screen)
-    PS1="\$(if [ \$? = 0 ]; then echo \:\) ; else echo \:\( ; fi) [\!] \u \w \@ \$(__git_ps1 '(%s)')\n-> "
+    PS1="[\!] \u \w \@\n-> "
     ;;
 esac
 
@@ -97,7 +99,7 @@ export IGNOREEOF=1
 set -o notify          # Don't wait for job termination notification
 
 # ulimit settings are per-process, 'man bash', not 'man ulimit'
-ulimit -c 0		# create no core files
+ulimit -c 0     # create no core files
 ulimit -m 500000
 
 # Tab (readline) completion settings
@@ -108,8 +110,8 @@ set show-all-symlinked-directories on # Set all symlinked-directories to be show
 
 # fixtty : reset TTY after user cat'ed a binary file
 fixtty () {
-	stty sane
-	reset
+    stty sane
+    reset
 }
 
 export LC_ALL=en_US.UTF-8
@@ -142,7 +144,7 @@ proxyoff(){
 proxyon(){
     # user=YourUserName
     # read -p "Password: " -s pass &&  echo -e " "
-    proxy_value="http://127.0.0.1:8888"
+    proxy_value="http://921113616:8681@192.168.200.254:8080"
     assignProxy $proxy_value
 }
 
@@ -229,7 +231,7 @@ function getcertnames() {
 
 mcd ()
 {
-	mkdir "$@" && cd "${!#}"
+    mkdir "$@" && cd "${!#}"
 }
 
 # Cd and ls in one

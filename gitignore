@@ -13,6 +13,7 @@ tramp
 # Linux.gitignore
 .*
 !.gitignore
+!.openshift
 *~
 *.sw[a-p]
 

@@ -35,7 +35,7 @@ geometry=100%:100%
 vf=dsize=720:400:0
 
 # Fix dvd subtitles to look very good
-sub-gauss=3
+# sub-gauss=3
 
 # Input pipe
 input=file="/home/mrgee/.mpv/inputpipe"

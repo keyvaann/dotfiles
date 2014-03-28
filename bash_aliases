@@ -1,6 +1,6 @@
 # https://github.com/joejag/dotfiles/blob/master/bash/aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    # test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto --group-directories-first -Fh'
     alias l='ls --color=auto --group-directories-first -Fh'
     alias lr='ls --color=auto --group-directories-first -FhR'     # recursive ls
@@ -26,12 +26,12 @@ alias ....='cd ../../..'
 alias -- -="cd -"
 
 # View HTTP traffic
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+alias sniff="sudo ngrep -d 'enp1s0' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i enp1s0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 alias netuse='sudo nethogs wlp2s0'
 alias dig='dig ANY +noall +answer ' # dig deeper
 
-alias e='~/git/bins/runemacs.sh'
+alias e='~/git/snippets/runemacs.sh'
 alias ec='emacsclient -t -a ""'
 
 # show most commonly used commands
@@ -79,7 +79,9 @@ alias pac="sudo pacman -S"              # default action        - install one or
 alias pacu="sudo pacman -Syu"           # '[u]pdate'            - upgrade all packages to their newest version
 alias pacr="sudo pacman -Rs"            # '[r]emove'            - uninstall one or more packages
 alias pacs="pacman -Ss"                 # '[s]earch'            - search for a package using one or more keywords
-alias paci="pacman -Si"                 # '[i]nfo'              - show information about a package
+alias pacqs="pacman -Qs"                # '[q]uery [s]earch'    - To search for already installed packages
+alias paci="pacman -Sii"                # '[i]nfo'              - show information about a package
+alias pacqi="pacman -Sii"                # '[q]uery [i]nfo'      - show information about a for locally installed package
 alias paclo="pacman -Qdt"               # '[l]ist [o]rphans'    - list all packages which are orphaned
 alias pacc="sudo pacman -Scc"           # '[c]lean cache'       - delete all not currently installed package files
 alias paclf="pacman -Ql"                # '[l]ist [f]iles'      - list all files installed by a given package
@@ -88,7 +90,7 @@ alias pacexpl="pacman -D --asexp"       # 'mark as [expl]icit'  - mark one or mo
 alias pacimpl="pacman -D --asdep"       # 'mark as [impl]icit'  - mark one or more packages as non explicitly installed
                                         # '[r]emove [o]rphans' - recursively remove ALL orphaned packages
 alias pacro="pacman -Qtdq > /dev/null && sudo pacman -Rs \$(pacman -Qtdq | sed -e ':a;N;$!ba;s/\n/ /g')"
-
+alias test='echo hi'
 # incase I need to type yaourt..
 alias yoaurt='yaourt'
 alias yuaort='yaourt'

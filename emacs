@@ -20,12 +20,12 @@
   )
 
 ;; Uncomment this line if you want to debug an error
-(toggle-debug-on-error)
+;; (toggle-debug-on-error)
 
 (setq kuso:el-get-packages
       '(kuso-base
-        kuso-python)
-        ;;kuso-ruby)
+        kuso-python
+        kuso-ruby)
       )
 
 (el-get 'sync kuso:el-get-packages)
@@ -41,6 +41,7 @@
     pylookup
     smex
     undo-tree
+    guru-mode
     )
 )
 
@@ -55,6 +56,8 @@
 (require 'saveplace)                    ; http://whattheemacsd.com/init.el-03.html
 (require 'undo-tree)                    ; http://www.dr-qubit.org/undo-tree/undo-tree.el
 (require 'uniquify)
+(require 'smart-operator)
+(require 'guru-mode)
 
 (message "1. Requires successfully loaded.")
 
@@ -210,7 +213,7 @@ might be bad.
   (interactive)
   (if(bufferp (get-file-buffer ".emacs"))
       (save-buffer(get-buffer ".emacs")))
-  (load-file "~/.emacs")
+  (load-file (or user-init-file "~/.emacs"))
   (message ".emacs reloaded successfully"))
 
 (defun dos2unix ()
@@ -503,25 +506,176 @@ Returns nil if no differences found, 't otherwise."
              (set-window-start w2 s1)
              (setq i (1+ i)))))))
 
-(message "2. Functions successfully defined.")
+;; Mark whole line
+(defun mark-line (&optional arg)
+  "Marks a line"
+  (interactive "p")
+  (beginning-of-line)
+  (push-mark (point) nil t)
+  (end-of-line))
 
-;;Place all backup copies of files in a common location
-(make-directory "~/.emacs.d/autosaves/" t)
-(make-directory "~/.emacs.d/backups/" t)
+; code copied from http://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs
+(defun move-text-internal (arg)
+  (cond
+   ((and mark-active transient-mark-mode)
+    (if (> (point) (mark))
+        (exchange-point-and-mark))
+    (let ((column (current-column))
+          (text (delete-and-extract-region (point) (mark))))
+      (forward-line arg)
+      (move-to-column column t)
+      (set-mark (point))
+      (insert text)
+      (exchange-point-and-mark)
+      (setq deactivate-mark nil)))
+   (t
+    (let ((column (current-column)))
+      (beginning-of-line)
+      (when (or (> arg 0) (not (bobp)))
+        (forward-line)
+        (when (or (< arg 0) (not (eobp)))
+          (transpose-lines arg))
+        (forward-line -1))
+      (move-to-column column t)))))
+
+(defun move-text-down (arg)
+  "Move region (transient-mark-mode active) or current line
+  arg lines down."
+  (interactive "*p")
+  (move-text-internal arg))
+
+(defun move-text-up (arg)
+  "Move region (transient-mark-mode active) or current line
+  arg lines up."
+  (interactive "*p")
+  (move-text-internal (- arg)))
+
+
+;; Behave like vi's o command
+(defun open-next-line (arg)
+  "Move to the next line and then opens a line.
+    See also `newline-and-indent'."
+  (interactive "p")
+  (end-of-line)
+  (open-line arg)
+  (next-line 1)
+  (when newline-and-indent
+    (indent-according-to-mode)))
+;; Behave like vi's O command
+(defun open-previous-line (arg)
+  "Open a new line before the current one.
+     See also `newline-and-indent'."
+  (interactive "p")
+  (beginning-of-line)
+  (open-line arg)
+  (when newline-and-indent
+    (indent-according-to-mode)))
+
+;; Autoindent open-*-lines
+(defvar newline-and-indent t
+  "Modify the behavior of the open-*-line functions to cause them to
+autoindent.")
+
+
+
+(defun transpose-params ()
+  "Presumes that params are in the form (p, p, p) or {p, p, p} or [p, p, p]"
+  (interactive)
+  (let* ((end-of-first (cond
+                        ((looking-at ", ") (point))
+                        ((and (looking-back ",") (looking-at " ")) (- (point) 1))
+                        ((looking-back ", ") (- (point) 2))
+                        (t (error "Place point between params to transpose."))))
+         (start-of-first (save-excursion
+                           (goto-char end-of-first)
+                           (move-backward-out-of-param)
+                           (point)))
+         (start-of-last (+ end-of-first 2))
+         (end-of-last (save-excursion
+                        (goto-char start-of-last)
+                        (move-forward-out-of-param)
+                        (point))))
+    (transpose-regions start-of-first end-of-first start-of-last end-of-last)))
+
+(defun move-forward-out-of-param ()
+  (while (not (looking-at ")\\|, \\| ?}\\| ?\\]"))
+    (cond
+     ((point-is-in-string-p) (move-point-forward-out-of-string))
+     ((looking-at "(\\|{\\|\\[") (forward-list))
+     (t (forward-char)))))
+
+(defun move-backward-out-of-param ()
+  (while (not (looking-back "(\\|, \\|{ ?\\|\\[ ?"))
+    (cond
+     ((point-is-in-string-p) (move-point-backward-out-of-string))
+     ((looking-back ")\\|}\\|\\]") (backward-list))
+     (t (backward-char)))))
+
+(defun incs (s &optional num)
+  (let* ((inc (or num 1))
+         (new-number (number-to-string (+ inc (string-to-number s))))
+         (zero-padded? (s-starts-with? "0" s)))
+    (if zero-padded?
+        (s-pad-left (length s) "0" new-number)
+      new-number)))
+
+(defun change-number-at-point (arg)
+  (interactive "p")
+  (unless (or (looking-at "[0-9]")
+              (looking-back "[0-9]"))
+    (error "No number to change at point"))
+  (save-excursion
+    (while (looking-back "[0-9]")
+      (forward-char -1))
+    (re-search-forward "[0-9]+" nil)
+    (replace-match (incs (match-string 0) arg) nil nil)))
+
+(defun subtract-number-at-point (arg)
+  (interactive "p")
+  (change-number-at-point (- arg)))
+
+
+(defun duplicate-start-of-line-or-region ()
+  (interactive)
+  (if mark-active
+      (duplicate-region)
+    (duplicate-start-of-line)))
+
+(defun duplicate-start-of-line ()
+  (let ((text (buffer-substring (point)
+                                (beginning-of-thing 'line))))
+    (forward-line)
+    (push-mark)
+    (insert text)
+    (open-line 1)))
+
+(defun duplicate-region ()
+  (let* ((end (region-end))
+         (text (buffer-substring (region-beginning)
+                                 end)))
+    (goto-char end)
+    (insert text)
+    (push-mark end)
+    (setq deactivate-mark nil)
+    (exchange-point-and-mark)))
+
+(message "2. Functions successfully defined.")
 
 (add-hook 'term-mode-hook
           (lambda()
             (yas-minor-mode -1)
             (autopair-mode -1)))
 
-(add-hook 'python-mode-hook
-          (lambda ()
-            (python-auto-fill-comments-only)))
-
 (add-hook 'text-mode-hook
           (lambda ()
             (setq indent-tabs-mode nil)
-            (auto-fill-mode 1)))
+            (auto-fill-mode 1)
+            (flyspell-mode))
+          )
+
+
+;; enable flyspell-mode in markdown-mode
+(add-hook 'markdown-mode-hook 'flyspell-mode)
 
 ;; Various superfluous white-space. Just say no.
 (add-hook 'before-save-hook 'cleanup-buffer-safe)
@@ -561,6 +715,10 @@ Returns nil if no differences found, 't otherwise."
    '(("no_proxy" . "^\\(localhost\\|10.*\\)")
      ("socks" . "127.0.0.1:9050")))
 
+;;Place all backup copies of files in a common location
+(defconst emacs-backup-dir (format "%s%s/" user-emacs-directory "backups"))
+(make-directory emacs-backup-dir t)
+
 ;; ensure utf-8
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -584,9 +742,10 @@ Returns nil if no differences found, 't otherwise."
 (setq
  auto-revert-interval 2
  auto-revert-verbose nil
- auto-save-file-name-transforms (quote ((".*" "~/.emacs.d/autosaves/\\1" t)))
+ ;; auto-save-file-name-transforms (quote ((".*" emacs-backup-dir t)))
+ ;; auto-save-list-file-prefix emacs-backup-dir
  backup-by-copying-when-linked t  ; Copy linked files, don't rename.
- backup-directory-alist (quote ((".*" . "~/.emacs.d/backups/")))
+ ;; backup-directory-alist '((".*" . ,emacs-backup-dir))
  bs-default-sort-name "by name"                              ; bs.el
  bs-must-always-show-regexp "\\(^\\*scratch\\*\\|^\\*SQL\\)" ; bs.el
  clean-buffer-list-delay-general 2
@@ -629,6 +788,7 @@ Returns nil if no differences found, 't otherwise."
  mouse-wheel-follow-mouse 't
  mouse-wheel-scroll-amount '(1 ((shift) . 1))
  next-line-add-newlines t            ;; add a new line when going to the next line
+ projectile-enable-caching t         ;enable caching unconditionally
  py-block-comment-prefix "#"
  ;; py-imenu-create-index-p t
  ;; py-imenu-show-method-args-p t
@@ -692,20 +852,22 @@ Returns nil if no differences found, 't otherwise."
 (global-set-key (kbd "C-S-f") (lambda () (interactive) (ignore-errors (forward-char 10))))
 (global-set-key (kbd "C-S-n") (lambda () (interactive) (ignore-errors (next-line 10))))
 (global-set-key (kbd "C-S-p") (lambda () (interactive) (ignore-errors (previous-line 10))))
-(global-set-key (kbd "C-S-<down>") 'move-line-down)
-(global-set-key (kbd "C-S-<up>") 'move-line-up)
+;; (global-set-key (kbd "C-S-<down>") 'move-line-down)
+;; (global-set-key (kbd "C-S-<up>") 'move-line-up)
 (global-set-key (kbd "C-a") 'back-to-indentation-or-beginning)
 (global-set-key (kbd "C-c a") 'list-matching-lines)
 (global-set-key (kbd "C-c d") 'diff-buffer-with-associated-file)
 (global-set-key (kbd "C-c x") 'smex)    ;; If you want to be able to M-x without meta (phones, etc)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 (global-set-key (kbd "C-e") 'end-of-code-or-line+)
 (global-set-key (kbd "C-h a") 'apropos)    ;The generic apropos (of any symbol) is MUCH more useful than apropos-command
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-<tab>") 'other-window)
-(global-set-key (kbd "C-w") 'backward-kill-word)
-(global-set-key (kbd "C-S-w") 'kill-region)
+(global-set-key (kbd "C-w") 'kill-region)
+(global-set-key (kbd "C-S-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-b") 'bs-show)
 (global-set-key (kbd "C-x C-c") 'delete-frame) ;; the mnemonic is C-x REALLY QUIT
 (global-set-key (kbd "C-x C-e") 'rename-current-buffer-file)
@@ -713,7 +875,7 @@ Returns nil if no differences found, 't otherwise."
 (global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
 (global-set-key (kbd "C-x C-r") 'ido-recentf-open) ;; get rid of `find-file-read-only' and replace it with something more useful.
 (global-set-key (kbd "C-x F") 'djcb-find-file-as-root)
-(global-set-key (kbd "C-x M-f")     'region-to-file)
+(global-set-key (kbd "C-x M-f") 'region-to-file)
 (global-set-key (kbd "C-x <f1>") 'ispell)
 (global-set-key (kbd "C-x k") 'de-context-kill)
 (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal) ;; I don't need to kill emacs that easily
@@ -724,8 +886,29 @@ Returns nil if no differences found, 't otherwise."
 ;; Here's one keybinding I could not live without.
 ;; http://whattheemacsd.com/key-bindings.el-03.html
 (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1))) ; joins the following line onto this one.
-(global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "C-z") 'repeat)
+;; Transpose stuff with M-t
+(global-unset-key (kbd "M-t")) ;; which used to be transpose-words
+(global-set-key (kbd "M-t l") 'transpose-lines)
+(global-set-key (kbd "M-t w") 'transpose-words)
+(global-set-key (kbd "M-t s") 'transpose-sexps)
+(global-set-key (kbd "M-t p") 'transpose-params)
+;; Defining some useful keybindings
+(global-set-key (kbd "C-S-<up>") 'move-text-up)
+(global-set-key (kbd "C-S-<down>") 'move-text-down)
+(global-set-key (kbd "C-c l") 'mark-line)
+(global-set-key (kbd "C-o") 'open-next-line)
+(global-set-key (kbd "M-o") 'open-previous-line)
+;; Use C-w to go back up a dir to better match normal usage of C-w
+;; - insert current file name with C-x C-w instead.
+(define-key ido-file-completion-map (kbd "C-w") 'ido-delete-backward-updir)
+(define-key ido-file-completion-map (kbd "C-x C-w") 'ido-copy-current-file-name)
+(define-key ido-file-dir-completion-map (kbd "C-w") 'ido-delete-backward-updir)
+(define-key ido-file-dir-completion-map (kbd "C-x C-w") 'ido-copy-current-file-name)
+;; http://www.emacswiki.org/emacs/DuplicateStartOfLineOrRegion
+(global-set-key (kbd "M-S-<down>") 'duplicate-start-of-line-or-region)
+(global-set-key (kbd "C--") 'subtract-number-at-point)
+(global-set-key (kbd "C-+") 'change-number-at-point)
 
 ;; Add occur to isearch, http://emacsblog.org/2007/02/27/quick-tip-add-occur-to-isearch/
 (define-key isearch-mode-map (kbd "C-o")
@@ -757,6 +940,47 @@ Returns nil if no differences found, 't otherwise."
 (add-to-list 'clean-buffer-list-kill-regexps
              '("\\`\\*Customize .*\\*\\'"
                "\\`\\*\\(Wo\\)?Man .*\\*\\'"))
+
+;; Hyphen on Space
+;; modify smex so that typing a space will insert a hyphen ‘-’ like in normal M-x
+;; http://www.emacswiki.org/emacs/Smex
+(defadvice smex (around space-inserts-hyphen activate compile)
+        (let ((ido-cannot-complete-command
+               `(lambda ()
+                  (interactive)
+                  (if (string= " " (this-command-keys))
+                      (insert ?-)
+                    (funcall ,ido-cannot-complete-command)))))
+          ad-do-it))
+
+;;; Filters ido-matches setting acronynm matches in front of the results
+;; http://www.emacswiki.org/emacs/Smex
+(defadvice ido-set-matches-1 (after ido-acronym-matches activate)
+  (if (> (length ido-text) 1)
+      (let ((regex (concat "^" (mapconcat 'char-to-string ido-text "[^-]*-")))
+            (acronym-matches (list))
+            (remove-regexes '("-menu-")))
+        ;; Creating the list of the results to be set as first
+        (dolist (item items)
+          (if (string-match (concat regex "[^-]*$") item) ;; strict match
+              (add-to-list 'acronym-matches item)
+            (if (string-match regex item) ;; appending relaxed match
+                (add-to-list 'acronym-matches item t))))
+
+        ;; Filtering ad-return-value
+        (dolist (to_remove remove-regexes)
+          (setq ad-return-value
+                (delete-if (lambda (item)
+                             (string-match to_remove item))
+                           ad-return-value)))
+
+        ;; Creating resulting list
+        (setq ad-return-value
+              (append acronym-matches
+                      ad-return-value))
+
+        (delete-dups ad-return-value)
+        (reverse ad-return-value))))
 
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
@@ -792,15 +1016,19 @@ Returns nil if no differences found, 't otherwise."
 (global-auto-revert-mode 1)             ; revert buffers automatically when underlying files are changed externally
 (global-hl-line-mode t)
 (global-undo-tree-mode)
-(ido-mode 1)
+(ido-vertical-mode -1)
 (midnight-delay-set 'midnight-delay 16200) ;; (eq (* 4.5 60 60) "4:30am")
 (recentf-mode t)         ;; enable recent files mode.
 (savehist-mode 1)
-(subword-mode 1)
+(global-subword-mode 1)
 (temp-buffer-resize-mode 1)
 (tooltip-mode -1)
 (winner-mode 1)                         ; restore window configuration, C-c left, C-c right
+;; Move files to trash when deleting
+(setq delete-by-moving-to-trash t)
+;; Remove text in active region if inserting text
+(delete-selection-mode 1)
+(smart-operator-mode +1)
+(guru-global-mode +1)
 
 (message "7. Config file has successfully loaded.")
-
-;; (desktop-recover-interactive)

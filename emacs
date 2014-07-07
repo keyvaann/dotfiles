@@ -909,6 +909,10 @@ autoindent.")
 (global-set-key (kbd "M-S-<down>") 'duplicate-start-of-line-or-region)
 (global-set-key (kbd "C--") 'subtract-number-at-point)
 (global-set-key (kbd "C-+") 'change-number-at-point)
+(global-set-key "\M-9" 'backward-sexp)
+(global-set-key "\M-0" 'forward-sexp)
+(global-set-key "\M-1" 'delete-other-windows)
+
 
 ;; Add occur to isearch, http://emacsblog.org/2007/02/27/quick-tip-add-occur-to-isearch/
 (define-key isearch-mode-map (kbd "C-o")

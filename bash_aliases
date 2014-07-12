@@ -14,9 +14,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias l.='ls --color=auto --group-directories-first -d .* --color=auto' # Show hidden files
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
+    alias grep='grep --color=auto --line-number --with-filename'
+    alias fgrep='fgrep --color=auto --line-number --with-filename'
+    alias egrep='egrep --color=auto --line-number --with-filename'
 fi
 
 # Easier navigation

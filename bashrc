@@ -34,6 +34,15 @@ eval $(keychain --eval --agents ssh -Q --quiet id_rsa)
 
 stty -ixon      # disable XON/XOFF flow control (^s/^q)
 
+# replace Cpas Lock with something usefull
+# http://www.epiguru.com/2012/06/how-to-remap-the-caps-lock-key-to-the-super-key-on-linux/
+xmodmap -e "remove Lock = Caps_Lock" 2> /dev/null
+xmodmap -e "keysym Caps_Lock = Super_R" 2> /dev/null
+
+# remove damn useless numlock
+# https://unix.stackexchange.com/questions/98068/keep-numlock-always-on
+xmodmap -e "keycode 77 ="
+
 # Usefull staff for git
 # https://github.com/joejag/dotfiles/blob/master/bash/completion/git
 # https://github.com/git/git/blob/master/contrib/completion

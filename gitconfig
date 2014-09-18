@@ -1,3 +1,4 @@
+;;; -*- mode: gitconfig; -*-
 [apply]
     # Detect whitespace errors when applying a patch
     whitespace = fix
@@ -53,9 +54,6 @@
 [diff]
     memonicprefix = true
 
-[branch]
-    autosetuprebase = always
-
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
     log = true
@@ -84,6 +82,14 @@
     httpd=httpd
 
 [alias]
+
+    # Sometimes, you might have done something wrong in git. You think you've lost your commits, or something like that.
+    # Chances are, the information is still there--so the best course of action is to make an immediate backup, before you risk actually losing data.
+    panic = !tar cvf ../git_panic.tar *
+
+    # https://stackoverflow.com/questions/572549/difference-between-git-add-a-and-git-add
+    addall = add -A
+
     # s = status -sb
     # cl = clone
 
@@ -158,9 +164,7 @@
     # author = shortlog -sn
     # #Find symbolic names for given revs
     # human = name-rev --name-only --refs=refs/heads/*
-    # # Sometimes, you might have done something wrong in git. You think you've lost your commits, or something like that.
-    # # Chances are, the information is still there--so the best course of action is to make an immediate backup, before you risk actually losing data.
-    panic = !tar cvf ../git_panic.tar *
+
     # # Lists what you did in the last 24 hours
     # standup = log --pretty=format:'%Cred%h%Creset -%Creset %s %Cgreen(%cD) %C(bold blue)<%an>%Creset' --since yesterday --author k1-hedayati
     # today = diff @{yesterday}.. --stat

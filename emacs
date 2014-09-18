@@ -1100,3 +1100,6 @@ autoindent.")
 (guru-global-mode +1)
 
 (message "7. Config file has successfully loaded.")
+
+
+(global-set-key (kbd "M-q") 'ido-switch-buffer)

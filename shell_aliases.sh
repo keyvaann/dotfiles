@@ -37,9 +37,6 @@ alias httpdump="sudo tcpdump -i enp1s0 -n -s 0 -w - | grep -a -o -E \"Host\: .*|
 alias netuse='sudo nethogs wlp2s0'
 alias dig='dig ANY +noall +answer ' # dig deeper
 
-alias e='~/git/snippets/runemacs.sh'
-alias ec='emacsclient -t -a ""'
-
 # show most commonly used commands
 alias profileme="history | awk '{print \$2}' | awk 'BEGIN{FS=\"|\"}{print \$1}' | sort | uniq -c | sort -n | tail -n 20 | sort -nr"
 
@@ -56,7 +53,6 @@ alias du="du -hc"
 alias du1='du --max-depth=1'
 alias df="df -Th"
 alias ln='ln -s'
-alias more='most'
 alias iotop='sudo iotop -Pkoa'
 alias axel='axel -av'
 alias errorlog='sudo journalctl -efp 5'
@@ -74,9 +70,8 @@ alias x="exit"
 alias pcat="pygmentize -g"  #  https://coderwall.com/p/o6_ong?&p=6&q=
 alias h='history' # Bash history
 alias hs='history | grep $1'
-alias pss='ps -A -o pid,uname,%cpu,%mem,stat,time,args | grep '
-#alias ps='ps x o pid,comm,args,pcpu,size,state' #prints really nice
-alias psx="\ps -auxw ¦ grep $1"
+alias pss='ps axfo pid,euser,etime,%cpu,%mem,wchan:20,args'
+alias ka='killall -v'
 alias j='jobs -l' # Current running jobs
 alias diff='colordiff' # install  colordiff package :)
 alias showmount='mount | column -t'

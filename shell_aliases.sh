@@ -1,17 +1,18 @@
+# -*- mode: sh; -*-
 # https://github.com/joejag/dotfiles/blob/master/bash/aliases
 if [ -x /usr/bin/dircolors ]; then
     # test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto --group-directories-first -Fh'
-    alias l='ls --color=auto --group-directories-first -Fh'
-    alias lr='ls --color=auto --group-directories-first -FhR'     # recursive ls
-    alias la='ls --color=auto --group-directories-first -Fah'
-    alias ll='ls --color=auto --group-directories-first -Fahl'
-    alias lx='ls --color=auto --group-directories-first -lXB' # Sort by extension
-    alias lk='ls --color=auto --group-directories-first -lSr' # Sort by size (small to big)
-    alias lc='ls --color=auto --group-directories-first -ltcr' # Sort by change time (old to new)
-    alias lu='ls --color=auto --group-directories-first -ltur' # Sort by change time (new to old)
-    alias lt='ls --color=auto --group-directories-first -ltr' # Sort by date (old to new)
-    alias l.='ls --color=auto --group-directories-first -d .* --color=auto' # Show hidden files
+    alias ls='ls --color=auto --group-directories-first --classify --ignore-backups -h'
+    alias l='ls --color=auto --group-directories-first --classify --ignore-backups -h'
+    alias lr='ls --color=auto --group-directories-first --classify --ignore-backups -hR'     # recursive ls
+    alias la='ls --color=auto --group-directories-first --classify --ignore-backups -ah'
+    alias ll='ls --color=auto --group-directories-first --classify --ignore-backups -ahl'
+    alias lx='ls --color=auto --group-directories-first --classify --ignore-backups -lX' # Sort by extension
+    alias lk='ls --color=auto --group-directories-first --classify --ignore-backups -lSr' # Sort by size (small to big)
+    alias lc='ls --color=auto --group-directories-first --classify --ignore-backups -ltcr' # Sort by change time (old to new)
+    alias lu='ls --color=auto --group-directories-first --classify --ignore-backups -ltur' # Sort by change time (new to old)
+    alias lt='ls --color=auto --group-directories-first --classify --ignore-backups -ltr' # Sort by date (old to new)
+    alias l.='ls --color=auto --group-directories-first --classify --ignore-backups -d .*' # Show hidden files
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
     alias grep='grep --color=auto --line-number --with-filename'
@@ -24,6 +25,11 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias -- -="cd -"
+
+# alias Ps="ps aux|grep --color"
+# alias kl="kill"
+# alias kla="killall"
+# alias f="find . -iname "
 
 # View HTTP traffic
 alias sniff="sudo ngrep -d 'enp1s0' -t '^(GET|POST) ' 'tcp and port 80'"
@@ -53,6 +59,8 @@ alias ln='ln -s'
 alias more='most'
 alias iotop='sudo iotop -Pkoa'
 alias axel='axel -av'
+alias errorlog='sudo journalctl -efp 5'
+alias alllog='sudo journalctl -ef'
 
 alias cp="cp -iv"      # interactive, verbose, Sorry for that ;)
 alias rm="rm -iI --preserve-root"      # do not delete / or prompt if deleting more than 3 files at a time, Shame on me :)
@@ -88,15 +96,23 @@ alias paclf="pacman -Ql"                # '[l]ist [f]iles'      - list all files
 alias pacof="pacman -Qo"                # '[o]wn [f]iles'       - Search for packages that own the specified file(s)
 alias pacexpl="pacman -D --asexp"       # 'mark as [expl]icit'  - mark one or more packages as explicitly installed
 alias pacimpl="pacman -D --asdep"       # 'mark as [impl]icit'  - mark one or more packages as non explicitly installed
+                                        # '[l]ist [e]xplicit'   - Lists explicitly installed Pacman packages.
+alias pacle="pacman --query --explicit --info | awk 'BEGIN { FS=\":\" } /^Name/ { printf $2 \":\" } /^Description/ { print $2 } '"
                                         # '[r]emove [o]rphans' - recursively remove ALL orphaned packages
-alias pacro="pacman -Qtdq > /dev/null && sudo pacman -Rs \$(pacman -Qtdq | sed -e ':a;N;$!ba;s/\n/ /g')"
-alias test='echo hi'
+alias pacro="pacman -Qtdq > /dev/null && sudo pacman -Rs \$(pacman -Qtdq)"
+
 # incase I need to type yaourt..
 alias yoaurt='yaourt'
 alias yuaort='yaourt'
 alias youart='yaourt'
 alias yauort='yaourt'
 alias yuoart='yaourt'
+
+# Better copy
+alias rsync-copy="rsync --verbose --progress --human-readable --compress --archive --hard-links --partial"
+alias rsync-move="rsync --verbose --progress --human-readable --compress --archive --hard-links --partial --remove-source-files"
+alias rsync-update="rsync --verbose --progress --human-readable --compress --archive --hard-links --partial --update"
+alias rsync-synchronize="rsync --verbose --progress --human-readable --compress --archive --hard-links --partial --update --delete-after"
 
 # These are just for personal use, you can remove them.
 alias m='mfind'

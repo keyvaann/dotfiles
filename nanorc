@@ -14,7 +14,7 @@ unset backwards
 set boldtext
 
 #    Set the characters treated as closing brackets when justifying paragraphs. They cannot contain blank characters. Only closing punctuation, optionally followed by closing brackets, can end sentences. The default value is ""')>]}".
-set brackets string ""')>]}"
+set brackets string "\"')>]}"
 
 # Do case sensitive searches by default.
 unset casesensitive

@@ -1,24 +1,21 @@
 # -*- mode: sh; -*-
 # https://github.com/joejag/dotfiles/blob/master/bash/aliases
-if [ -x /usr/bin/dircolors ]; then
-    # test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto --group-directories-first --classify --ignore-backups -h'
-    alias l='ls --color=auto --group-directories-first --classify --ignore-backups -h'
-    alias lr='ls --color=auto --group-directories-first --classify --ignore-backups -hR'     # recursive ls
-    alias la='ls --color=auto --group-directories-first --classify --ignore-backups -ah'
-    alias ll='ls --color=auto --group-directories-first --classify --ignore-backups -ahl'
-    alias lx='ls --color=auto --group-directories-first --classify --ignore-backups -lX' # Sort by extension
-    alias lk='ls --color=auto --group-directories-first --classify --ignore-backups -lSr' # Sort by size (small to big)
-    alias lc='ls --color=auto --group-directories-first --classify --ignore-backups -ltcr' # Sort by change time (old to new)
-    alias lu='ls --color=auto --group-directories-first --classify --ignore-backups -ltur' # Sort by change time (new to old)
-    alias lt='ls --color=auto --group-directories-first --classify --ignore-backups -ltr' # Sort by date (old to new)
-    alias l.='ls --color=auto --group-directories-first --classify --ignore-backups -d .*' # Show hidden files
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
-    alias grep='grep --color=auto --line-number --with-filename'
-    alias fgrep='fgrep --color=auto --line-number --with-filename'
-    alias egrep='egrep --color=auto --line-number --with-filename'
-fi
+alias ls='ls --color=auto --group-directories-first --classify --ignore-backups -h'
+alias l='ls --color=auto --group-directories-first --classify --ignore-backups -h'
+alias lr='ls --color=auto --group-directories-first --classify --ignore-backups -hR'     # recursive ls
+alias la='ls --color=auto --group-directories-first --classify --ignore-backups -ah'
+alias ll='ls --color=auto --group-directories-first --classify --ignore-backups -ahl'
+alias lx='ls --color=auto --group-directories-first --classify --ignore-backups -lX' # Sort by extension
+alias lk='ls --color=auto --group-directories-first --classify --ignore-backups -lSr' # Sort by size (small to big)
+alias lc='ls --color=auto --group-directories-first --classify --ignore-backups -ltcr' # Sort by change time (old to new)
+alias lu='ls --color=auto --group-directories-first --classify --ignore-backups -ltur' # Sort by change time (new to old)
+alias lt='ls --color=auto --group-directories-first --classify --ignore-backups -ltr' # Sort by date (old to new)
+alias l.='ls --color=auto --group-directories-first --classify --ignore-backups -d .*' # Show hidden files
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias grep='grep --color=auto --line-number --with-filename'
+alias fgrep='fgrep --color=auto --line-number --with-filename'
+alias egrep='egrep --color=auto --line-number --with-filename'
 
 # Easier navigation
 alias ..='cd ..'

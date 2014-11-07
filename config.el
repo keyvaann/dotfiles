@@ -372,28 +372,6 @@ narrowed."
         ((derived-mode-p 'org-mode) (org-narrow-to-subtree))
         (t (narrow-to-defun))))
 
-
-;; http://endlessparentheses.com/banishing-the-shift-key-with-key-chord-in-emacs.html
-(key-chord-define-global "0o" ")")
-;; Sadly, "1q" is impossible to hit on my keyboard.
-(key-chord-define-global "1q" "!")
-(key-chord-define-global "2w" "@")
-(key-chord-define-global "3e" "#")
-(key-chord-define-global "4r" "$")
-(key-chord-define-global "5t" "%")
-(key-chord-define-global "6y" "^")
-(key-chord-define-global "6t" "^")
-(key-chord-define-global "7y" "&")
-(key-chord-define-global "8u" "*")
-(key-chord-define-global "9i" "(")
-(key-chord-define-global "-p" "_")
-(key-chord-define-global ";'" "\"")
-
-(key-chord-define emacs-lisp-mode-map
-                  "7y" "&optional ")
-
-(key-chord-mode 1)
-
 ;; http://www.masteringemacs.org/articles/2010/12/22/fixing-mark-commands-transient-mark-mode/
 (defun push-mark-no-activate ()
   "Pushes `point' to `mark-ring' and does not activate the region
@@ -409,3 +387,252 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (interactive)
   (set-mark-command 1))
 (global-set-key (kbd "M-`") 'jump-to-mark)
+
+;; http://wenshanren.org/?p=351
+(defun python-add-breakpoint ()
+  "Add a break point"
+  (interactive)
+  (newline-and-indent)
+  (insert "import ipdb; ipdb.set_trace()")
+  (highlight-lines-matching-regexp "^[ ]*import ipdb; ipdb.set_trace()"))
+;; (define-key python-mode-map (kbd "C-c C-b") 'python-add-breakpoint)
+
+(defun python-interactive ()
+  "Enter the interactive Python environment"
+  (interactive)
+  (progn
+    (insert "!import code; code.interact(local=vars())")
+    (move-end-of-line 1)
+    (comint-send-input)))
+;; (global-set-key (kbd "C-c i") 'python-interactive)
+
+(define-key company-active-map (kbd "C-d") 'company-show-doc-buffer)
+(define-key sp-keymap (kbd "M-k") 'sp-kill-hybrid-sexp)
+(define-key sp-keymap (kbd "C-]") 'sp-select-next-thing-exchange)
+(define-key sp-keymap (kbd "C-<left_bracket>") 'sp-select-previous-thing)
+
+
+(setq last-kbd-macro
+   "\C-u\C-u\353")
+
+
+(defun elpy-nav-forward-block ()
+  "Move to the next line indented like point.
+This will skip over lines and statements with different
+indentation levels."
+  (interactive)
+  (let ((indent (current-column))
+        (start (point)))
+    (when (/= (% indent python-indent-offset)
+              0)
+      (setq indent (* (1+ (/ indent python-indent-offset))
+                      python-indent-offset)))
+    (python-nav-forward-statement)
+    (while (and (< indent (current-indentation))
+                (not (eobp)))
+      (python-nav-forward-statement))
+    (when (< (current-indentation)
+             indent)
+      (goto-char start))))
+
+(defun elpy-nav-backward-block ()
+  "Move to the previous line indented like point.
+This will skip over lines and statements with different
+indentation levels."
+  (interactive)
+  (let ((indent (current-column))
+        (start (point)))
+    (when (/= (% indent python-indent-offset)
+              0)
+      (setq indent (* (1+ (/ indent python-indent-offset))
+                      python-indent-offset)))
+    (python-nav-backward-statement)
+    (while (and (< indent (current-indentation))
+                (not (bobp)))
+      (python-nav-backward-statement))
+    (when (< (current-indentation)
+             indent)
+      (goto-char start))))
+
+(defun elpy-nav-forward-indent ()
+  "Move forward to the next indent level, or over the next word."
+  (interactive)
+  (if (< (current-column) (current-indentation))
+      (let* ((current (current-column))
+             (next (* (1+ (/ current python-indent-offset))
+                      python-indent-offset)))
+        (goto-char (+ (point-at-bol)
+                      next)))
+    (let ((eol (point-at-eol)))
+      (forward-word)
+      (when (> (point) eol)
+        (goto-char (point-at-bol))))))
+
+(defun elpy-nav-backward-indent ()
+  "Move backward to the previous indent level, or over the previous word."
+  (interactive)
+  (if (and (<= (current-column) (current-indentation))
+           (/= (current-column) 0))
+      (let* ((current (current-column))
+             (next (* (1- (/ current python-indent-offset))
+                      python-indent-offset)))
+        (goto-char (+ (point-at-bol)
+                      next)))
+    (backward-word)))
+
+(defun elpy-nav--iblock (direction skip)
+  "Move point forward, skipping lines indented more than the current one.
+DIRECTION should be 1 or -1 for forward or backward.
+SKIP should be #'> to skip lines with larger indentation or #'<
+to skip lines with smaller indentation."
+  (let ((start-indentation (current-indentation)))
+    (python-nav-forward-statement direction)
+    (while (and (not (eobp))
+                (not (bobp))
+                (or (looking-at "^\\s-*$")
+                    (funcall skip
+                             (current-indentation)
+                             start-indentation)))
+      (python-nav-forward-statement direction))))
+
+(defun elpy-nav-move-iblock-down (&optional beg end)
+  "Move the current indentation block below the next one.
+With an active region, move that instead of the current block.
+An indentation block is a block indented further than the current
+one."
+  (interactive "r")
+  (let ((use-region (use-region-p))
+        (startm (make-marker))
+        (starti nil)
+        (midm (make-marker))
+        (midi nil)
+        (endm (make-marker))
+        (deactivate-mark nil))
+    (save-excursion
+      (when use-region
+        (goto-char beg))
+      (set-marker startm (line-beginning-position))
+      (setq starti (current-indentation))
+      (if use-region
+          (progn
+            (goto-char end)
+            (when (> (current-column)
+                     0)
+              (forward-line 1)))
+        (elpy-nav--iblock 1 #'>))
+      (set-marker midm (line-beginning-position))
+      (setq midi (current-indentation))
+      (elpy-nav--iblock 1 #'>)
+      (goto-char (line-beginning-position))
+      (when (<= (current-indentation)
+                starti)
+        (when (/= (skip-chars-backward "[:space:]\n") 0)
+          (forward-line 1)))
+      (when (and (= midm (point))
+                 (/= (point)
+                     (line-end-position))
+                 (= (line-end-position)
+                    (point-max)))
+        (goto-char (point-max))
+        (insert "\n"))
+      (set-marker endm (line-beginning-position)))
+    (when (and (/= startm midm)
+               (/= midm endm)
+               (/= startm endm)
+               (= starti midi))
+      (goto-char endm)
+      (insert (buffer-substring startm midm))
+      (when use-region
+        (set-mark (point)))
+      (delete-region startm midm)
+      (goto-char endm)
+      (back-to-indentation))))
+
+(defun elpy-nav-move-iblock-up (&optional beg end)
+  "Move the current indentation block below the next one.
+With an active region, move that instead of the current block.
+An indentation block is a block indented further than the current
+one."
+  (interactive "r")
+  (let ((use-region (use-region-p))
+        (startm (make-marker))
+        (starti nil)
+        (midm (make-marker))
+        (midi nil)
+        (endm (make-marker))
+        (deactivate-mark nil))
+    (save-excursion
+      (when use-region
+        (goto-char beg))
+      (set-marker startm (line-beginning-position))
+      (setq starti (current-indentation))
+      (if use-region
+          (progn
+            (goto-char end)
+            (when (> (current-column)
+                     0)
+              (forward-line 1)))
+        (elpy-nav--iblock 1 #'>)
+        (cond
+         ((and (save-excursion
+                 (goto-char (line-end-position))
+                 (and (> (current-column) 0)
+                      (= (point-max) (point)))))
+          (goto-char (line-end-position))
+          (insert "\n"))
+         ((< (current-indentation)
+             starti)
+          (when (/= (skip-chars-backward "[:space:]\n") 0)
+            (forward-line 1)))))
+      (set-marker midm (line-beginning-position))
+      (goto-char startm)
+      (elpy-nav--iblock -1 #'>)
+      (goto-char (line-beginning-position))
+      (set-marker endm (line-beginning-position))
+      (setq midi (current-indentation)))
+    (when (and (/= startm midm)
+               (/= midm endm)
+               (/= startm endm)
+               (= starti midi))
+      (goto-char endm)
+      (insert (buffer-substring startm midm))
+      (when use-region
+        (set-mark (point)))
+      (delete-region startm midm)
+      (goto-char endm)
+      (back-to-indentation))))
+
+(defun elpy-nav-move-iblock-left ()
+  "Dedent the current indentation block, or the active region."
+  (interactive)
+  (let (beg end)
+    (if (use-region-p)
+        (setq beg (region-beginning)
+              end (region-end))
+      (save-excursion
+        (setq beg (line-beginning-position))
+        (elpy-nav--iblock 1 #'>)
+        (setq end (line-beginning-position))))
+    (python-indent-shift-left beg end)))
+
+(defun elpy-nav-move-iblock-right ()
+  "Indent the current indentation block, or the active region."
+  (interactive)
+  (let (beg end)
+    (if (use-region-p)
+        (setq beg (region-beginning)
+              end (region-end))
+      (save-excursion
+        (setq beg (line-beginning-position))
+        (elpy-nav--iblock 1 #'>)
+        (setq end (line-beginning-position))))
+    (python-indent-shift-right beg end)))
+
+(global-set-key (kbd "<s-down>") 'elpy-nav-forward-block)
+(global-set-key (kbd "<s-up>") 'elpy-nav-backward-block)
+(global-set-key (kbd "<s-left>") 'elpy-nav-backward-indent)
+(global-set-key (kbd "<s-right>") 'elpy-nav-forward-indent)
+(global-set-key (kbd "<s-M-down>") 'elpy-nav-move-iblock-down)
+(global-set-key (kbd "<s-M-up>") 'elpy-nav-move-iblock-up)
+(global-set-key (kbd "<s-M-left>") 'elpy-nav-move-iblock-left)
+(global-set-key (kbd "<s-M-right>") 'elpy-nav-move-iblock-right)

@@ -636,3 +636,7 @@ one."
 (global-set-key (kbd "<s-M-up>") 'elpy-nav-move-iblock-up)
 (global-set-key (kbd "<s-M-left>") 'elpy-nav-move-iblock-left)
 (global-set-key (kbd "<s-M-right>") 'elpy-nav-move-iblock-right)
+
+(global-aggressive-indent-mode 1)
+(add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+(add-to-list 'aggressive-indent-excluded-modes 'python-mode)

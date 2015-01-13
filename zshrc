@@ -194,3 +194,5 @@ zstyle ':filter-select' extended-search yes # see below
 # source ~/sorin_customized
 
 setxkbmap -option caps:super
+
+alias psql='pgcli'

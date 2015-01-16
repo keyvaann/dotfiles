@@ -224,12 +224,9 @@ might be bad.
 (temp-buffer-resize-mode 1)
 ;; Move files to trash when deleting
 (setq delete-by-moving-to-trash t)
-;; Remove text in active region if inserting text
-(delete-selection-mode 1)
 
 (setq prelude-theme 'monokai)
 (scroll-bar-mode -1)
-(message "7. Config file has successfully loaded.")
 
 (global-subword-mode +1)
 ;; (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
@@ -311,21 +308,22 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (newline-and-indent)
   (insert "import ipdb; ipdb.set_trace()")
   (highlight-lines-matching-regexp "^[ ]*import ipdb; ipdb.set_trace()"))
-;; (define-key python-mode-map (kbd "C-c C-b") 'python-add-breakpoint)
+(global-set-key (kbd "C-c C-b") 'python-add-breakpoint)
 
 (defun python-interactive ()
   "Enter the interactive Python environment"
   (interactive)
   (progn
+    (newline-and-indent)
     (insert "from IPython import embed; embed()")
-    (move-end-of-line 1)
-    (comint-send-input)))
-;; (global-set-key (kbd "C-c i") 'python-interactive)
+    (move-end-of-line 1)))
+(global-set-key (kbd "C-c C-n") 'python-interactive)
 
 (define-key company-active-map (kbd "C-d") 'company-show-doc-buffer)
 (define-key sp-keymap (kbd "M-k") 'sp-kill-hybrid-sexp)
 (define-key sp-keymap (kbd "C-]") 'sp-select-next-thing-exchange)
 (define-key sp-keymap (kbd "C-<left_bracket>") 'sp-select-previous-thing)
+
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
@@ -357,12 +355,15 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (global-set-key (kbd "C-x 2") 'sacha/vsplit-last-buffer)
 (global-set-key (kbd "C-x 3") 'sacha/hsplit-last-buffer)
 
+
 ;; https://github.com/sachac/.emacs.d/blob/gh-pages/Sacha.org#pop-to-mark
 (global-set-key (kbd "C-x p") 'pop-to-mark-command)
 (setq set-mark-command-repeat-pop t)
 
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
+
+
 (setq helm-buffers-fuzzy-matching t) ; fuzzy matching buffer names when non--nil
 
 (autoload 'helm-company "helm-company") ;; Not necessary if using ELPA package
@@ -372,3 +373,97 @@ This is the same as using \\[set-mark-command] with the prefix argument."
      (define-key company-active-map (kbd "C-:") 'helm-company)))
 
 (setq langtool-language-tool-jar "~/.emacs.d/LanguageTool-2.7/languagetool-commandline.jar")
+
+(setq
+ python-shell-interpreter "ipython2"
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+(require 'smart-operator)
+
+;; Copy-Cut-Paste from clipboard with Super-C Super-X Super-V
+(global-set-key (kbd "s-x") 'clipboard-kill-region) ;;cut
+(global-set-key (kbd "s-c") 'clipboard-kill-ring-save) ;;copy
+(global-set-key (kbd "s-v") 'clipboard-yank) ;;paste
+(global-set-key (kbd "M-.") 'anaconda-mode-goto-definitions) ;;paste
+
+(setq company-dabbrev-downcase nil)
+(setq company-dabbrev-ignore-case nil)
+(setq company-idle-delay 0.2)
+(setq company-minimum-prefix-length 1)
+(setq company-show-numbers t)
+(setq company-tooltip-limit 20)
+
+(set-face-attribute 'company-tooltip nil :background "black" :foreground "gray40")
+(set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "gray15")
+(set-face-attribute 'company-preview nil :background "black")
+(set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
+(set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
+(set-face-attribute 'company-scrollbar-fg nil :background "gray40")
+
+;; (autoload 'turn-on-css-eldoc "css-eldoc")
+;; (add-hook 'css-mode-hook 'turn-on-css-eldoc)
+
+(setq undo-tree-visualizer-timestamps t)
+(setq undo-tree-visualizer-diff t)
+
+(require-package 'aggressive-indent)
+(require 'aggressive-indent)
+(add-to-list 'aggressive-indent-excluded-modes 'org-mode)
+(add-to-list 'aggressive-indent-excluded-modes 'python-mode)
+(add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+(add-to-list 'aggressive-indent-excluded-modes 'web-mode)
+(global-aggressive-indent-mode)
+
+(when (fboundp 'global-prettify-symbols-mode)
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (push '("self" . ?◎) prettify-symbols-alist)
+              (modify-syntax-entry ?. "."))))
+
+(global-prettify-symbols-mode)
+(global-color-identifiers-mode)
+(indent-guide-global-mode)
+(add-hook 'prog-mode-hook 'highlight-numbers-mode)
+
+(setq helm-buffers-fuzzy-matching t)
+(setq helm-M-x-fuzzy-match t)
+(setq helm-apropos-fuzzy-match t)
+(setq helm-recentf-fuzzy-match t)
+(setq helm-locate-fuzzy-match t)
+(setq helm-file-cache-fuzzy-match t)
+(setq helm-semantic-fuzzy-match t)
+(setq helm-imenu-fuzzy-match t)
+
+(helm-autoresize-mode 1)
+
+;; escape minibuffer
+(define-key minibuffer-local-map [escape] 'my-minibuffer-keyboard-quit)
+(define-key minibuffer-local-ns-map [escape] 'my-minibuffer-keyboard-quit)
+(define-key minibuffer-local-completion-map [escape] 'my-minibuffer-keyboard-quit)
+(define-key minibuffer-local-must-match-map [escape] 'my-minibuffer-keyboard-quit)
+(define-key minibuffer-local-isearch-map [escape] 'my-minibuffer-keyboard-quit)
+
+(define-key company-active-map (kbd "C-n") 'company-select-next)
+(define-key company-active-map (kbd "C-p") 'company-select-previous)
+(define-key company-active-map (kbd "<backtab>") 'company-select-previous)
+
+;; (let ((faces '(font-lock-comment-face font-lock-comment-delimiter-face font-lock-constant-face font-lock-type-face font-lock-function-name-face font-lock-variable-name-face font-lock-keyword-face font-lock-string-face font-lock-builtin-face font-lock-preprocessor-face font-lock-warning-face font-lock-doc-face)))
+;;   (dolist (face faces)
+;;     (set-face-attribute face nil :foreground nil :weight 'normal :slant 'normal)))
+
+;; (set-face-attribute 'font-lock-comment-delimiter-face nil :slant 'italic)
+;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+;; (set-face-attribute 'font-lock-doc-face nil :slant 'italic)
+;; (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
+;; (set-face-attribute 'font-lock-builtin-face nil :weight 'bold)
+;; (set-face-attribute 'font-lock-preprocessor-face nil :weight 'bold)
+
+(message "7. Config file has successfully loaded.")
+

@@ -465,5 +465,14 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 ;; (set-face-attribute 'font-lock-builtin-face nil :weight 'bold)
 ;; (set-face-attribute 'font-lock-preprocessor-face nil :weight 'bold)
 
+
+(global-set-key "\M-0" 'delete-window)
+(global-set-key "\M-1" 'delete-other-windows)
+(global-set-key "\M-2" 'sacha/vsplit-last-buffer)
+(global-set-key "\M-3" 'sacha/hsplit-last-buffer)
+(global-set-key (kbd "M-4") #'er/expand-region)
+
+(setq helm-truncate-lines t)
+
 (message "7. Config file has successfully loaded.")
 

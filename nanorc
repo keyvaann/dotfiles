@@ -2,10 +2,10 @@
 set autoindent
 
 # Do not create backup files in filename~.
-unset backup
+set backup
 
 # Set the directory where nano puts unique backup files if file backups are enabled.
-set backupdir directory ~/.nanobackups/
+set backupdir ~/.nano_backups/
 
 # Do not do backwards searches by default.
 unset backwards
@@ -115,38 +115,38 @@ unset view
 unset wordbounds
 # Do not treat punctuation characters as part of a word.
 
-# Annoyances
-unbind ^C all
-unbind ^G all
+# # Annoyances
+# unbind ^C all
+# unbind ^G all
 
-# File
-bind ^O insert main
-bind ^N insert main
-bind ^S writeout main
-bind ^Q cancel all
-bind ^W cancel all
-bind ^Q exit main
-bind ^W exit main
+# # File
+# bind ^O insert main
+# bind ^N insert main
+# bind ^S writeout main
+# bind ^Q cancel all
+# bind ^W cancel all
+# bind ^Q exit main
+# bind ^W exit main
 
-# Edit
-bind ^A mark main
-bind ^C copytext main
-bind ^X cut main
-bind ^V uncut main
-bind ^Z undo main
-bind ^Y redo main
-bind ^T verbatim main
-bind F5 refresh all
-bind F8 autoindent main
-bind F12 autoindent main
+# # Edit
+# bind ^A mark main
+# bind ^C copytext main
+# bind ^X cut main
+# bind ^V uncut main
+# bind ^Z undo main
+# bind ^Y redo main
+# bind ^T verbatim main
+# bind F5 refresh all
+# bind F8 autoindent main
+# bind F12 autoindent main
 
-# Search
-bind ^F whereis all
-bind ^H replace all
-bind ^I casesens search
-bind ^I casesens replace
-bind ^R regex search
-bind ^R regex replace
-bind ^L gotoline main
-bind F3 searchagain main
-bind ^] findbracket main
+# # Search
+# bind ^F whereis all
+# bind ^H replace all
+# bind ^I casesens search
+# bind ^I casesens replace
+# bind ^R regex search
+# bind ^R regex replace
+# bind ^L gotoline main
+# bind F3 searchagain main
+# bind ^] findbracket main

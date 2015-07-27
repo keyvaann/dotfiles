@@ -153,13 +153,6 @@ might be bad.
  desktop-recover-location user-emacs-directory
  enable-recursive-minibuffers t         ;; enable multiple minibuffers:
  global-auto-revert-non-file-buffers t
- ido-ignore-buffers '("\\` " "^\\*ESS\\*" "^\\*Buffer" "^\\*epc con 3\\*$"
-                      "^\\*.*Completions\\*$" "^\\*Ediff" "^\\*tramp" "^\\*cvs-"
-                      "_region_" " output\\*$" "^TAGS$" "^\*Ido" "^\*GNU Emacs")
- ido-ignore-directories '("\\__pycache__/" "\\.prv/" "\\`CVS/" "\\`\\.\\./" "\\`\\./")
- ido-ignore-files '("\\`auto/" "\\.prv/" "_region_" "\\`CVS/" "\\`#" "\\`.#"
-                    "\\`\\.\\./" "\\`\\./")
- ido-max-prospects 8
  inhibit-eol-conversion t
  ispell-list-command "--list"
  line-move-ignore-invisible nil
@@ -194,10 +187,6 @@ might be bad.
 (global-set-key (kbd "C-z") 'repeat)
 ;; Defining some useful keybindings
 (global-set-key (kbd "C-c l") 'mark-line)
-;;
-(global-set-key "\M-9" 'backward-sexp)
-(global-set-key "\M-0" 'forward-sexp)
-(global-set-key "\M-1" 'delete-other-windows)
 
 (message "5. Key bindings successfully defined.")
 
@@ -374,16 +363,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 (setq langtool-language-tool-jar "~/.emacs.d/LanguageTool-2.7/languagetool-commandline.jar")
 
-(setq
- python-shell-interpreter "ipython2"
- python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
- "from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
- "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
- "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
 (require 'smart-operator)
 
@@ -410,27 +389,8 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 ;; (autoload 'turn-on-css-eldoc "css-eldoc")
 ;; (add-hook 'css-mode-hook 'turn-on-css-eldoc)
 
-(setq undo-tree-visualizer-timestamps t)
-(setq undo-tree-visualizer-diff t)
-
-(require-package 'aggressive-indent)
-(require 'aggressive-indent)
-(add-to-list 'aggressive-indent-excluded-modes 'org-mode)
-(add-to-list 'aggressive-indent-excluded-modes 'python-mode)
-(add-to-list 'aggressive-indent-excluded-modes 'html-mode)
-(add-to-list 'aggressive-indent-excluded-modes 'web-mode)
-(global-aggressive-indent-mode)
-
-(when (fboundp 'global-prettify-symbols-mode)
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (push '("self" . ?◎) prettify-symbols-alist)
-              (modify-syntax-entry ?. "."))))
-
-(global-prettify-symbols-mode)
-(global-color-identifiers-mode)
-(indent-guide-global-mode)
-(add-hook 'prog-mode-hook 'highlight-numbers-mode)
+;; (setq undo-tree-visualizer-timestamps t)
+;; (setq undo-tree-visualizer-diff t)
 
 (setq helm-buffers-fuzzy-matching t)
 (setq helm-M-x-fuzzy-match t)
@@ -473,6 +433,15 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (global-set-key (kbd "M-4") #'er/expand-region)
 
 (setq helm-truncate-lines t)
+
+(global-set-key "\C-s" 'swiper)
+(global-set-key "\C-r" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key [f6] 'ivy-resume)
+
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+
 
 (message "7. Config file has successfully loaded.")
 

@@ -379,19 +379,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (setq company-show-numbers t)
 (setq company-tooltip-limit 20)
 
-(set-face-attribute 'company-tooltip nil :background "black" :foreground "gray40")
-(set-face-attribute 'company-tooltip-selection nil :inherit 'company-tooltip :background "gray15")
-(set-face-attribute 'company-preview nil :background "black")
-(set-face-attribute 'company-preview-common nil :inherit 'company-preview :foreground "gray40")
-(set-face-attribute 'company-scrollbar-bg nil :inherit 'company-tooltip :background "gray20")
-(set-face-attribute 'company-scrollbar-fg nil :background "gray40")
-
-;; (autoload 'turn-on-css-eldoc "css-eldoc")
-;; (add-hook 'css-mode-hook 'turn-on-css-eldoc)
-
-;; (setq undo-tree-visualizer-timestamps t)
-;; (setq undo-tree-visualizer-diff t)
-
 (setq helm-buffers-fuzzy-matching t)
 (setq helm-M-x-fuzzy-match t)
 (setq helm-apropos-fuzzy-match t)
@@ -449,7 +436,20 @@ This is the same as using \\[set-mark-command] with the prefix argument."
  "fontset-default"
  (cons (decode-char 'ucs #x0600) (decode-char 'ucs #x06ff)) ; arabic
  "DejaVu Sans Mono")
+
+
+(setq magit-repo-dirs
+      (mapcar
+       (lambda (dir)
+         (substring dir 0 -1))
+       (cl-remove-if-not
+        (lambda (project)
+          (unless (file-remote-p project)
+            (file-directory-p (concat project "/.git/"))))
+        (projectile-relevant-known-projects))))
  
+(add-hook 'after-init-hook 'company-statistics-mode)
+(add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
 
 (message "7. Config file has successfully loaded.")
 

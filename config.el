@@ -442,6 +442,14 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 
+(setq prelude-guru nil)
+
+(load-theme 'monokai t)
+(set-fontset-font
+ "fontset-default"
+ (cons (decode-char 'ucs #x0600) (decode-char 'ucs #x06ff)) ; arabic
+ "DejaVu Sans Mono")
+ 
 
 (message "7. Config file has successfully loaded.")
 

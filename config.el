@@ -451,5 +451,36 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (add-hook 'after-init-hook 'company-statistics-mode)
 (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
 
+(require 'multiple-cursors-core)
+;; This is globally useful, so it goes under `C-x', and `m'
+;; for "multiple-cursors" is easy to remember.
+(define-key ctl-x-map "\C-m" #'mc/mark-all-dwim)
+;; Usually, both `C-x C-m' and `C-x RET' invoke the
+;; `mule-keymap', but that's a waste of keys. Here we put it
+;; _just_ under `C-x RET'.
+(define-key ctl-x-map (kbd "<return>") mule-keymap)
+
+;; Remember `er/expand-region' is bound to M-2!
+(global-set-key (kbd "C-3") #'mc/mark-next-like-this)
+(global-set-key (kbd "C-4") #'mc/mark-previous-like-this)
+
+;; These vary between keyboards. They're supposed to be
+;; Shifted versions of the two above.
+(global-set-key (kbd "C-#") #'mc/unmark-next-like-this)
+(global-set-key (kbd "C-$") #'mc/unmark-previous-like-this)
+
+(define-prefix-command 'endless/mc-map)
+;; C-x m is usually `compose-mail'. Bind it to something
+;; else if you use this command.
+(define-key ctl-x-map "m" 'endless/mc-map)
+
+;;; Really really nice!
+(define-key endless/mc-map "i" #'mc/insert-numbers)
+(define-key endless/mc-map "h" #'mc-hide-unmatched-lines-mode)
+(define-key endless/mc-map "a" #'mc/mark-all-like-this)
+
+(global-unset-key (kbd "M-<down-mouse-1>"))
+(global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
+
 (message "7. Config file has successfully loaded.")
 

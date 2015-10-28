@@ -55,18 +55,17 @@ plugins=(
     django                      # compdef manage.py
     emacs
     extract
-    fastfile                    # This plugin adds the ability to on the fly generate and access file shortcuts, ff, ffp, ffls
     common-aliases
     command-not-found           # Arch Linux command-not-found support, you must have package pkgfile installed
     cp                          # Show progress while file is copying
     debian
     git-extras                  # Completion script for git-extras (http://github.com/visionmedia/git-extras).
-    per-directory-history       # Per directory history for zsh, as well as global history, and the ability to toggle between them with ^G.
     pip
     redis-cli
     sudo
     fasd
     zsh-syntax-highlighting
+    zsh-completions
     ssh-agent
 )
 
@@ -103,9 +102,8 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # exports =======================================
-export CDPATH=/run/media/mrgee:~/git:/run/media/mrgee/d/torrent/downloads
+#export CDPATH=/run/media/mrgee:~/git:/run/media/mrgee/d/torrent/downloads
 export PYTHONSTARTUP=$HOME/.pythonrc.py
-export PIP_DOWNLOAD_CACHE=$HOME/.cache/pip
 export PATH=~/.bin:/usr/local/heroku/bin:$PATH
 
 # Security: close root shells after n seconds of inactivity
@@ -129,9 +127,9 @@ ulimit -m 500000
 bindkey ';5C' forward-word
 bindkey ';5D' backward-word
 
-hash -d torrent="/run/media/mrgee/d/torrent/downloads"
-hash -d music="/run/media/mrgee/e"
-hash -d git="/home/mrgee/git"
+#hash -d torrent="/run/media/mrgee/d/torrent/downloads"
+#hash -d music="/run/media/mrgee/e"
+#hash -d git="/home/mrgee/git"
 
 # Exit incremental search, retaining the command line but performing no further action. Note that this function is not bound by default and has no effect outside incremental search.
 bindkey '\ea' accept-search
@@ -168,10 +166,9 @@ zstyle ':completion:history-words:*' remove-all-dups yes
 bindkey "\e/" _history-complete-older
 bindkey "\e," _history-complete-newer
 
-
 # Additional completion definitions for Zsh.
 # https://github.com/zsh-users/zsh-completions
-fpath=(~/.zsh-completions $fpath)
+autoload -U compinit && compinit
 
 # zsh anything.el-like widget.
 # https://github.com/zsh-users/zaw
@@ -194,3 +191,12 @@ zstyle ':filter-select' extended-search yes # see below
 # source ~/sorin_customized
 
 setxkbmap -option caps:super
+
+export WORKON_HOME=~/.virtualenv
+mkdir -p $WORKON_HOME
+source /usr/local/bin/virtualenvwrapper.sh
+
+[ -f /run/shadowsocks.pid ] || sudo sslocal -c .ssh/shadowsocks.json -d start
+
+source ~/.dotfiles/lib/zsh-autoenv/autoenv.zsh
+AUTOENV_FILE_ENTER='.env'

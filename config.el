@@ -153,13 +153,6 @@ might be bad.
  desktop-recover-location user-emacs-directory
  enable-recursive-minibuffers t         ;; enable multiple minibuffers:
  global-auto-revert-non-file-buffers t
- ido-ignore-buffers '("\\` " "^\\*ESS\\*" "^\\*Buffer" "^\\*epc con 3\\*$"
-                      "^\\*.*Completions\\*$" "^\\*Ediff" "^\\*tramp" "^\\*cvs-"
-                      "_region_" " output\\*$" "^TAGS$" "^\*Ido" "^\*GNU Emacs")
- ido-ignore-directories '("\\__pycache__/" "\\.prv/" "\\`CVS/" "\\`\\.\\./" "\\`\\./")
- ido-ignore-files '("\\`auto/" "\\.prv/" "_region_" "\\`CVS/" "\\`#" "\\`.#"
-                    "\\`\\.\\./" "\\`\\./")
- ido-max-prospects 8
  inhibit-eol-conversion t
  ispell-list-command "--list"
  line-move-ignore-invisible nil
@@ -185,7 +178,6 @@ might be bad.
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 (global-set-key (kbd "C-<tab>") 'other-window)
 (global-set-key (kbd "C-x C-c") 'delete-frame) ;; the mnemonic is C-x REALLY QUIT
-(global-set-key (kbd "C-x <f1>") 'ispell)
 (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal) ;; I don't need to kill emacs that easily
 (global-set-key (kbd "C-x t c") 'highlight-changes-mode)
 (global-set-key (kbd "M-;") 'comment-dwim-line)
@@ -193,20 +185,8 @@ might be bad.
 ;; http://whattheemacsd.com/key-bindings.el-03.html
 (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1))) ; joins the following line onto this one.
 (global-set-key (kbd "C-z") 'repeat)
-;; Transpose stuff with M-t
-(global-unset-key (kbd "M-t")) ;; which used to be transpose-words
-(global-set-key (kbd "M-t l") 'transpose-lines)
-(global-set-key (kbd "M-t w") 'transpose-words)
-(global-set-key (kbd "M-t s") 'transpose-sexps)
 ;; Defining some useful keybindings
 (global-set-key (kbd "C-c l") 'mark-line)
-;;
-(global-set-key "\M-9" 'backward-sexp)
-(global-set-key "\M-0" 'forward-sexp)
-(global-set-key "\M-1" 'delete-other-windows)
-
-(define-key ido-file-dir-completion-map
-  [remap set-mark-command]  'ido-restrict-to-matches)
 
 (message "5. Key bindings successfully defined.")
 
@@ -214,67 +194,9 @@ might be bad.
 (run-with-idle-timer 1 t
                      '(lambda () (get-buffer-create "*scratch*")))
 
-(add-to-list 'clean-buffer-list-kill-regexps
-             '("\\`\\*Customize .*\\*\\'"
-               "\\`\\*\\(Wo\\)?Man .*\\*\\'"))
-
-;; Hyphen on Space
-;; modify smex so that typing a space will insert a hyphen ‘-’ like in normal M-x
-;; http://www.emacswiki.org/emacs/Smex
-(defadvice smex (around space-inserts-hyphen activate compile)
-        (let ((ido-cannot-complete-command
-               `(lambda ()
-                  (interactive)
-                  (if (string= " " (this-command-keys))
-                      (insert ?-)
-                    (funcall ,ido-cannot-complete-command)))))
-          ad-do-it))
-
-;;; Filters ido-matches setting acronynm matches in front of the results
-;; http://www.emacswiki.org/emacs/Smex
-(defadvice ido-set-matches-1 (after ido-acronym-matches activate)
-  (if (> (length ido-text) 1)
-      (let ((regex (concat "^" (mapconcat 'char-to-string ido-text "[^-]*-")))
-            (acronym-matches (list))
-            (remove-regexes '("-menu-")))
-        ;; Creating the list of the results to be set as first
-        (dolist (item items)
-          (if (string-match (concat regex "[^-]*$") item) ;; strict match
-              (add-to-list 'acronym-matches item)
-            (if (string-match regex item) ;; appending relaxed match
-                (add-to-list 'acronym-matches item t))))
-
-        ;; Filtering ad-return-value
-        (dolist (to_remove remove-regexes)
-          (setq ad-return-value
-                (delete-if (lambda (item)
-                             (string-match to_remove item))
-                           ad-return-value)))
-
-        ;; Creating resulting list
-        (setq ad-return-value
-              (append acronym-matches
-                      ad-return-value))
-
-        (delete-dups ad-return-value)
-        (reverse ad-return-value))))
-
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
   (cl-flet ((process-list ())) ad-do-it))
-
-;; Keep region when undoing in region
-;; http://whattheemacsd.com/my-misc.el-02.html
-(defadvice undo-tree-undo (around keep-region activate)
-  (if (use-region-p)
-      (let ((m (set-marker (make-marker) (mark)))
-            (p (set-marker (make-marker) (point))))
-        ad-do-it
-        (goto-char p)
-        (set-mark m)
-        (set-marker p nil)
-        (set-marker m nil))
-    ad-do-it))
 
 (eval-after-load "web-mode"
   '(progn
@@ -291,12 +213,9 @@ might be bad.
 (temp-buffer-resize-mode 1)
 ;; Move files to trash when deleting
 (setq delete-by-moving-to-trash t)
-;; Remove text in active region if inserting text
-(delete-selection-mode 1)
 
-(load-theme 'monokai t)
+(setq prelude-theme 'monokai)
 (scroll-bar-mode -1)
-(message "7. Config file has successfully loaded.")
 
 (global-subword-mode +1)
 ;; (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
@@ -355,23 +274,6 @@ With prefix P, create local abbrev. Otherwise it will be global."
   (interactive "p")
   (endless/forward-paragraph (- n)))
 
-
-;; http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
-(defun narrow-or-widen-dwim (p)
-  "If the buffer is narrowed, it widens. Otherwise, it narrows intelligently.
-Intelligently means: region, subtree, or defun, whichever applies
-first.
-
-With prefix P, don't widen, just narrow even if buffer is already
-narrowed."
-  (interactive "P")
-  (declare (interactive-only))
-  (cond ((and (buffer-narrowed-p) (not p)) (widen))
-        ((region-active-p)
-         (narrow-to-region (region-beginning) (region-end)))
-        ((derived-mode-p 'org-mode) (org-narrow-to-subtree))
-        (t (narrow-to-defun))))
-
 ;; http://www.masteringemacs.org/articles/2010/12/22/fixing-mark-commands-transient-mark-mode/
 (defun push-mark-no-activate ()
   "Pushes `point' to `mark-ring' and does not activate the region
@@ -395,244 +297,190 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (newline-and-indent)
   (insert "import ipdb; ipdb.set_trace()")
   (highlight-lines-matching-regexp "^[ ]*import ipdb; ipdb.set_trace()"))
-;; (define-key python-mode-map (kbd "C-c C-b") 'python-add-breakpoint)
+(global-set-key (kbd "C-c C-b") 'python-add-breakpoint)
 
 (defun python-interactive ()
   "Enter the interactive Python environment"
   (interactive)
   (progn
-    (insert "!import code; code.interact(local=vars())")
-    (move-end-of-line 1)
-    (comint-send-input)))
-;; (global-set-key (kbd "C-c i") 'python-interactive)
+    (newline-and-indent)
+    (insert "from IPython import embed; embed()")
+    (move-end-of-line 1)))
+(global-set-key (kbd "C-c C-n") 'python-interactive)
 
 (define-key company-active-map (kbd "C-d") 'company-show-doc-buffer)
 (define-key sp-keymap (kbd "M-k") 'sp-kill-hybrid-sexp)
 (define-key sp-keymap (kbd "C-]") 'sp-select-next-thing-exchange)
 (define-key sp-keymap (kbd "C-<left_bracket>") 'sp-select-previous-thing)
 
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
-(setq last-kbd-macro
-   "\C-u\C-u\353")
+(global-set-key (kbd "C-h SPC") 'helm-all-mark-rings)
+
+(require 'highlight-symbol)
+(highlight-symbol-nav-mode)
+(add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
+(add-hook 'org-mode-hook (lambda () (highlight-symbol-mode)))
+(setq highlight-symbol-idle-delay 0.2
+      highlight-symbol-on-navigation-p t)
+(global-set-key (kbd "M-n") 'highlight-symbol-next)
+(global-set-key (kbd "M-p") 'highlight-symbol-prev)
+
+(defun sacha/vsplit-last-buffer (prefix)
+  "Split the window vertically and display the previous buffer."
+  (interactive "p")
+  (split-window-vertically)
+  (other-window 1 nil)
+  (unless prefix
+    (switch-to-next-buffer)))
+(defun sacha/hsplit-last-buffer (prefix)
+  "Split the window horizontally and display the previous buffer."
+  (interactive "p")
+  (split-window-horizontally)
+  (other-window 1 nil)
+  (unless prefix (switch-to-next-buffer)))
+(global-set-key (kbd "C-x 2") 'sacha/vsplit-last-buffer)
+(global-set-key (kbd "C-x 3") 'sacha/hsplit-last-buffer)
 
 
-(defun elpy-nav-forward-block ()
-  "Move to the next line indented like point.
-This will skip over lines and statements with different
-indentation levels."
-  (interactive)
-  (let ((indent (current-column))
-        (start (point)))
-    (when (/= (% indent python-indent-offset)
-              0)
-      (setq indent (* (1+ (/ indent python-indent-offset))
-                      python-indent-offset)))
-    (python-nav-forward-statement)
-    (while (and (< indent (current-indentation))
-                (not (eobp)))
-      (python-nav-forward-statement))
-    (when (< (current-indentation)
-             indent)
-      (goto-char start))))
+;; https://github.com/sachac/.emacs.d/blob/gh-pages/Sacha.org#pop-to-mark
+(global-set-key (kbd "C-x p") 'pop-to-mark-command)
+(setq set-mark-command-repeat-pop t)
 
-(defun elpy-nav-backward-block ()
-  "Move to the previous line indented like point.
-This will skip over lines and statements with different
-indentation levels."
-  (interactive)
-  (let ((indent (current-column))
-        (start (point)))
-    (when (/= (% indent python-indent-offset)
-              0)
-      (setq indent (* (1+ (/ indent python-indent-offset))
-                      python-indent-offset)))
-    (python-nav-backward-statement)
-    (while (and (< indent (current-indentation))
-                (not (bobp)))
-      (python-nav-backward-statement))
-    (when (< (current-indentation)
-             indent)
-      (goto-char start))))
+(when (executable-find "curl")
+  (setq helm-google-suggest-use-curl-p t))
 
-(defun elpy-nav-forward-indent ()
-  "Move forward to the next indent level, or over the next word."
-  (interactive)
-  (if (< (current-column) (current-indentation))
-      (let* ((current (current-column))
-             (next (* (1+ (/ current python-indent-offset))
-                      python-indent-offset)))
-        (goto-char (+ (point-at-bol)
-                      next)))
-    (let ((eol (point-at-eol)))
-      (forward-word)
-      (when (> (point) eol)
-        (goto-char (point-at-bol))))))
 
-(defun elpy-nav-backward-indent ()
-  "Move backward to the previous indent level, or over the previous word."
-  (interactive)
-  (if (and (<= (current-column) (current-indentation))
-           (/= (current-column) 0))
-      (let* ((current (current-column))
-             (next (* (1- (/ current python-indent-offset))
-                      python-indent-offset)))
-        (goto-char (+ (point-at-bol)
-                      next)))
-    (backward-word)))
+(setq helm-buffers-fuzzy-matching t) ; fuzzy matching buffer names when non--nil
 
-(defun elpy-nav--iblock (direction skip)
-  "Move point forward, skipping lines indented more than the current one.
-DIRECTION should be 1 or -1 for forward or backward.
-SKIP should be #'> to skip lines with larger indentation or #'<
-to skip lines with smaller indentation."
-  (let ((start-indentation (current-indentation)))
-    (python-nav-forward-statement direction)
-    (while (and (not (eobp))
-                (not (bobp))
-                (or (looking-at "^\\s-*$")
-                    (funcall skip
-                             (current-indentation)
-                             start-indentation)))
-      (python-nav-forward-statement direction))))
+(autoload 'helm-company "helm-company") ;; Not necessary if using ELPA package
+(eval-after-load 'company
+  '(progn
+     (define-key company-mode-map (kbd "C-:") 'helm-company)
+     (define-key company-active-map (kbd "C-:") 'helm-company)))
 
-(defun elpy-nav-move-iblock-down (&optional beg end)
-  "Move the current indentation block below the next one.
-With an active region, move that instead of the current block.
-An indentation block is a block indented further than the current
-one."
-  (interactive "r")
-  (let ((use-region (use-region-p))
-        (startm (make-marker))
-        (starti nil)
-        (midm (make-marker))
-        (midi nil)
-        (endm (make-marker))
-        (deactivate-mark nil))
-    (save-excursion
-      (when use-region
-        (goto-char beg))
-      (set-marker startm (line-beginning-position))
-      (setq starti (current-indentation))
-      (if use-region
-          (progn
-            (goto-char end)
-            (when (> (current-column)
-                     0)
-              (forward-line 1)))
-        (elpy-nav--iblock 1 #'>))
-      (set-marker midm (line-beginning-position))
-      (setq midi (current-indentation))
-      (elpy-nav--iblock 1 #'>)
-      (goto-char (line-beginning-position))
-      (when (<= (current-indentation)
-                starti)
-        (when (/= (skip-chars-backward "[:space:]\n") 0)
-          (forward-line 1)))
-      (when (and (= midm (point))
-                 (/= (point)
-                     (line-end-position))
-                 (= (line-end-position)
-                    (point-max)))
-        (goto-char (point-max))
-        (insert "\n"))
-      (set-marker endm (line-beginning-position)))
-    (when (and (/= startm midm)
-               (/= midm endm)
-               (/= startm endm)
-               (= starti midi))
-      (goto-char endm)
-      (insert (buffer-substring startm midm))
-      (when use-region
-        (set-mark (point)))
-      (delete-region startm midm)
-      (goto-char endm)
-      (back-to-indentation))))
+(setq langtool-language-tool-jar "~/.emacs.d/LanguageTool-2.7/languagetool-commandline.jar")
 
-(defun elpy-nav-move-iblock-up (&optional beg end)
-  "Move the current indentation block below the next one.
-With an active region, move that instead of the current block.
-An indentation block is a block indented further than the current
-one."
-  (interactive "r")
-  (let ((use-region (use-region-p))
-        (startm (make-marker))
-        (starti nil)
-        (midm (make-marker))
-        (midi nil)
-        (endm (make-marker))
-        (deactivate-mark nil))
-    (save-excursion
-      (when use-region
-        (goto-char beg))
-      (set-marker startm (line-beginning-position))
-      (setq starti (current-indentation))
-      (if use-region
-          (progn
-            (goto-char end)
-            (when (> (current-column)
-                     0)
-              (forward-line 1)))
-        (elpy-nav--iblock 1 #'>)
-        (cond
-         ((and (save-excursion
-                 (goto-char (line-end-position))
-                 (and (> (current-column) 0)
-                      (= (point-max) (point)))))
-          (goto-char (line-end-position))
-          (insert "\n"))
-         ((< (current-indentation)
-             starti)
-          (when (/= (skip-chars-backward "[:space:]\n") 0)
-            (forward-line 1)))))
-      (set-marker midm (line-beginning-position))
-      (goto-char startm)
-      (elpy-nav--iblock -1 #'>)
-      (goto-char (line-beginning-position))
-      (set-marker endm (line-beginning-position))
-      (setq midi (current-indentation)))
-    (when (and (/= startm midm)
-               (/= midm endm)
-               (/= startm endm)
-               (= starti midi))
-      (goto-char endm)
-      (insert (buffer-substring startm midm))
-      (when use-region
-        (set-mark (point)))
-      (delete-region startm midm)
-      (goto-char endm)
-      (back-to-indentation))))
 
-(defun elpy-nav-move-iblock-left ()
-  "Dedent the current indentation block, or the active region."
-  (interactive)
-  (let (beg end)
-    (if (use-region-p)
-        (setq beg (region-beginning)
-              end (region-end))
-      (save-excursion
-        (setq beg (line-beginning-position))
-        (elpy-nav--iblock 1 #'>)
-        (setq end (line-beginning-position))))
-    (python-indent-shift-left beg end)))
+(require 'smart-operator)
 
-(defun elpy-nav-move-iblock-right ()
-  "Indent the current indentation block, or the active region."
-  (interactive)
-  (let (beg end)
-    (if (use-region-p)
-        (setq beg (region-beginning)
-              end (region-end))
-      (save-excursion
-        (setq beg (line-beginning-position))
-        (elpy-nav--iblock 1 #'>)
-        (setq end (line-beginning-position))))
-    (python-indent-shift-right beg end)))
+;; Copy-Cut-Paste from clipboard with Super-C Super-X Super-V
+(global-set-key (kbd "s-x") 'clipboard-kill-region) ;;cut
+(global-set-key (kbd "s-c") 'clipboard-kill-ring-save) ;;copy
+(global-set-key (kbd "s-v") 'clipboard-yank) ;;paste
+(global-set-key (kbd "M-.") 'anaconda-mode-goto-definitions) ;;paste
 
-(global-set-key (kbd "<s-down>") 'elpy-nav-forward-block)
-(global-set-key (kbd "<s-up>") 'elpy-nav-backward-block)
-(global-set-key (kbd "<s-left>") 'elpy-nav-backward-indent)
-(global-set-key (kbd "<s-right>") 'elpy-nav-forward-indent)
-(global-set-key (kbd "<s-M-down>") 'elpy-nav-move-iblock-down)
-(global-set-key (kbd "<s-M-up>") 'elpy-nav-move-iblock-up)
-(global-set-key (kbd "<s-M-left>") 'elpy-nav-move-iblock-left)
-(global-set-key (kbd "<s-M-right>") 'elpy-nav-move-iblock-right)
+(setq company-dabbrev-downcase nil)
+(setq company-dabbrev-ignore-case nil)
+(setq company-idle-delay 0.2)
+(setq company-minimum-prefix-length 1)
+(setq company-show-numbers t)
+(setq company-tooltip-limit 20)
+
+(setq helm-buffers-fuzzy-matching t)
+(setq helm-M-x-fuzzy-match t)
+(setq helm-apropos-fuzzy-match t)
+(setq helm-recentf-fuzzy-match t)
+(setq helm-locate-fuzzy-match t)
+(setq helm-file-cache-fuzzy-match t)
+(setq helm-semantic-fuzzy-match t)
+(setq helm-imenu-fuzzy-match t)
+
+(helm-autoresize-mode 1)
+
+;; escape minibuffer
+(define-key minibuffer-local-map [escape] 'my-minibuffer-keyboard-quit)
+(define-key minibuffer-local-ns-map [escape] 'my-minibuffer-keyboard-quit)
+(define-key minibuffer-local-completion-map [escape] 'my-minibuffer-keyboard-quit)
+(define-key minibuffer-local-must-match-map [escape] 'my-minibuffer-keyboard-quit)
+(define-key minibuffer-local-isearch-map [escape] 'my-minibuffer-keyboard-quit)
+
+(define-key company-active-map (kbd "C-n") 'company-select-next)
+(define-key company-active-map (kbd "C-p") 'company-select-previous)
+(define-key company-active-map (kbd "<backtab>") 'company-select-previous)
+
+;; (let ((faces '(font-lock-comment-face font-lock-comment-delimiter-face font-lock-constant-face font-lock-type-face font-lock-function-name-face font-lock-variable-name-face font-lock-keyword-face font-lock-string-face font-lock-builtin-face font-lock-preprocessor-face font-lock-warning-face font-lock-doc-face)))
+;;   (dolist (face faces)
+;;     (set-face-attribute face nil :foreground nil :weight 'normal :slant 'normal)))
+
+;; (set-face-attribute 'font-lock-comment-delimiter-face nil :slant 'italic)
+;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+;; (set-face-attribute 'font-lock-doc-face nil :slant 'italic)
+;; (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
+;; (set-face-attribute 'font-lock-builtin-face nil :weight 'bold)
+;; (set-face-attribute 'font-lock-preprocessor-face nil :weight 'bold)
+
+
+(global-set-key "\M-0" 'delete-window)
+(global-set-key "\M-1" 'delete-other-windows)
+(global-set-key "\M-2" 'sacha/vsplit-last-buffer)
+(global-set-key "\M-3" 'sacha/hsplit-last-buffer)
+(global-set-key (kbd "M-4") #'er/expand-region)
+
+(setq helm-truncate-lines t)
+
+(global-set-key "\C-s" 'swiper)
+(global-set-key "\C-r" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key [f6] 'ivy-resume)
+
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+
+(setq prelude-guru nil)
+
+(load-theme 'monokai t)
+(set-fontset-font
+ "fontset-default"
+ (cons (decode-char 'ucs #x0600) (decode-char 'ucs #x06ff)) ; arabic
+ "DejaVu Sans Mono")
+
+
+(setq magit-repo-dirs
+      (mapcar
+       (lambda (dir)
+         (substring dir 0 -1))
+       (cl-remove-if-not
+        (lambda (project)
+          (unless (file-remote-p project)
+            (file-directory-p (concat project "/.git/"))))
+        (projectile-relevant-known-projects))))
+ 
+(add-hook 'after-init-hook 'company-statistics-mode)
+(add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
+
+(require 'multiple-cursors-core)
+;; This is globally useful, so it goes under `C-x', and `m'
+;; for "multiple-cursors" is easy to remember.
+(define-key ctl-x-map "\C-m" #'mc/mark-all-dwim)
+;; Usually, both `C-x C-m' and `C-x RET' invoke the
+;; `mule-keymap', but that's a waste of keys. Here we put it
+;; _just_ under `C-x RET'.
+(define-key ctl-x-map (kbd "<return>") mule-keymap)
+
+;; Remember `er/expand-region' is bound to M-2!
+(global-set-key (kbd "C-3") #'mc/mark-next-like-this)
+(global-set-key (kbd "C-4") #'mc/mark-previous-like-this)
+
+;; These vary between keyboards. They're supposed to be
+;; Shifted versions of the two above.
+(global-set-key (kbd "C-#") #'mc/unmark-next-like-this)
+(global-set-key (kbd "C-$") #'mc/unmark-previous-like-this)
+
+(define-prefix-command 'endless/mc-map)
+;; C-x m is usually `compose-mail'. Bind it to something
+;; else if you use this command.
+(define-key ctl-x-map "m" 'endless/mc-map)
+
+;;; Really really nice!
+(define-key endless/mc-map "i" #'mc/insert-numbers)
+(define-key endless/mc-map "h" #'mc-hide-unmatched-lines-mode)
+(define-key endless/mc-map "a" #'mc/mark-all-like-this)
+
+(global-unset-key (kbd "M-<down-mouse-1>"))
+(global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
+
+(message "7. Config file has successfully loaded.")
+

@@ -2,10 +2,11 @@
 #set autoindent
 
 # Do not create backup files in filename~.
-unset backup
+set backup
 
 # Set the directory where nano puts unique backup files if file backups are enabled.
-set backupdir directory ~/.nanobackups/
+
+set backupdir ~/.nano_backups/
 
 # Do not do backwards searches by default.
 unset backwards

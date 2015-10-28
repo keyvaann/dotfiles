@@ -1,5 +1,7 @@
 [default]
 
+osc
+#osd-level=3
 # use X11 for video output, use a framebuffer as fallback
 vo=opengl-old,xv,directfb
 
@@ -13,16 +15,19 @@ ao=alsa,oss
 #lavdopts=threads=2
 
 #Get rid of lag and delay
-cache = 16000
-cache-initial = 1000
-cache-seek-min = 10
-cache-pause-below = no
+cache = 32000
+# cache-initial = 10000
+#cache-seek-min = 10
+#cache-pause-below = no
+# cache-file=TMP
+# cache-secs=20
+# cache-pause
 
 # Keep the player window on top of all other windows.
 ontop=yes
 
 # color output
-msg-color=yes
+# msg-color=yes
 
 # never use font config
 #nofontconfig = 1
@@ -37,20 +42,20 @@ vf=dsize=720:400:0
 # sub-gauss=3
 
 # Input pipe
-input=file="/home/mrgee/.mpv/inputpipe"
+# input=file="/home/mrgee/.mpv/inputpipe"
 
 # Disavle verbose output
-msg-level=all=fatal:cplayer=fatal:statusline=v:file=v
+# msg-level=all=fatal:cplayer=fatal:statusline=v:file=v
 
 # disable lirc
-input-lirc=no
+# input-lirc=no
 
 # disable joystick
-input-joystick=no
+# input-joystick=no
 
 # sub-fuzziness
-sub-auto=all
-
+# sub-auto=all
+autosub-match=all
 # set the window title using the media filename, when not set with --title.
 title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
 #status-msg='${filename}${status-msg}'
@@ -60,7 +65,7 @@ title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
 # for non wide screen traditional monitors
 #vf-add=expand=::::1:4/3:16
 
-sub-codepage=utf8:cp1256
+# sub-codepage=utf8:cp1256
 
 # disable screensaver
 #heartbeat-cmd="xscreensaver-command -deactivate &" # stop xscreensaver

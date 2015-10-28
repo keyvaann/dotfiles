@@ -70,25 +70,25 @@ set mark-symlinked-directories on
 # open (F5). Inserts cursor between ""
 #"\e[15~": "\"\"\e[D"
 
-"M-l": clear-screen
-Meta-k: "dynamic-complete-history"
+"\el": clear-screen
+"\ek": dynamic-complete-history
 
 # Perform alias expansion on the current line.
 # Control-s: alias-expand-line
-Control-b: "| most"
+Control-b: dabbrev-expand
 Meta-a: "\eOD\M-\C-] \eOC"
   # <Left>, back to the last space, <Right>
 
 Meta-e: "\C-] \eOC"
 # Forward to the next space, <Right>
 
-Meta-g: "| grep "
+"\C-p": "| grep "
 Meta-m: "\eb'*\ef*'"
   # word[] -> '*word*'[], for simple words
 
-Meta-;: "<()\eOD"
-Meta-=: "$()\eOD"
-Meta-]: ">/dev/null"
+"\e;": "<()\eOD"
+"\e=": "$()\eOD"
+"\e]": "> /dev/null"
 
 Meta-0: "/var/log/"
 
@@ -129,11 +129,11 @@ Control-v: paste-from-clipboard
 
 # "\e[12~": dump-variables 1
 # "\e[13~": dump-macros
-# "\e[14~": dump-functions
+"\C-x\C-a": dump-variables
 
 # $if Bash
 # # Quote the current or previous word
-# "\C-xq": "\eb\"\ef\""
+"\C-M-q": "\eb\"\ef\""
 # "\C-xd": "\eb\C-k\C-y \C-y"
 # # to exit through calling exit function which will archive the history
 # "\C-x\C-x": "exit\n"

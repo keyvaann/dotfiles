@@ -190,7 +190,7 @@ zstyle ':filter-select' extended-search yes # see below
 
 # source ~/sorin_customized
 
-setxkbmap -option caps:super
+setxkbmap -option caps:hyper
 
 export WORKON_HOME=~/.virtualenv
 mkdir -p $WORKON_HOME

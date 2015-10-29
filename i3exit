@@ -1,0 +1,40 @@
+#!/bin/sh
+lock() {
+    i3lock -i ~/.i3/background.png
+}
+
+case "$1" in
+    lock)
+        lock
+        ;;
+    logout)
+        i3-msg exit
+        ;;
+    suspend)
+        #lock && systemctl suspend
+        lock && dbus-send --system --print-reply \
+		     --dest="org.freedesktop.UPower" \
+			     /org/freedesktop/UPower \
+			     org.freedesktop.UPower.Suspend
+        ;;
+    hibernate)
+        #lock && systemctl hibernate
+        lock && dbus-send --system --print-reply \
+		     --dest="org.freedesktop.UPower" \
+			     /org/freedesktop/UPower \
+			     org.freedesktop.UPower.Hibernate
+        ;;
+    reboot)
+        #systemctl reboot
+        sudo /sbin/reboot
+        ;;
+    shutdown)
+        #systemctl poweroff
+        sudo /sbin/halt
+        ;;
+    *)
+        echo "Usage: $0 {lock|logout|suspend|hibernate|reboot|shutdown}"
+        exit 2
+esac
+
+exit 0

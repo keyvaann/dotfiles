@@ -1,5 +1,5 @@
-set $mod Mod4
-font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+set $mod Mod3
+# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 
 floating_modifier $mod
 
@@ -85,7 +85,6 @@ bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
 bindsym $mod+Ctrl+p exec --no-startup-id playerctl play-pause
-# bindsym ctrl+5 exec playerctl pause
 bindsym $mod+Ctrl+n exec --no-startup-id playerctl next
 bindsym $mod+Ctrl+b exec --no-startup-id playerctl previous
 
@@ -119,33 +118,31 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-bar {
-    status_command    python3 ~/.dotfiles/pystatus.py
-    workspace_buttons yes
-}
 
 for_window [class="^Spotify$"] floating enable
 
+# assign [class="mpv"] → 5: media
 assign [class="google-chrome"] → 1: web
 assign [class="mplayer"] → 5: media
-# assign [class="mpv"] → 5: media
 assign [class="^Spotify$"] → 5: media
 assign [class="emacs"] → 2: edit
 assign [class="nemo"] → 4: file
 assign [class="pidgin"] → 6: chat
+assign [class="skype"] → 6: chat
 
 
-bindsym Mod4+z workspace prev
-bindsym Mod4+x workspace next
+bindsym $mod+z workspace prev
+bindsym $mod+x workspace next
 
 exec --no-startup-id xset dpms 600
 exec --no-startup-id xautolock -time 5 -locker "i3lock -i ~/.i3/background.png" &
 exec --no-startup-id feh --bg-scale ~/.i3/background.jpg
 exec --no-startup-id "setxkbmap -layout us,ir"
-exec --no-startup-id "setxkbmap -option 'grp:ctrl_alt_toggle'"
+exec --no-startup-id "setxkbmap -option; setxkbmap -option 'grp:menu_toggle,caps:hyper,grp_led:scroll'"
+exec --no-startup-id xmodmap ~/.Xmodmap 
 exec --no-startup-id i3-msg 'workspace 1: web; exec /usr/bin/google-chrome'
-exec --no-startup-id i3-msg 'workspace 2: edit; exec /home/k1/.oh-my-zsh/plugins/emacs/emacsclient.sh --no-wait'
-exec --no-startup-id i3-msg 'workspace 3: term; exec /usr/bin/pyalsaaudio'
+exec --no-startup-id i3-msg 'workspace 2: edit; exec ~/.oh-my-zsh/plugins/emacs/emacsclient.sh --no-wait'
+exec --no-startup-id i3-msg 'workspace 3: term; exec /usr/bin/terminator'
 exec --no-startup-id i3-msg 'workspace 4: file; exec /usr/bin/nautilus'
 exec --no-startup-id i3-msg 'workspace 5: media; exec /usr/bin/spotify'
 exec --no-startup-id i3-msg 'workspace 6: chat; exec /usr/bin/pidgin'
@@ -171,8 +168,13 @@ mode "$mode_system" {
 }
 bindsym $mod+Shift+x mode "$mode_system"
 
-set $passthrough_keys Suspend all window manager keys exit: Mod+Shift+Backspace)
-mode "$passthrough_keys" {
-        bindcode Alt+Shift+22 mode "default"
+#set $passthrough_keys Suspend all window manager keys exit: Mod+Shift+Backspace)
+#mode "$passthrough_keys" {
+#        bindcode Alt+Shift+22 mode "default"
+#}
+#bindcode Alt+Shift+22 mode "$passthrough_keys"
+
+bar {
+    status_command    python3 ~/.dotfiles/pystatus.py
+    workspace_buttons yes
 }
-bindcode Alt+Shift+22 mode "$passthrough_keys"

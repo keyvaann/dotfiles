@@ -4,7 +4,7 @@ set $mod Mod3
 floating_modifier $mod
 
 bindsym $mod+Return exec terminator
-bindsym $mod+Shift+q kill
+bindsym $mod+q kill
 bindsym $mod+d exec dmenu_run
 
 # alternatively, you can use the cursor keys:
@@ -42,10 +42,6 @@ bindsym $mod+space focus mode_toggle
 # focus the parent container
 bindsym $mod+a focus parent
 
-# focus the child container
-#bindsym $mod+d focus child
-
-# switch to workspace
 bindsym $mod+1 workspace 1: web
 bindsym $mod+2 workspace 2: edit
 bindsym $mod+3 workspace 3: term
@@ -57,7 +53,6 @@ bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
-# move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace 1: web
 bindsym $mod+Shift+2 move container to workspace 2: edit
 bindsym $mod+Shift+3 move container to workspace 3: term
@@ -69,11 +64,8 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# reload the configuration file
 bindsym $mod+Shift+c reload
-# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -c 0 sset 'Master' 5%+
@@ -92,44 +84,35 @@ bindsym $mod+ctrl+s exec --no-startup-id spotify --ui.track_notifications_enable
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
         bindsym j resize shrink width 10 px or 10 ppt
         bindsym k resize grow height 10 px or 10 ppt
         bindsym l resize shrink height 10 px or 10 ppt
         bindsym semicolon resize grow width 10 px or 10 ppt
 
-        # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
         bindsym Down resize grow height 10 px or 10 ppt
         bindsym Up resize shrink height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
 
 bindsym $mod+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-
 for_window [class="^Spotify$"] floating enable
 
-# assign [class="mpv"] → 5: media
 assign [class="google-chrome"] → 1: web
-assign [class="mplayer"] → 5: media
-assign [class="^Spotify$"] → 5: media
 assign [class="emacs"] → 2: edit
+assign [class="Emacs"] → 2: edit
+assign [class="Terminator"] → 3: term
 assign [class="nemo"] → 4: file
+assign [class="nautilus"] → 4: file
+assign [class="^Spotify$"] → 5: media
 assign [class="pidgin"] → 6: chat
+assign [class="Pidgin"] → 6: chat
 assign [class="skype"] → 6: chat
-
+assign [class="Skype"] → 6: chat
 
 bindsym $mod+z workspace prev
 bindsym $mod+x workspace next
@@ -139,26 +122,26 @@ exec --no-startup-id xautolock -time 5 -locker "i3lock -i ~/.i3/background.png" 
 exec --no-startup-id feh --bg-scale ~/.i3/background.jpg
 exec --no-startup-id "setxkbmap -layout us,ir"
 exec --no-startup-id "setxkbmap -option; setxkbmap -option 'grp:menu_toggle,caps:hyper,grp_led:scroll'"
-exec --no-startup-id xmodmap ~/.Xmodmap 
+exec --no-startup-id xmodmap ~/.Xmodmap
 exec --no-startup-id i3-msg 'workspace 1: web; exec /usr/bin/google-chrome'
-exec --no-startup-id i3-msg 'workspace 2: edit; exec ~/.oh-my-zsh/plugins/emacs/emacsclient.sh --no-wait'
+exec --no-startup-id i3-msg 'workspace 2: edit; exec /usr/local/bin/emacsclient --alternate-editor "" --create-frame --no-wait'
 exec --no-startup-id i3-msg 'workspace 3: term; exec /usr/bin/terminator'
 exec --no-startup-id i3-msg 'workspace 4: file; exec /usr/bin/nautilus'
 exec --no-startup-id i3-msg 'workspace 5: media; exec /usr/bin/spotify'
 exec --no-startup-id i3-msg 'workspace 6: chat; exec /usr/bin/pidgin'
+exec --no-startup-id i3-msg 'workspace 6: chat; exec /usr/bin/skype'
 
 # https://bbs.archlinux.org/viewtopic.php?id=159418
 # http://www.linux.org.ru/forum/general/6603527
 #exec_always setxkbmap -layout us,fa -option grp:ctrl_shift_toggle -variant winkeys
 
-
 # New exit mode. Needs the /etc/i3/exit script and sudo configuration.
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (d) shutdown
 mode "$mode_system" {
-    bindsym l exec --no-startup-id ~/.i3/i3exit lock, mode "default"
+    bindsym l exec --no-startup-id ~/.dotfiles/i3exit lock, mode "default"
     bindsym e exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the exit shortcut. All unsaved data will be lost.' -b 'Yes, exit i3' '/etc/i3/i3exit logout'", mode "default"
-    bindsym s exec --no-startup-id ~/.i3/i3exit suspend, mode "default"
-    bindsym h exec --no-startup-id ~/.i3/i3exit hibernate, mode "default"
+    bindsym s exec --no-startup-id ~/.dotfiles/i3exit suspend, mode "default"
+    bindsym h exec --no-startup-id ~/.dotfiles/i3exit hibernate, mode "default"
     bindsym r exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the reboot shortcut. All unsaved data will be lost.' -b 'Yes, reboot' '/etc/i3/i3exit reboot'", mode "default"
     bindsym d exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the shutdown shortcut. All unsaved data will be lost.' -b 'Yes, shutdown' '/etc/i3/i3exit shutdown'", mode "default"
 

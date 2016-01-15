@@ -1,12 +1,8 @@
 [default]
 
-osc
 #osd-level=3
 # use X11 for video output, use a framebuffer as fallback
 vo=opengl-old,xv,directfb
-
-# enforces a fixed video system for multiple files
-fixed-vo=yes
 
 # use alsa for audio output, choose oss4 as fallback
 ao=alsa,oss
@@ -22,6 +18,9 @@ cache = 32000
 # cache-file=TMP
 # cache-secs=20
 # cache-pause
+
+# Set the maximum amplification level in percent (default: 130). A value of 130 will allow you to adjust the volume up to about double the normal level.
+softvol-max=200
 
 # Keep the player window on top of all other windows.
 ontop=yes
@@ -55,7 +54,7 @@ vf=dsize=720:400:0
 
 # sub-fuzziness
 # sub-auto=all
-autosub-match=all
+sub-auto=all
 # set the window title using the media filename, when not set with --title.
 title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
 #status-msg='${filename}${status-msg}'
@@ -76,9 +75,6 @@ title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
 
 # allow to seek in a file which is still downloading whilst watching it
 #index=yes
-
-# skip displaying some frames to maintain A/V sync on slow systems
-framedrop=yes
 
 # more intense frame dropping (breaks decoding)
 #hardframedrop=yes
@@ -101,3 +97,7 @@ ass-force-style='Fontname=Negotiate Free,Default.Bold=1'
 # use -profile 6chto2ch to activate
 [6chto2ch]
 #af-add=pan=2:0.7:0:0:0.7:0.5:0:0:0.5:0.6:0.6:0:0
+
+
+
+

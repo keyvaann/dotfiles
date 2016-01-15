@@ -131,9 +131,7 @@ exec --no-startup-id i3-msg 'workspace 5: media; exec /usr/bin/spotify'
 exec --no-startup-id i3-msg 'workspace 6: chat; exec /usr/bin/pidgin'
 exec --no-startup-id i3-msg 'workspace 6: chat; exec /usr/bin/skype'
 
-# https://bbs.archlinux.org/viewtopic.php?id=159418
-# http://www.linux.org.ru/forum/general/6603527
-#exec_always setxkbmap -layout us,fa -option grp:ctrl_shift_toggle -variant winkeys
+new_window none
 
 # New exit mode. Needs the /etc/i3/exit script and sudo configuration.
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (d) shutdown

@@ -73,7 +73,6 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-export PATH=$HOME/bin:/usr/local/bin:$PATH
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -102,9 +101,8 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # exports =======================================
-#export CDPATH=/run/media/mrgee:~/git:/run/media/mrgee/d/torrent/downloads
-export PYTHONSTARTUP=$HOME/.pythonrc.py
-export PATH=~/.bin:/usr/local/heroku/bin:$PATH
+export PYTHONSTARTUP=$HOME/.dotfiles/pythonrc.py
+export PATH=~/.bin:$PATH
 
 # Security: close root shells after n seconds of inactivity
 [ "$UID" = 0 ] && export TMOUT=180
@@ -115,7 +113,7 @@ export PATH=~/.bin:/usr/local/heroku/bin:$PATH
 # eval & source =================================
 
 [ -r ~/.dotfiles/shell_aliases.sh ] && source ~/.dotfiles/shell_aliases.sh
-[ -r ~/.dotfiles/.shell_functions.sh ] && source ~/.dotfiles/.shell_functions.sh
+[ -r ~/.dotfiles/.shell_functions.sh ] && source ~/.dotfiles/shell_functions.sh
 
 # Safe default permissions
 #umask 077
@@ -126,10 +124,6 @@ ulimit -m 500000
 
 bindkey ';5C' forward-word
 bindkey ';5D' backward-word
-
-#hash -d torrent="/run/media/mrgee/d/torrent/downloads"
-#hash -d music="/run/media/mrgee/e"
-#hash -d git="/home/mrgee/git"
 
 # Exit incremental search, retaining the command line but performing no further action. Note that this function is not bound by default and has no effect outside incremental search.
 bindkey '\ea' accept-search
@@ -194,7 +188,10 @@ export WORKON_HOME=~/.virtualenv
 mkdir -p $WORKON_HOME
 source /usr/local/bin/virtualenvwrapper.sh
 
-[ -f /run/shadowsocks.pid ] || sudo sslocal -c .ssh/shadowsocks.json -d start
+[ -f /run/shadowsocks.pid ] || sudo sslocal -c ~/.ssh/shadowsocks.json -d start
 
 source ~/.dotfiles/lib/zsh-autoenv/autoenv.zsh
 AUTOENV_FILE_ENTER='.env'
+
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"

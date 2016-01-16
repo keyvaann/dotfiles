@@ -1,45 +1,38 @@
 set $mod Mod3
-# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 
 floating_modifier $mod
 
+workspace_layout tabbed
+new_window none
+new_float normal
+
 bindsym $mod+Return exec terminator
 bindsym $mod+q kill
-bindsym $mod+d exec dmenu_run
+bindsym $mod+d exec "dmenu_run -i -p run"
 
-# alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
-# alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# split in horizontal orientation
 bindsym $mod+h split h
-
-# split in vertical orientation
 bindsym $mod+v split v
-
-# enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen
 
-# change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
-# toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
 
-# change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
-# focus the parent container
 bindsym $mod+a focus parent
 
 bindsym $mod+1 workspace 1: web
@@ -67,6 +60,9 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+bindsym $mod+Ctrl+Down exec --no-startup-id amixer -c 0 sset 'Master' 5%-
+bindsym $mod+Ctrl+Up exec --no-startup-id amixer -c 0 sset 'Master' 5%+
 
 bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -c 0 sset 'Master' 5%+
 bindsym XF86AudioLowerVolume exec --no-startup-id amixer -c 0 sset 'Master' 5%-
@@ -126,12 +122,11 @@ exec --no-startup-id xmodmap ~/.Xmodmap
 exec --no-startup-id i3-msg 'workspace 1: web; exec /usr/bin/google-chrome'
 exec --no-startup-id i3-msg 'workspace 2: edit; exec /usr/local/bin/emacsclient --alternate-editor "" --create-frame --no-wait'
 exec --no-startup-id i3-msg 'workspace 3: term; exec /usr/bin/terminator'
+exec --no-startup-id i3-msg 'workspace 4: file; exec /usr/bin/nemo'
 exec --no-startup-id i3-msg 'workspace 4: file; exec /usr/bin/nautilus'
 exec --no-startup-id i3-msg 'workspace 5: media; exec /usr/bin/spotify'
 exec --no-startup-id i3-msg 'workspace 6: chat; exec /usr/bin/pidgin'
 exec --no-startup-id i3-msg 'workspace 6: chat; exec /usr/bin/skype'
-
-new_window none
 
 # New exit mode. Needs the /etc/i3/exit script and sudo configuration.
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (d) shutdown
@@ -147,7 +142,7 @@ mode "$mode_system" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
-bindsym $mod+Shift+x mode "$mode_system"
+bindsym $mod+c mode "$mode_system"
 
 #set $passthrough_keys Suspend all window manager keys exit: Mod+Shift+Backspace)
 #mode "$passthrough_keys" {

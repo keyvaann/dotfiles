@@ -401,18 +401,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (define-key company-active-map (kbd "C-p") 'company-select-previous)
 (define-key company-active-map (kbd "<backtab>") 'company-select-previous)
 
-;; (let ((faces '(font-lock-comment-face font-lock-comment-delimiter-face font-lock-constant-face font-lock-type-face font-lock-function-name-face font-lock-variable-name-face font-lock-keyword-face font-lock-string-face font-lock-builtin-face font-lock-preprocessor-face font-lock-warning-face font-lock-doc-face)))
-;;   (dolist (face faces)
-;;     (set-face-attribute face nil :foreground nil :weight 'normal :slant 'normal)))
-
-;; (set-face-attribute 'font-lock-comment-delimiter-face nil :slant 'italic)
-;; (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
-;; (set-face-attribute 'font-lock-doc-face nil :slant 'italic)
-;; (set-face-attribute 'font-lock-keyword-face nil :weight 'bold)
-;; (set-face-attribute 'font-lock-builtin-face nil :weight 'bold)
-;; (set-face-attribute 'font-lock-preprocessor-face nil :weight 'bold)
-
-
 (global-set-key "\M-0" 'delete-window)
 (global-set-key "\M-1" 'delete-other-windows)
 (global-set-key "\M-2" 'sacha/vsplit-last-buffer)
@@ -437,7 +425,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
  (cons (decode-char 'ucs #x0600) (decode-char 'ucs #x06ff)) ; arabic
  "DejaVu Sans Mono")
 
-
 (setq magit-repo-dirs
       (mapcar
        (lambda (dir)
@@ -447,7 +434,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
           (unless (file-remote-p project)
             (file-directory-p (concat project "/.git/"))))
         (projectile-relevant-known-projects))))
- 
+
 (add-hook 'after-init-hook 'company-statistics-mode)
 (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
 
@@ -483,4 +470,3 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
 
 (message "7. Config file has successfully loaded.")
-

@@ -1,12 +1,8 @@
-# Use auto-indentation.
-#set autoindent
-
 # Do not create backup files in filename~.
-set backup
+unset backup
 
 # Set the directory where nano puts unique backup files if file backups are enabled.
-
-set backupdir ~/.nano_backups/
+set backupdir directory ~/.nanobackups/
 
 # Do not do backwards searches by default.
 unset backwards
@@ -116,11 +112,11 @@ unset view
 unset wordbounds
 # Do not treat punctuation characters as part of a word.
 
-# # Annoyances
+# Annoyances
 # unbind ^C all
 # unbind ^G all
 
-# # File
+# File
 # bind ^O insert main
 # bind ^N insert main
 # bind ^S writeout main
@@ -129,7 +125,7 @@ unset wordbounds
 # bind ^Q exit main
 # bind ^W exit main
 
-# # Edit
+# Edit
 # bind ^A mark main
 # bind ^C copytext main
 # bind ^X cut main
@@ -141,7 +137,7 @@ unset wordbounds
 # bind F8 autoindent main
 # bind F12 autoindent main
 
-# # Search
+# Search
 # bind ^F whereis all
 # bind ^H replace all
 # bind ^I casesens search

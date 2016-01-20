@@ -1,102 +1,170 @@
-# Force ignoredups and erase duplicates across the whole history which is good for desktop and bad for server
-export HISTCONTROL=ignoredups:erasedups
-# Increace history file size
-export HISTFILESIZE=9999
+export HISTCONTROL=ignoredups:erasedups # Force ignoredups and erase duplicates across the whole history which is good for desktop and bad for server
+export HISTFILESIZE=9999 # Increace history file size
 export HISTSIZE=5000
-# Display TIMESTAMP in history, for auditing purpose
-export HISTTIMEFORMAT='%F %T '
-# Make sure the history is updated at every command.
-export PROMPT_COMMAND='history -a; history -n; '
+export HISTTIMEFORMAT='%F %T ' # Display TIMESTAMP in history, for auditing purpose
+export PROMPT_COMMAND='history -a; history -n; ' # Make sure the history is updated at every command.
 
-stty werase undef
-bind '"\C-w": unix-filename-rubout'
+alias less="less -IJMW"
+alias grep='grep --color'
+alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
+alias t='tail -f'
+alias nano='nano -w'
 
 set -o notify          # Don't wait for job termination notification
-
-# Tab (readline) completion settings
 set completion-ignore-case on # Set tab-completion to be case-insensitive
 set match-hidden-files on
 set show-all-if-ambiguous on # Show all tab-completed matches
 set show-all-symlinked-directories on # Set all symlinked-directories to be shown
 set visible-stats on
 set blink-matching-paren on
-
-# Append "/" to all dirnames
-set mark-directories on
+set mark-directories on # Append "/" to all dirnames
 set mark-symlinked-directories on
+
+stty werase undef
+bind '"\C-w": unix-filename-rubout'
+DEBIAN_FRONTEND=noninteractive apt-get install -yq bash-completion > /dev/null 2>&1 && . /etc/bash_completion > /dev/null 2>&1
+cp -f $SSHHOME/.sshrc.d/.nanorc ~ > /dev/null 2>&1
+mkdir ~/.nano_backups/ 2> /dev/null
 
 shopt -s autocd
 shopt -s cdable_vars # if cd arg is not valid, assumes its a var defining a dir
 shopt -s cdspell # Autocorrect typos in path names when using `cd`
-shopt -u checkhash
-shopt -s checkjobs
 shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
 shopt -s cmdhist # multiline commands saved in history as oneliners
-shopt -u compat31
-shopt -u compat32
-shopt -u compat40
-shopt -u compat41
-shopt -s dirspell
 shopt -s dotglob # files beginning with . to be returned in the results of path-name expansion.
 shopt -s execfail # failed execs don't exit shell
 shopt -s expand_aliases # expand aliases
-shopt -u extdebug
 shopt -s extglob # bonus regex globbing!
-shopt -s extquote
-shopt -u failglob
 shopt -u force_fignore # Expand to complete an ignored word, if no other words match.
-shopt -s globstar
-shopt -u gnu_errfmt
 shopt -s histappend # Append to the Bash history file, rather than overwriting it
 shopt -s histreedit # allow re-editing of a history command substitution, if the previous run failed
 shopt -s histverify # good for double-checking history substitutions
 shopt -s hostcomplete # tab-complete words containing @ as hostnames
-shopt -u huponexit
-shopt -s interactive_comments
-shopt -u lastpipe
-shopt -u lithist
-shopt -u login_shell
 shopt -u mailwarn # No messages about new e-mail
 shopt -s no_empty_cmd_completion # Don't try to find all the command possibilities when hitting TAB on an empty line.
 shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
-shopt -u nocasematch
-shopt -u nullglob
-shopt -s progcomp
-shopt -s promptvars
-shopt -u restricted_shell
-shopt -u shift_verbose
-shopt -s sourcepath
-shopt -u xpg_echo
+
+if [ -d "/usr/local/IBSng/" ]; then
+    export BRANCH=`cat /usr/local/IBSng/BRANCH 2> /dev/null`
+    export LAST_TAG=`cat /usr/local/IBSng/LAST_TAG 2> /dev/null`
+    export CURRENT_TAG=`cat /usr/local/IBSng/CURRENT_TAG 2> /dev/null`
+    # Example: (root@IBSng)-(lan_acc)-(220/220)-(/usr/local/IBSng)-(18 files, 608Kb) ->
+    PS1="\[\e[30;1m\]\[\016\]\[\017\](\[\e[34;1m\]\u@\h\[\e[30;1m\])-(\[\e[34;1m\]$BRANCH\[\e[30;1m\])-(\[\e[34;1m\]$CURRENT_TAG/$LAST_TAG\[\e[30;1m\])\[\017\]-(\[\e[32;1m\]\w\[\e[30;1m\])-(\[\e[32;1m\]\$(/bin/ls -1 | /usr/bin/wc -l | /bin/sed 's: ::g') files, \$(/bin/ls -lah | /bin/grep -m 1 total | /bin/sed 's/total //')b\[\e[30;1m\])\n-> \[\e[0m\]"
+
+    # Ctrl+x c to cat a file IBSng directory, Ctrl+x l to less and Ctrl+x n to nano
+    (python -c 'import percol'  > /dev/null 2>&1 || easy_install percol > /dev/null 2>&1 &)
+    bind -x '"\C-xc": cat `find /usr/local/IBSng -not -path '*/.git*' -not -path '*.pyo' -not -path '*.pyc' -not -path '*/interface/smarty/templates_c*' | percol`'
+    bind -x '"\C-xl": less `find /usr/local/IBSng -not -path '*/.git*' -not -path '*.pyo' -not -path '*.pyc' -not -path '*/interface/smarty/templates_c*' | percol`'
+    bind -x '"\C-xn": nano `find /usr/local/IBSng -not -path '*/.git*' -not -path '*.pyo' -not -path '*.pyc' -not -path '*/interface/smarty/templates_c*' | percol`'
+
+    alias pgstat="psql -U ibs IBSng -c 'SELECT datname,procpid, usename, query_start::time, current_query from pg_stat_activity;'"
+    alias pgdbsize="psql -U ibs IBSng -c 'SELECT datname, pg_size_pretty(pg_database_size(datname)) db_size FROM pg_database ORDER BY db_size;'"
+    alias pgtablesize="psql -U ibs IBSng -c 'SELECT nspname || \'.\' || relname AS \"relation\", pg_size_pretty(pg_relation_size(C.oid)) AS "size" FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN (\'pg_catalog\', \'information_schema\') ORDER BY pg_relation_size(C.oid) DESC LIMIT 40;'"
+    alias pgibs="psql -U ibs IBSng"
+    alias pgurldump="psql -U urldump urldump"
+    function pgkillquery() { psql -U ibs IBSng -c "SELECT pg_terminate_backend($1);"; }
+
+    alias irestart="/etc/init.d/IBSng restart"
+    alias istop="/etc/init.d/IBSng stop"
+    alias istart="/etc/init.d/IBSng start"
+    function iforcestopmpi(){ kill $(pgrep mpi); }
+
+    alias idir="cd /usr/local/IBSng/"
+    alias idirl="cd /var/log/IBSng/"
+
+    alias ipatchtest="patch -p1 --dry-run -d/usr/local/IBSng < "
+    alias ipatch="patch -p1 -d/usr/local/IBSng < "
+
+    alias iscreenless="less screenlog.0"
+    alias iscreentail="tail -fn 100 screenlog.0"
+    alias ibranch="cat /usr/local/IBSng/BRANCH"
+    alias icurtag="cat /usr/local/IBSng/CURRENT_TAG"
+    alias ilasttag="cat /usr/local/IBSng/LAST_TAG"
+
+    function ilog (){
+        name=$1;
+
+        if [ -z $2 ]
+        then
+            log_version='';
+        else
+            log_version=".$2";
+        fi
+
+        if [ -z $3 ]
+        then
+            last_lines=100;
+        else
+            last_lines=$3;
+        fi
+
+        echo "=== Running: tail -fn $last_lines /var/log/IBSng/ibs_$name.log$log_version; ==="
+        tail -fn $last_lines /var/log/IBSng/ibs_$name.log$log_version;
+    }
+
+    function ilogless (){
+        name=$1;
+
+        if [ -z $2 ]
+        then
+            log_version='';
+        else
+            log_version=".$2";
+        fi
+
+        echo "=== Running: less -IJMW /var/log/IBSng/ibs_$name.log$log_version; ==="
+        less -IJMW /var/log/IBSng/ibs_$name.log$log_version;
+    }
 
 
+    function ireload() {
+        /usr/local/IBSng/addons/client/client.py -u $1 -p $2 /usr/local/IBSng/addons/client/reload/$3;
+    }
 
-function ibslog (){
-    name=$1;
-    if [ -z $2 ]
-    then
-        last_lines=100;
-    else
-        last_lines=$2;
-    fi
+    # Auto complete functions
+    function _ilog()
+    {
+        local cur prev opts
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+        opts="debug error interface server radius backup console queries turbogears license"
 
-    if [ -z $3 ]
-    then
-        log_version='';
-    else
-        log_version=".$3";
-    fi
+        COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
 
-    echo "=== Running tail -fn $last_lines /var/log/IBSng/ibs_$name.log$log_version; ==="
-    tail -fn $last_lines /var/log/IBSng/ibs_$name.log$log_version;
-}
+    }
+    complete -F _ilog ilog
+    complete -F _ilog ilogless
 
-alias pgstat="psql -U ibs IBSng -c 'SELECT datname,procpid, usename, query_start::time, current_query from pg_stat_activity;'"
-alias pgdbsize="psql -U ibs IBSng -c 'SELECT datname, pg_size_pretty(pg_database_size(datname)) db_size FROM pg_database ORDER BY db_size;'"
-alias pgtablesize="psql -U ibs IBSng -c 'SELECT nspname || \'.\' || relname AS \"relation\", pg_size_pretty(pg_relation_size(C.oid)) AS "size" FROM pg_class C LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace) WHERE nspname NOT IN (\'pg_catalog\', \'information_schema\') ORDER BY pg_relation_size(C.oid) DESC LIMIT 40;'"
-alias pgibs="psql -U ibs IBSng"
-alias idir="cd /usr/local/IBSng/"
-alias irestart=" /etc/init.d/IBSng restart"
+    function _ireload()
+    {
+        local cur prev opts
+        COMPREPLY=()
+        cur="${COMP_WORDS[COMP_CWORD]}"
+        prev="${COMP_WORDS[COMP_CWORD-1]}"
+        opts="$(/bin/ls -1 /usr/local/IBSng/addons/client/reload)"
 
+        COMPREPLY=( $(compgen -W "${opts}" ${cur}) )
 
-cp $SSHHOME/.sshrc.d/.nanorc ~
-mkdir ~/.nano_backups/ 2> /dev/null
+    }
+    complete -F _ireload ireload
+
+    function _ipatch()
+    {
+        local xspec=$1 cmd
+        shift
+        for cmd in $@; do
+            _xspecs[$cmd]=$xspec
+        done
+        complete -F _filedir_xspec $@
+    }
+    _ipatch '!*.patch' ipatch ipatchtest
+    _ipatch '!*.diff' ipatch ipatchtest
+fi
+
+if [ -d "/usr/local/IBSng/" ]; then
+    alias fiupdate="cd /usr/local/FIDS/FIDS/ && git pull && sudo supervisorctl restart all"
+    alias fidir="cd /usr/local/FIDS/FIDS/"
+    alias filog="tail -f /var/log/nginx/*.log /var/log/supervisor/supervisord.log /var/log/fids/*"
+    alias filog40="tail -n 40 -f /var/log/nginx/*.log /var/log/supervisor/supervisord.log /var/log/fids/*"
+fi

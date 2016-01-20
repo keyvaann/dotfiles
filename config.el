@@ -363,9 +363,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 (setq langtool-language-tool-jar "~/.emacs.d/LanguageTool-2.7/languagetool-commandline.jar")
 
-
-(require 'smart-operator)
-
 ;; Copy-Cut-Paste from clipboard with Super-C Super-X Super-V
 (global-set-key (kbd "s-x") 'clipboard-kill-region) ;;cut
 (global-set-key (kbd "s-c") 'clipboard-kill-ring-save) ;;copy
@@ -380,7 +377,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (setq company-tooltip-limit 20)
 
 (setq helm-buffers-fuzzy-matching t)
-(setq helm-M-x-fuzzy-match t)
 (setq helm-apropos-fuzzy-match t)
 (setq helm-recentf-fuzzy-match t)
 (setq helm-locate-fuzzy-match t)

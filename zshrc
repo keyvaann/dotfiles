@@ -63,7 +63,6 @@ plugins=(
     pip
     redis-cli
     sudo
-    fasd
     zsh-syntax-highlighting
     zsh-completions
     ssh-agent
@@ -190,8 +189,8 @@ source /usr/local/bin/virtualenvwrapper.sh
 
 [ -f /run/shadowsocks.pid ] || sudo sslocal -c ~/.ssh/shadowsocks.json -d start
 
-source ~/.dotfiles/lib/zsh-autoenv/autoenv.zsh
-AUTOENV_FILE_ENTER='.env'
+# source ~/.dotfiles/lib/zsh-autoenv/autoenv.zsh
+# AUTOENV_FILE_ENTER='.env'
 
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+# export PATH="$HOME/.rbenv/bin:$PATH"
+# eval "$(rbenv init -)"

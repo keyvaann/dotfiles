@@ -2,7 +2,7 @@
 
 #osd-level=3
 # use X11 for video output, use a framebuffer as fallback
-vo=opengl-old,xv,directfb
+#vo=opengl-old,xv,directfb
 
 # use alsa for audio output, choose oss4 as fallback
 ao=alsa,oss

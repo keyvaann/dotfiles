@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(alert-default-style (quote fringe))
  '(flycheck-flake8rc "~/.dotfiles/flake8rc")
- '(company-backends (quote (php-extras-company company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-ropemacs company-cmake company-capf (company-dabbrev-code company-keywords) company-oddmuse company-files company-dabbrev)))
+ '(company-backends (quote (company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf (company-dabbrev-code company-keywords) company-oddmuse company-files company-dabbrev)))
  '(company-dabbrev-code-everywhere t)
  '(company-etags-use-main-table-list nil)
  '(company-idle-delay 0)

@@ -475,4 +475,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 (setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
 
+(key-chord-define-global "pp" 'helm-projectile-find-file)
+(key-chord-define-global "bb" 'helm-mini)
+
 (message "7. Config file has successfully loaded.")

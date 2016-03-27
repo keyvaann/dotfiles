@@ -113,6 +113,9 @@ assign [class="Skype"] → 6: chat
 bindsym $mod+z workspace prev
 bindsym $mod+x workspace next
 
+bindsym $mod+Shift+Tab workspace prev
+bindsym $mod+Tab workspace next
+
 exec --no-startup-id xset dpms 60
 exec --no-startup-id xautolock -time 5 -locker "i3lock -i ~/.i3/background.png" &
 exec --no-startup-id feh --bg-scale ~/.i3/background.jpg

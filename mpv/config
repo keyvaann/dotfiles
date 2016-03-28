@@ -52,8 +52,7 @@ vf=dsize=720:400:0
 # disable joystick
 # input-joystick=no
 
-# sub-fuzziness
-# sub-auto=all
+
 sub-auto=all
 # set the window title using the media filename, when not set with --title.
 title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
@@ -64,7 +63,8 @@ title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
 # for non wide screen traditional monitors
 #vf-add=expand=::::1:4/3:16
 
-# sub-codepage=utf8:cp1256
+# sub-codepage=utf8
+sub-codepage=utf8:cp1256
 
 # disable screensaver
 #heartbeat-cmd="xscreensaver-command -deactivate &" # stop xscreensaver

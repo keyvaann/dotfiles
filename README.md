@@ -3,6 +3,11 @@ My linux config files, put them here for backup and sharing.
 
 ###Installation
 
+###Powerline font
+```shell
+git clone git@github.com:powerline/fonts.git && cd fonts && ./install.sh
+```
+
 #####ZSH
 ```shell
 
@@ -10,6 +15,7 @@ git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 cp ~/.zshrc ~/.zshrc.orig
 ln -s /home/$USER/.dotfiles/zshrc /home/$USER/.zshrc
 sudo chsh -s /bin/zsh
+git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions

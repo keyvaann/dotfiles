@@ -5,12 +5,16 @@ My linux config files, put them here for backup and sharing.
 
 #####General
 ```shell
-mkdir -p $HOME/.config/htop/
+mkdir -p ~/.bin ~/.config/htop/
 ln -s $HOME/.dotfiles/curlrc $HOME/.curlrc
 ln -s $HOME/.dotfiles/flake8rc $HOME/.config/flake8
 ln -s $HOME/.dotfiles/gitconfig $HOME/.gitconfig
 ln -s $HOME/.dotfiles/gitignore $HOME/.gitignore
 ln -s $HOME/.dotfiles/htoprc $HOME/.config/htop/htoprc
+ln -s $HOME/.dotfiles/nanorc $HOME/.nanorc
+ln -s $HOME/.dotfiles/psqlrc $HOME/.psqlrc
+ln -s $HOME/.dotfiles/ssh_config $HOME/.ssh/config
+ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ```
 
 #####i3
@@ -41,6 +45,23 @@ git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
 git clone git://github.com/zsh-users/zaw.git ~/.zaw
+```
+
+#####mpv
+```shell
+mkdir ~/.mpv
+ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
+ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf
+```
+
+
+#####SSHRC
+```
+git clone https://github.com/Russell91/sshrc.git
+cp sshrc/sshrc ~/.bin
+ln -s $HOME/.dotfiles/sshrc $HOME/.sshrc
+mkdir ~/.sshrc.d/
+ln -s $HOME/.dotfiles/nanorc $HOME/.sshrc.d
 ```
 
 ### Other sources

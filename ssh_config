@@ -11,6 +11,11 @@ Host *
   
   LogLevel DEBUG1
   
-  ControlMaster auto
-  ControlPath ~/.ssh/control/%h-%l-%p
-  ControlPersist 600
+#  ControlMaster auto
+#  ControlPath ~/.ssh/control/%h-%l-%p
+#  ControlPersist 600
+
+
+Host 151
+  HostName 192.168.0.151
+  User auth

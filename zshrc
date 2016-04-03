@@ -1,3 +1,6 @@
+export TERM="xterm-256color"
+POWERLEVEL9K_MODE='awesome-fontconfig'
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
@@ -5,7 +8,7 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
+ZSH_THEME="powerlevel9k/powerlevel9k"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -63,9 +66,10 @@ plugins=(
     pip
     redis-cli
     sudo
-    zsh-syntax-highlighting
     zsh-completions
     ssh-agent
+    zsh-autosuggestions
+    zsh-syntax-highlighting     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -194,3 +198,14 @@ source /usr/local/bin/virtualenvwrapper.sh
 
 # export PATH="$HOME/.rbenv/bin:$PATH"
 # eval "$(rbenv init -)"
+
+
+POWERLEVEL9K_CUSTOM_LAST_COMMIT="[ -f .git/config ] && git log --oneline | head -1 || echo ':)'"
+POWERLEVEL9K_CUSTOM_LAST_COMMIT_BACKGROUND="blue"
+POWERLEVEL9K_CUSTOM_LAST_COMMIT_FOREGROUND="yellow"
+export DEFAULT_USER="$USER"
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs custom_last_commit)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status history time)
+
+

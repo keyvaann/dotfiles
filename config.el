@@ -431,7 +431,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
             (file-directory-p (concat project "/.git/"))))
         (projectile-relevant-known-projects))))
 
-(add-hook 'after-init-hook 'company-statistics-mode)
 (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
 
 (require 'multiple-cursors-core)
@@ -469,9 +468,9 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (exec-path-from-shell-copy-env "SSH_AGENT_PID")
 (exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
 
-(require 'auto-virtualenv)
-(add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
-(add-hook 'projectile-after-switch-project-hook 'auto-virtualenv-set-virtualenv)
+;; (require 'auto-virtualenv)
+;; (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)
+;; (add-hook 'projectile-after-switch-project-hook 'auto-virtualenv-set-virtualenv)
 
 (setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
 

@@ -17,13 +17,20 @@ ln -s $HOME/.dotfiles/ssh_config $HOME/.ssh/config
 ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ```
 
-#####i3
+#####I3
 Put a background image in `~/.i3/background.png`
 ```shell
 apt-get install kbdd
 ln -s $HOME/.dotfiles/i3_config /$HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
+
+#####Emacs
+
+```shell
+sudo apt-get install silversearcher-ag
+```
+
 
 #####Powerline font
 ```shell
@@ -33,7 +40,7 @@ fc-cache -fv ~/.local/share/fonts/
 ln -s $HOME/.dotfiles/fontconfig-symbols.conf $HOME/.config/fontconfig/conf.d/10-symbols.conf
 ```
 
-#####ZSH
+#####Zsh
 ```shell
 
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
@@ -45,9 +52,11 @@ git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
 git clone git://github.com/zsh-users/zaw.git ~/.zaw
+git clone https://github.com/djui/alias-tips.git $ZSH_CUSTOM/plugins/alias-tips
+git clone https://github.com/marzocchi/zsh-notify $ZSH_CUSTOM/plugins/zsh-notify
 ```
 
-#####mpv
+#####Mpv
 ```shell
 mkdir ~/.mpv
 ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
@@ -55,7 +64,7 @@ ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf
 ```
 
 
-#####SSHRC
+#####Sshrc
 ```
 git clone https://github.com/Russell91/sshrc.git
 cp sshrc/sshrc ~/.bin

@@ -49,6 +49,7 @@ fastfile_var_prefix="@"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+    alias-tips
     git
     colorize                     # Plugin for highlighting file content, colorize
     colored-man
@@ -59,6 +60,7 @@ plugins=(
     emacs
     extract
     common-aliases
+    colored-man-pages
     command-not-found           # Arch Linux command-not-found support, you must have package pkgfile installed
     cp                          # Show progress while file is copying
     debian
@@ -66,6 +68,7 @@ plugins=(
     pip
     redis-cli
     sudo
+    zsh-notify
     zsh-completions
     ssh-agent
     zsh-autosuggestions
@@ -200,12 +203,32 @@ source /usr/local/bin/virtualenvwrapper.sh
 # eval "$(rbenv init -)"
 
 
-POWERLEVEL9K_CUSTOM_LAST_COMMIT="[ -f .git/config ] && git log --oneline | head -1 || echo ':)'"
-POWERLEVEL9K_CUSTOM_LAST_COMMIT_BACKGROUND="blue"
-POWERLEVEL9K_CUSTOM_LAST_COMMIT_FOREGROUND="yellow"
+usage_or_commit(){
+    if [ -f .git/config ]; then
+        local last_commit="`git log --oneline | head -1`"
+        local commit_count=`git log --oneline | wc -l`
+        local message="$commit_count commits | $last_commit"
+    else
+        local usage="`/bin/ls -lah | /bin/grep -m 1 total | /bin/sed 's/total //'`"
+        local count="`/bin/ls -1 | /usr/bin/wc -l | /bin/sed 's: ::g'`"
+        local message="$count files $usage"
+     fi
+
+    echo -n "$message"
+}
+
+POWERLEVEL9K_CUSTOM_USAGE_OR_COMMIT="usage_or_commit"
+POWERLEVEL9K_CUSTOM_USAGE_OR_COMMIT_BACKGROUND="blue"
+POWERLEVEL9K_CUSTOM_USAGE_OR_COMMIT_FOREGROUND="yellow"
+
 export DEFAULT_USER="$USER"
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs custom_last_commit)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status history time)
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context os_icon dir vcs custom_usage_or_commit)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status time)
 
+eval $(thefuck --alias)
 
+source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
+
+source ~/enhancd/enhancd.sh
+ENHANCD_FILTER=~/fzf-0.11.4-linux_amd64; export ENHANCD_FILTER

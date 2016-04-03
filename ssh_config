@@ -9,7 +9,7 @@ Host *
   Compression yes
   CompressionLevel 6
   
-  LogLevel DEBUG1
+  LogLevel VERBOSE
   
 #  ControlMaster auto
 #  ControlPath ~/.ssh/control/%h-%l-%p

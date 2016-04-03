@@ -1,6 +1,22 @@
 ###Description
 My linux config files, put them here for backup and sharing.
 
+###Installation
+
+#####ZSH
+```shell
+
+git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+cp ~/.zshrc ~/.zshrc.orig
+ln -s /home/$USER/.dotfiles/zshrc /home/$USER/.zshrc
+sudo chsh -s /bin/zsh
+git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+git clone https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
+git clone git://github.com/zsh-users/zaw.git ~/.zaw
+```
+
+### Other sources
 http://dotfiles.org/
 
 https://github.com/mathiasbynens/dotfiles

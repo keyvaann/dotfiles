@@ -13,6 +13,7 @@ ln -s $HOME/.dotfiles/gitignore $HOME/.gitignore
 ln -s $HOME/.dotfiles/htoprc $HOME/.config/htop/htoprc
 ln -s $HOME/.dotfiles/nanorc $HOME/.nanorc
 ln -s $HOME/.dotfiles/psqlrc $HOME/.psqlrc
+ln -s $HOME/.dotfiles/terminator_config $HOME/.config/terminator/config
 ln -s $HOME/.dotfiles/ssh_config $HOME/.ssh/config
 ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ```
@@ -20,7 +21,8 @@ ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 #####I3
 Put a background image in `~/.i3/background.png`
 ```shell
-apt-get install kbdd
+sudo apt-get install kbdd
+sudo pip3 install --upgrade i3pystatus
 ln -s $HOME/.dotfiles/i3_config /$HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
@@ -51,7 +53,7 @@ git clone https://github.com/bhilburn/powerlevel9k.git $ZSH_CUSTOM/themes/powerl
 git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-completions $ZSH_CUSTOM/plugins/zsh-completions
-git clone git://github.com/zsh-users/zaw.git ~/.zaw
+git clone git://github.com/zsh-users/zaw.git $ZSH_CUSTOM/plugins/zaw
 git clone https://github.com/djui/alias-tips.git $ZSH_CUSTOM/plugins/alias-tips
 git clone https://github.com/marzocchi/zsh-notify $ZSH_CUSTOM/plugins/zsh-notify
 ```

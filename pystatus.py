@@ -6,17 +6,18 @@ from i3pystatus import Status
 
 status = Status(standalone=True)
 
-status.register("clock")
-status.register("load", format='{avg1} {avg5} {tasks}')
+status.register("clock", format='%A %B|%m %-d %X')
+status.register("load", format='{avg1} {avg5}')
+status.register("cpu_usage", format='C: {usage:02}%')
+status.register("mem", format='M: {percent_used_mem}%', warn_percentage=70, color='#ffffff')
 
+status.register("network", format_up='{interface}{kbs}KB/s')
+status.register(
+    "online",
+    format_online='\uF00C', color='#55ff55',
+    format_offline='\uF00D', color_offline='#ff5555'
+)
 if os.listdir('/sys/class/power_supply'):
-    status.register(
-        "keyboard_locks",
-        caps_on='C', caps_off='_',
-        num_on='N', num_off='_',
-        scroll_on='S', scroll_off='_',
-    )
-
     status.register(
         "battery",
         format="{status} {percentage:.0f}%",
@@ -29,10 +30,23 @@ if os.listdir('/sys/class/power_supply'):
         },
     )
 
-status.register("network", format_up='{interface}{kbs}KB/s')
+status.register(
+    "keyboard_locks",
+    format='{num} {scroll}',
+    caps_on='C', caps_off='_',
+    num_on='N', num_off='_',
+    scroll_on='S', scroll_off='_',
+)
+
+status.register("uptime", format='up {days}d')
+status.register(
+    "weather",
+    format="{current_temp} - ↓{min_temp} ↑{max_temp}",
+    location_code="IRXX0018:1:IR",
+    colorize=True
+)
+
 status.register("alsa", interval=0.5)
-status.register("cpu_usage", format='C: {usage}%')
-status.register("mem", format='M: {percent_used_mem}%')
 status.register("spotify")
 
 status.run()

@@ -52,17 +52,13 @@ plugins=(
     alias-tips
     git
     colorize                     # Plugin for highlighting file content, colorize
-    colored-man
-    autojump
     dircycle                    # dircycle plugin: enables cycling through the directory stack using Ctrl+Shift+Left/Right
-    dirpersist                  # Save dirstack history to .zdirs
     django                      # compdef manage.py
     emacs
     extract
     common-aliases
     colored-man-pages
     command-not-found           # Arch Linux command-not-found support, you must have package pkgfile installed
-    cp                          # Show progress while file is copying
     debian
     git-extras                  # Completion script for git-extras (http://github.com/visionmedia/git-extras).
     pip
@@ -72,6 +68,7 @@ plugins=(
     zsh-completions
     ssh-agent
     zsh-autosuggestions
+    zaw
     zsh-syntax-highlighting     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
 )
 
@@ -172,7 +169,6 @@ autoload -U compinit && compinit
 
 # zsh anything.el-like widget.
 # https://github.com/zsh-users/zaw
-source ~/.zaw/zaw.zsh
 bindkey '^R' zaw-history
 bindkey '^Xa' zaw-ack
 bindkey '^Xb' zaw-git-branches
@@ -228,7 +224,7 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status time)
 
 eval $(thefuck --alias)
 
-source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
+[ -r ~/.dotfiles/.shell_functions.sh ] &&source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
 
 source ~/enhancd/enhancd.sh
 ENHANCD_FILTER=~/fzf-0.11.4-linux_amd64; export ENHANCD_FILTER

@@ -43,7 +43,7 @@ status.register(
     "weather",
     format="{current_temp} - ↓{min_temp} ↑{max_temp}",
     location_code="IRXX0018:1:IR",
-    colorize=False
+    colorize=True
 )
 
 status.register("alsa", interval=0.5)

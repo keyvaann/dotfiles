@@ -60,9 +60,10 @@ git clone https://github.com/marzocchi/zsh-notify $ZSH_CUSTOM/plugins/zsh-notify
 
 #####Mpv
 ```shell
-mkdir ~/.mpv
+mkdir -p ~/.mpv/scripts
 ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
 ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf
+ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME /.mpv/scripts/autoload.lua
 ```
 
 

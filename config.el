@@ -467,6 +467,8 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (require 'exec-path-from-shell)
 (exec-path-from-shell-copy-env "SSH_AGENT_PID")
 (exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
+(exec-path-from-shell-copy-env "WORKON_HOME")
+(exec-path-from-shell-initialize)
 
 ;; (require 'auto-virtualenv)
 ;; (add-hook 'python-mode-hook 'auto-virtualenv-set-virtualenv)

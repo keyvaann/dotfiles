@@ -224,7 +224,7 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status time)
 
 eval $(thefuck --alias)
 
-[ -r ~/.dotfiles/.shell_functions.sh ] && source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
+[ -r /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh ] && source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
 
 source ~/enhancd/enhancd.sh
 ENHANCD_FILTER=~/fzf-0.11.4-linux_amd64; export ENHANCD_FILTER

@@ -9,7 +9,7 @@ status = Status(standalone=True)
 status.register("clock", format='%A %B|%m %-d %X')
 status.register("load", format='{avg1} {avg5}')
 status.register("cpu_usage", format='C: {usage:02}%')
-status.register("mem", format='M: {percent_used_mem}%', warn_percentage=70, color='#ffffff')
+status.register("mem", format='M: {percent_used_mem:.0f}%', warn_percentage=70, color='#ffffff')
 
 status.register("network", format_up='{interface} ↑{bytes_sent:>3}K ↓{bytes_recv:>3}K', start_color="#ffffff")
 status.register(
@@ -47,6 +47,6 @@ status.register(
 )
 
 status.register("alsa", interval=0.5)
-status.register("spotify")
+status.register("spotify", on_upscroll=None, on_downscroll=None)
 
 status.run()

@@ -80,7 +80,11 @@ ln -s $HOME/.dotfiles/nanorc $HOME/.sshrc.d
 
 https://github.com/webpro/awesome-dotfiles
 
+https://dotfiles.github.io/
+
 http://dotfiles.org/
+
+http://dotshare.it/
 
 https://github.com/mathiasbynens/dotfiles
 

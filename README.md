@@ -1,9 +1,9 @@
-###Description
+#Description
 My linux config files, put them here for backup and sharing.
 
-###Installation
+#Installation
 
-#####General
+##General
 ```shell
 mkdir -p ~/.bin ~/.config/htop/
 ln -s $HOME/.dotfiles/curlrc $HOME/.curlrc
@@ -18,7 +18,7 @@ ln -s $HOME/.dotfiles/ssh_config $HOME/.ssh/config
 ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ```
 
-#####I3
+##i3
 Put a background image in `~/.i3/background.png`
 ```shell
 sudo apt-get install kbdd
@@ -26,15 +26,17 @@ sudo pip3 install --upgrade i3pystatus
 ln -s $HOME/.dotfiles/i3_config /$HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
+######i3bar
+![i3bar](screenshots/i3bar.png)
 
-#####Emacs
+
+##Emacs
 
 ```shell
 sudo apt-get install silversearcher-ag
 ```
 
-
-#####Powerline font
+##Powerline font
 ```shell
 git clone https://github.com/gabrielelana/awesome-terminal-fonts
 cp awesome-terminal-fonts/build/* ~/.local/share/fonts/
@@ -42,7 +44,7 @@ fc-cache -fv ~/.local/share/fonts/
 ln -s $HOME/.dotfiles/fontconfig-symbols.conf $HOME/.config/fontconfig/conf.d/10-symbols.conf
 ```
 
-#####Zsh
+##Zsh
 ```shell
 
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
@@ -57,8 +59,11 @@ git clone git://github.com/zsh-users/zaw.git $ZSH_CUSTOM/plugins/zaw
 git clone https://github.com/djui/alias-tips.git $ZSH_CUSTOM/plugins/alias-tips
 git clone https://github.com/marzocchi/zsh-notify $ZSH_CUSTOM/plugins/zsh-notify
 ```
+######Prompt
+![Commandline](screenshots/shell.png)
 
-#####Mpv
+
+##Mpv
 ```shell
 mkdir -p ~/.mpv/scripts
 ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
@@ -67,7 +72,7 @@ ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME /.mpv/scripts/autoload.lua
 ```
 
 
-#####Sshrc
+##Sshrc
 ```
 git clone https://github.com/Russell91/sshrc.git
 cp sshrc/sshrc ~/.bin
@@ -76,7 +81,7 @@ mkdir ~/.sshrc.d/
 ln -s $HOME/.dotfiles/nanorc $HOME/.sshrc.d
 ```
 
-### Other sources
+# Other sources
 
 https://github.com/webpro/awesome-dotfiles
 
@@ -104,6 +109,6 @@ https://github.com/kooothor/.dotfiles
 
 https://github.com/mitsuhiko/dotfiles
 
-*http://git.onerussian.com/?p=etc/bash.git;a=summary
+http://git.onerussian.com/?p=etc/bash.git;a=summary
 
 http://git.onerussian.com/?p=etc/base.git;a=summary

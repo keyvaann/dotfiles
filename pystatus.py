@@ -47,6 +47,6 @@ status.register(
 )
 
 status.register("alsa", interval=0.5)
-status.register("spotify", on_upscroll=None, on_downscroll=None)
+status.register("now_playing", format='{status} {artist} - {title} {song_length}')
 
 status.run()

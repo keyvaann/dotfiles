@@ -23,7 +23,7 @@ Put a background image in `~/.i3/background.png`
 ```shell
 sudo apt-get install kbdd
 sudo pip3 install --upgrade i3pystatus
-ln -s $HOME/.dotfiles/i3_config /$HOME/.i3/config
+ln -s $HOME/.dotfiles/i3/i3_config /$HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
 ######i3bar
@@ -33,7 +33,10 @@ ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ##Emacs
 
 ```shell
-sudo apt-get install silversearcher-ag
+sudo apt-get install silversearcher-ag emacs
+curl -L https://git.io/epre | sh
+ln -s $HOME/.dotfiles/emacs/config.el ~/.emacs.d/personal/config.el
+ln -s $HOME/.dotfiles/emacs/custom.el  ~/.emacs.d/personal/custom.el
 ```
 
 ##Powerline font

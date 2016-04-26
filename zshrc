@@ -62,7 +62,6 @@ plugins=(
     debian
     git-extras                  # Completion script for git-extras (http://github.com/visionmedia/git-extras).
     pip
-    redis-cli
     sudo
     zsh-notify
     zsh-completions
@@ -226,5 +225,14 @@ eval $(thefuck --alias)
 
 [ -r /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh ] && source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
 
-source ~/enhancd/enhancd.sh
-ENHANCD_FILTER=~/fzf-0.11.4-linux_amd64; export ENHANCD_FILTER
+task () {
+    /usr/local/bin/task "$@"
+    if [[ "$@" =~ "add" ]]; then
+        /usr/local/bin/task sync > /dev/null
+    fi
+
+    if [[ "$@" =~ "modify" ]]; then
+        /usr/local/bin/task sync > /dev/null
+    fi
+
+}

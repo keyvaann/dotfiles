@@ -1,6 +1,6 @@
 #!/bin/sh
 lock() {
-    bash ~/.dotfiles/i3lock.sh
+    bash ~/.dotfiles/i3/i3lock.sh
 }
 
 case "$1" in

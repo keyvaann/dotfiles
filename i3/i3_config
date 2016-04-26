@@ -130,11 +130,11 @@ exec --no-startup-id i3-msg 'workspace 6: chat; exec /usr/bin/skype'
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (d) shutdown
 mode "$mode_system" {
     bindsym l exec --no-startup-id ~/.dotfiles/i3/i3exit lock, mode "default"
-    bindsym e exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the exit shortcut. All unsaved data will be lost.' -b 'Yes, exit i3' '/etc/i3/i3exit logout'", mode "default"
+    bindsym e exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the exit shortcut. All unsaved data will be lost.' -b 'Yes, exit i3' '~/.dotfiles/i3/i3exit logout'", mode "default"
     bindsym s exec --no-startup-id ~/.dotfiles/i3/i3exit suspend, mode "default"
     bindsym h exec --no-startup-id ~/.dotfiles/i3/i3exit hibernate, mode "default"
-    bindsym r exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the reboot shortcut. All unsaved data will be lost.' -b 'Yes, reboot' '/etc/i3/i3exit reboot'", mode "default"
-    bindsym d exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the shutdown shortcut. All unsaved data will be lost.' -b 'Yes, shutdown' '/etc/i3/i3exit shutdown'", mode "default"
+    bindsym r exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the reboot shortcut. All unsaved data will be lost.' -b 'Yes, reboot' '~/.dotfiles/i3/i3exit reboot'", mode "default"
+    bindsym d exec --no-startup-id "i3-nagbar -t warning -m 'You pressed the shutdown shortcut. All unsaved data will be lost.' -b 'Yes, shutdown' '~/.dotfiles/i3/i3exit shutdown'", mode "default"
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
@@ -150,6 +150,6 @@ bindsym $mod+a exec --no-startup-id ~/.dotfiles/i3/i3exit lock, mode "default"
 #bindcode Alt+Shift+22 mode "$passthrough_keys"
 
 bar {
-    status_command    python3 ~/.dotfiles/i3/i3pystatus.py
+    status_command    python3 ~/.dotfiles/i3/i3pystatus_local.py
     workspace_buttons yes
 }

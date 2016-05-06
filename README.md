@@ -23,7 +23,7 @@ Put a background image in `~/.i3/background.png`
 ```shell
 sudo apt-get install kbdd
 sudo pip3 install --upgrade i3pystatus
-ln -s $HOME/.dotfiles/i3/i3_config /$HOME/.i3/config
+ln -s $HOME/.dotfiles/i3/i3_config $HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
 ######i3bar
@@ -41,6 +41,8 @@ ln -s $HOME/.dotfiles/emacs/custom.el  ~/.emacs.d/personal/custom.el
 
 ##Powerline font
 ```shell
+sudo apt-get install fonts-inconsolata
+mkdir ~/.local/share/fonts/ $HOME/.config/fontconfig/conf.d/
 git clone https://github.com/gabrielelana/awesome-terminal-fonts
 cp awesome-terminal-fonts/build/* ~/.local/share/fonts/
 fc-cache -fv ~/.local/share/fonts/

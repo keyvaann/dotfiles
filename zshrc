@@ -235,4 +235,8 @@ task () {
         /usr/local/bin/task sync > /dev/null
     fi
 
+    if [[ "$@" =~ "done" ]]; then
+        /usr/local/bin/task sync > /dev/null
+    fi
+
 }

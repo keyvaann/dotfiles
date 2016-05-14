@@ -221,7 +221,6 @@ POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context os_icon dir vcs custom_usage_or_commit)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status time)
 
-eval $(thefuck --alias)
 
 [ -r /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh ] && source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
 

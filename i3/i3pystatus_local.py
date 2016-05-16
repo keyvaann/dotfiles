@@ -6,7 +6,7 @@ from i3pystatus import Status
 
 status = Status(standalone=True)
 
-status.register("clock", format='%A %B|%m %-d %X')
+status.register("clock", format='%A %m|%B %-d %X')
 status.register("load", format='{avg1} {avg5}')
 status.register("cpu_usage", format='C: {usage:02}%')
 status.register("mem", format='M: {percent_used_mem:.0f}%', warn_percentage=70, color='#ffffff')

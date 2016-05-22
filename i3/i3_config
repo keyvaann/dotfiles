@@ -56,8 +56,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -c 1 sset 'Master' 5%+
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer -c 1 sset 'Master' 5%-
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -c 0 sset 'Master' 5%+
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -c 0 sset 'Master' 5%-
 bindsym XF86AudioMute exec --no-startup-id amixer sset 'Master' toggle
 bindsym XF86AudioPlay exec --no-startup-id playcontrols toggle
 bindsym XF86AudioPause exec --no-startup-id  playerctl pause
@@ -65,6 +65,12 @@ bindsym XF86AudioStop exec --no-startup-id playcontrols stop
 bindsym XF86AudioPrev exec --no-startup-id playcontrols prev
 bindsym XF86AudioNext exec --no-startup-id playcontrols next
 bindsym XF86Calculator exec --no-startup-id gnome-calculator
+
+# Sreen brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
+bindsym $mod+Shift+Right exec xbacklight -inc 10 # increase screen brightness
+bindsym $mod+Shift+Left exec xbacklight -dec 10 # increase screen brightness
 
 bindsym $mod+p exec --no-startup-id playerctl play-pause
 bindsym $mod+n exec --no-startup-id playerctl next
@@ -110,8 +116,10 @@ bindsym $mod+x workspace next
 bindsym $mod+Shift+Tab workspace prev
 bindsym $mod+Tab workspace next
 
+exec --no-startup-id gnome-settings-daemon # GTK theme
 exec --no-startup-id xset dpms 600
 exec --no-startup-id kbdd
+exec --no-startup-id nm-applet
 exec --no-startup-id xautolock -time 5 -locker "bash ~/.dotfiles/i3/i3lock.sh"
 exec --no-startup-id feh --bg-scale ~/.i3/background.png
 exec --no-startup-id "setxkbmap -layout us,ir"

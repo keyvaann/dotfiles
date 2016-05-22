@@ -21,7 +21,7 @@ ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ##i3
 Put a background image in `~/.i3/background.png`
 ```shell
-sudo apt-get install kbdd i3lock i3
+sudo apt-get install kbdd i3lock i3 xbacklight
 sudo pip3 install --upgrade i3pystatus
 ln -s $HOME/.dotfiles/i3/i3_config $HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap

@@ -1,5 +1,7 @@
 (message "1. Requires successfully loaded.")
 
+(prelude-require-packages '(exec-path-from-shell))
+
 (defun kill-and-join-forward (&optional arg)
   "If at end of line, join with following; otherwise kill line.
    Deletes whitespace at join.

@@ -26,6 +26,11 @@ sudo pip3 install --upgrade i3pystatus
 ln -s $HOME/.dotfiles/i3/i3_config $HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
+Workaround for gnome-settings-daemon keyboard bug:
+```shell
+sudo mv /usr/lib/gnome-settings-daemon-3.0/libkeyboard.so{,.bak}
+```
+
 ######i3bar
 ![i3bar](screenshots/i3bar.png)
 

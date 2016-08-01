@@ -1,2 +1,9 @@
+! disable numlock
+!keycode 77 = NoSymbol
+
+! disable insert
+!keycode 90 = NoSymbol 
+!keycode 118 = NoSymbol
+
 remove Mod4 = Hyper_L
 add Mod3 = Hyper_L

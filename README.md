@@ -5,6 +5,15 @@ My linux config files, put them here for backup and sharing.
 
 ##General
 ```shell
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys BBEBDCB318AD50EC6865090613B00F1FD2C19886
+echo deb http://repository.spotify.com stable non-free | sudo tee /etc/apt/sources.list.d/spotify.list
+sudo apt-get update
+sudo apt-get install -f terminator python3-pip python-pip python-dev libappindicator1 spotify-client
+sudo pip install virtualenvwrapper shadowsocks
+
 mkdir -p ~/.bin ~/.config/htop/
 ln -s $HOME/.dotfiles/curlrc $HOME/.curlrc
 ln -s $HOME/.dotfiles/flake8rc $HOME/.config/flake8
@@ -21,8 +30,12 @@ ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ##i3
 Put a background image in `~/.i3/background.png`
 ```shell
-sudo apt-get install kbdd i3lock i3 xbacklight
-sudo pip3 install --upgrade i3pystatus
+echo "deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe" >> /etc/apt/sources.list
+apt-get update
+apt-get --allow-unauthenticated install sur5r-keyring
+apt-get update
+sudo apt-get install kbdd i3lock xbacklight numlockx feh dmenu libasound2-dev
+sudo pip3 install --upgrade i3pystatus pyalsaaudio netifaces psutil colour
 ln -s $HOME/.dotfiles/i3/i3_config $HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
@@ -31,9 +44,15 @@ ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 
 
 ##Emacs
+Uncomment source lines in sources.list and update apt
 
 ```shell
-sudo apt-get install silversearcher-ag emacs
+sudo apt-get install silversearcher-ag
+sudo apt-get build-dep emacs24
+wget http://mirror.rackdc.com/gnu/emacs/emacs-24.5.tar.xz
+tar -xJf emacs-24.5.tar.xz
+./configure && make && sudo make install
+
 curl -L https://git.io/epre | sh
 ln -s $HOME/.dotfiles/emacs/config.el ~/.emacs.d/personal/config.el
 ln -s $HOME/.dotfiles/emacs/custom.el  ~/.emacs.d/personal/custom.el
@@ -52,11 +71,11 @@ ln -s $HOME/.dotfiles/fontconfig-symbols.conf $HOME/.config/fontconfig/conf.d/10
 
 ##Zsh
 ```shell
-
+sudo apt-get install zsh
+sudo chsh -s /bin/zsh
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 cp ~/.zshrc ~/.zshrc.orig
 ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
-sudo chsh -s /bin/zsh
 git clone https://github.com/bhilburn/powerlevel9k.git $ZSH_CUSTOM/themes/powerlevel9k
 git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
@@ -71,6 +90,7 @@ git clone https://github.com/marzocchi/zsh-notify $ZSH_CUSTOM/plugins/zsh-notify
 
 ##Mpv
 ```shell
+sudo apt-get install mpv
 mkdir -p ~/.mpv/scripts
 ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
 ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf

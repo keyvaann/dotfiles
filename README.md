@@ -31,11 +31,12 @@ ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 Put a background image in `~/.i3/background.png`
 ```shell
 echo "deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe" >> /etc/apt/sources.list
-apt-get update
-apt-get --allow-unauthenticated install sur5r-keyring
-apt-get update
-sudo apt-get install kbdd i3lock xbacklight numlockx feh dmenu
-libasound2-dev scrot
+wget -O playerctl-0.5.0_amd64.deb https://github.com/acrisci/playerctl/releases/download/v0.5.0/playerctl-0.5.0_amd64.deb
+sudo dpkg -i playerctl-0.5.0_amd64.deb
+sudo apt-get update
+sudo apt-get --allow-unauthenticated install sur5r-keyring
+sudo apt-get update
+sudo apt-get install kbdd i3lock xbacklight numlockx feh dmenu libasound2-dev scrot
 sudo pip3 install --upgrade i3pystatus pyalsaaudio netifaces psutil colour
 ln -s $HOME/.dotfiles/i3/i3_config $HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap

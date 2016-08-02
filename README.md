@@ -34,7 +34,8 @@ echo "deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe" >> /etc/apt
 apt-get update
 apt-get --allow-unauthenticated install sur5r-keyring
 apt-get update
-sudo apt-get install kbdd i3lock xbacklight numlockx feh dmenu libasound2-dev
+sudo apt-get install kbdd i3lock xbacklight numlockx feh dmenu
+libasound2-dev scrot
 sudo pip3 install --upgrade i3pystatus pyalsaaudio netifaces psutil colour
 ln -s $HOME/.dotfiles/i3/i3_config $HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
@@ -77,7 +78,7 @@ ln -s $HOME/.dotfiles/fontconfig-symbols.conf $HOME/.config/fontconfig/conf.d/10
 ##Zsh
 ```shell
 sudo apt-get install zsh
-sudo chsh -s /bin/zsh
+chsh -s /bin/zsh
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 cp ~/.zshrc ~/.zshrc.orig
 ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc

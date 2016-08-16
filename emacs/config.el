@@ -478,7 +478,10 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 (setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
 
-(key-chord-define-global "pp" 'helm-projectile-find-file)
-(key-chord-define-global "bb" 'helm-mini)
+(defun run-python-once ()
+  (remove-hook 'python-mode-hook 'run-python-once)
+  (run-python (python-shell-parse-command)))
+
+(add-hook 'python-mode-hook 'run-python-once)
 
 (message "7. Config file has successfully loaded.")

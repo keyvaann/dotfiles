@@ -1,6 +1,9 @@
 (message "1. Requires successfully loaded.")
 
-(prelude-require-packages '(exec-path-from-shell))
+(prelude-require-packages '(
+                            exec-path-from-shell
+                            company-anaconda
+                            ))
 
 (defun kill-and-join-forward (&optional arg)
   "If at end of line, join with following; otherwise kill line.
@@ -175,21 +178,16 @@ might be bad.
 
 (global-set-key (kbd "<f1>") 'ispell-word)
 (global-set-key (kbd "C-'") 'kill-this-buffer)
-(global-set-key (kbd "C-c a") 'list-matching-lines)
 (global-set-key (kbd "C-e") 'end-of-code-or-line+)
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 (global-set-key (kbd "C-<tab>") 'other-window)
 (global-set-key (kbd "C-x C-c") 'delete-frame) ;; the mnemonic is C-x REALLY QUIT
 (global-set-key (kbd "C-x r q") 'save-buffers-kill-terminal) ;; I don't need to kill emacs that easily
-(global-set-key (kbd "C-x t c") 'highlight-changes-mode)
 (global-set-key (kbd "M-;") 'comment-dwim-line)
-;; Here's one keybinding I could not live without.
+
 ;; http://whattheemacsd.com/key-bindings.el-03.html
 (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1))) ; joins the following line onto this one.
 (global-set-key (kbd "C-z") 'repeat)
-;; Defining some useful keybindings
-(global-set-key (kbd "C-c l") 'mark-line)
-
 (message "5. Key bindings successfully defined.")
 
 ;; always need a scrach
@@ -221,23 +219,6 @@ might be bad.
 
 (global-subword-mode +1)
 ;; (eval-after-load "vc" '(remove-hook 'find-file-hooks 'vc-find-file-hook))
-
-;; http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
-(define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
-
-(defun endless/ispell-word-then-abbrev (p)
-  "Call `ispell-word'. Then create an abbrev for the correction made.
-With prefix P, create local abbrev. Otherwise it will be global."
-  (interactive "P")
-  (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
-    (call-interactively 'ispell-word)
-    (setq aft (downcase (or (thing-at-point 'word) "")))
-    (unless (string= aft bef)
-      (message "\"%s\" now expands to \"%s\" %sally"
-               bef aft (if p "loc" "glob"))
-      (define-abbrev
-        (if p local-abbrev-table global-abbrev-table)
-        bef aft))))
 
 (setq save-abbrevs t)
 (setq-default abbrev-mode t)
@@ -310,10 +291,7 @@ This is the same as using \\[set-mark-command] with the prefix argument."
     (move-end-of-line 1)))
 (global-set-key (kbd "C-c C-n") 'python-interactive)
 
-(define-key company-active-map (kbd "C-d") 'company-show-doc-buffer)
 (define-key sp-keymap (kbd "M-k") 'sp-kill-hybrid-sexp)
-(define-key sp-keymap (kbd "C-]") 'sp-select-next-thing-exchange)
-(define-key sp-keymap (kbd "C-<left_bracket>") 'sp-select-previous-thing)
 
 (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
 (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
@@ -346,7 +324,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (global-set-key (kbd "C-x 2") 'sacha/vsplit-last-buffer)
 (global-set-key (kbd "C-x 3") 'sacha/hsplit-last-buffer)
 
-
 ;; https://github.com/sachac/.emacs.d/blob/gh-pages/Sacha.org#pop-to-mark
 (global-set-key (kbd "C-x p") 'pop-to-mark-command)
 (setq set-mark-command-repeat-pop t)
@@ -354,21 +331,10 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
 
-
 (setq helm-buffers-fuzzy-matching t) ; fuzzy matching buffer names when non--nil
-
-(autoload 'helm-company "helm-company") ;; Not necessary if using ELPA package
-(eval-after-load 'company
-  '(progn
-     (define-key company-mode-map (kbd "C-:") 'helm-company)
-     (define-key company-active-map (kbd "C-:") 'helm-company)))
 
 (setq langtool-language-tool-jar "~/.emacs.d/LanguageTool-2.7/languagetool-commandline.jar")
 
-;; Copy-Cut-Paste from clipboard with Super-C Super-X Super-V
-(global-set-key (kbd "s-x") 'clipboard-kill-region) ;;cut
-(global-set-key (kbd "s-c") 'clipboard-kill-ring-save) ;;copy
-(global-set-key (kbd "s-v") 'clipboard-yank) ;;paste
 (global-set-key (kbd "M-.") 'anaconda-mode-goto-definitions) ;;paste
 
 (setq company-dabbrev-downcase nil)
@@ -483,5 +449,11 @@ This is the same as using \\[set-mark-command] with the prefix argument."
   (run-python (python-shell-parse-command)))
 
 (add-hook 'python-mode-hook 'run-python-once)
+
+(eval-after-load "company"
+  '(add-to-list 'company-backends 'company-anaconda))
+(add-hook 'python-mode-hook 'anaconda-mode)
+
+(toggle-truncate-lines t)
 
 (message "7. Config file has successfully loaded.")

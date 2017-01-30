@@ -1,23 +1,23 @@
 [global_config]
-  enabled_plugins = InactivityWatch, ActivityWatch, TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger, LaunchpadBugURLHandler
+  enabled_plugins = InactivityWatch, ActivityWatch, TerminalShot
 [keybindings]
   next_tab = <Primary>Tab
   prev_tab = <Primary><Shift>Tab
-[profiles]
-  [[default]]
-    use_system_font = False
-    background_darkness = 0.46
-    scrollback_lines = 2000
-    background_type = transparent
-    background_image = None
-    foreground_color = "#ffffff"
-    font = Inconsolata for Powerline Medium 12
 [layouts]
   [[default]]
     [[[child1]]]
-      type = Terminal
       parent = window0
+      type = Terminal
     [[[window0]]]
-      type = Window
       parent = ""
+      type = Window
 [plugins]
+[profiles]
+  [[default]]
+    background_darkness = 0.46
+    background_image = None
+    background_type = transparent
+    font = Inconsolata for Powerline Medium 12
+    foreground_color = "#ffffff"
+    scrollback_lines = 2000
+    use_system_font = False

@@ -28,6 +28,7 @@ BLURTYPE="0x8" # 7.52s
 
 # Get the screenshot, add the blur and lock the screen with it
 i3-msg 'workspace 2: edit'
+sleep 0.1
 $SCREENSHOT
 convert $IMAGE -blur $BLURTYPE $IMAGE
 i3lock -i $IMAGE

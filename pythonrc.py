@@ -101,23 +101,14 @@ sys.displayhook = my_displayhook
 
 # If we're working with a Django project, set up the environment
 if 'DJANGO_SETTINGS_MODULE' in os.environ:
-    from django.db.models.loading import get_models
     from django.test.client import Client
     from django.test.utils import setup_test_environment, teardown_test_environment
     from django.conf import settings as S
 
-    class DjangoModels(object):
-        """Loop through all the models in INSTALLED_APPS and import them."""
-        def __init__(self):
-            for m in get_models():
-                setattr(self, m.__name__, m)
-
-    A = DjangoModels()
     C = Client()
 
     WELCOME += """%(Green)s
     Django environment detected.
-* Your INSTALLED_APPS models are available as `A`.
 * Your project settings are available as `S`.
 * The Django test client is available as `C`.
 %(Normal)s""" % _c

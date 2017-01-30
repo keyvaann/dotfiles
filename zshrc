@@ -51,24 +51,21 @@ fastfile_var_prefix="@"
 plugins=(
     alias-tips
     git
-    colorize                     # Plugin for highlighting file content, colorize
-    dircycle                    # dircycle plugin: enables cycling through the directory stack using Ctrl+Shift+Left/Right
+    # colorize                    # Plugin for highlighting file content, colorize
+    # dircycle                    # dircycle plugin: enables cycling through the directory stack using Ctrl+Shift+Left/Right
     django                      # compdef manage.py
     emacs
     extract
     common-aliases
     colored-man-pages
-    command-not-found           # Arch Linux command-not-found support, you must have package pkgfile installed
-    debian
     git-extras                  # Completion script for git-extras (http://github.com/visionmedia/git-extras).
     pip
     sudo
-    zsh-notify
     zsh-completions
     ssh-agent
     zsh-autosuggestions
     zaw
-    zsh-syntax-highlighting     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
+    # zsh-syntax-highlighting     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
 )
 
 source $ZSH/oh-my-zsh.sh

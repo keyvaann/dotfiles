@@ -31,7 +31,7 @@ set historylog
 # Set the opening and closing brackets that can be found by bracket searches. They cannot contain blank characters. The former set must come before the latter set, and both must be in the same order. The default value is "(<[{)>]}".
 set matchbrackets string "(<[{)>]}"
 
-set undo         # Enable undo/redo features
+#set undo         # Enable undo/redo features
 
 # Not allow use of the blank line below the titlebar as extra editing space.
 set morespace
@@ -46,7 +46,7 @@ set multibuffer
 set noconvert
 
 # Follow symlinks when writing files.
-unset nofollow
+#unset nofollow
 
 # Display the help lists at the bottom of the screen.
 unset nohelp

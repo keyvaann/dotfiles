@@ -39,12 +39,12 @@ status.register(
 )
 
 status.register("uptime", format='up {days}d')
-status.register(
-    "weather",
-    format="{current_temp} - ↓{min_temp} ↑{max_temp}",
-    location_code="IRXX0018:1:IR",
-    colorize=True
-)
+#status.register(
+#    "weather",
+#    format="{current_temp} - ↓{min_temp} ↑{max_temp}",
+#    location_code="IRXX0018:1:IR",
+#    colorize=True
+#)
 
 status.register("alsa", interval=0.5)
 status.register("now_playing", format='{status} {artist} - {title} {song_length}')

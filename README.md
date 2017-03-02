@@ -4,6 +4,9 @@ My linux config files, put them here for backup and sharing.
 #Installation
 
 ##General
+Install Lastpass cli:
+https://github.com/lastpass/lastpass-cli
+
 ```shell
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo dpkg -i google-chrome-stable_current_amd64.deb
@@ -11,12 +14,15 @@ sudo dpkg -i google-chrome-stable_current_amd64.deb
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys BBEBDCB318AD50EC6865090613B00F1FD2C19886
 echo deb http://repository.spotify.com stable non-free | sudo tee /etc/apt/sources.list.d/spotify.list
 sudo apt-get update
-sudo apt-get install -f python3-pip python-pip python-dev libappindicator1
-sudo apt-get install proxychains spotify-client transmission-daemon terminator
-sudo pip install virtualenvwrapper shadowsocks ipython flake8 
+sudo apt-get install -f
+sudo apt-get install python3-pip python-pip python-dev
+libappindicator1 proxychains spotify-client transmission-daemon xautolock
+terminator htop
+sudo pip install virtualenvwrapper shadowsocks ipython flake8
 
-mkdir -p ~/.bin ~/.config/htop/
+mkdir -p $HOME/.bin $HOME/.config/htop/ $HOME/.config/terminator $HOME/.ssh
 ln -s $HOME/.dotfiles/curlrc $HOME/.curlrc
+ln -s $HOME/.dotfiles/bin/pass $HOME/.bin/pass
 ln -s $HOME/.dotfiles/flake8rc $HOME/.config/flake8
 ln -s $HOME/.dotfiles/gitconfig $HOME/.gitconfig
 ln -s $HOME/.dotfiles/gitignore $HOME/.gitignore
@@ -31,14 +37,16 @@ ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ##i3
 Put a background image in `~/.i3/background.png`
 ```shell
-echo "deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe" >> /etc/apt/sources.list
+echo "deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe" | sudo tee -a /etc/apt/sources.list
 wget -O playerctl-0.5.0_amd64.deb https://github.com/acrisci/playerctl/releases/download/v0.5.0/playerctl-0.5.0_amd64.deb
 sudo dpkg -i playerctl-0.5.0_amd64.deb
 sudo apt-get update
 sudo apt-get --allow-unauthenticated install sur5r-keyring
 sudo apt-get update
 sudo apt-get install kbdd i3lock xbacklight numlockx feh dmenu libasound2-dev scrot
-sudo pip3 install --upgrade i3pystatus pyalsaaudio netifaces psutil colour
+sudo pip3 install --upgrade i3 i3pystatus pyalsaaudio netifaces psutil colour
+mkdir $HOME/.i3
+gsettings set org.gnome.desktop.background show-desktop-icons false
 ln -s $HOME/.dotfiles/i3/i3_config $HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
@@ -70,7 +78,7 @@ ln -s $HOME/.dotfiles/emacs/prelude-modules.el $HOME/.emacs.d/prelude-modules.el
 ##Powerline font
 ```shell
 sudo apt-get install fonts-inconsolata
-mkdir ~/.local/share/fonts/ $HOME/.config/fontconfig/conf.d/
+mkdir -p ~/.local/share/fonts/ $HOME/.config/fontconfig/conf.d/
 git clone https://github.com/gabrielelana/awesome-terminal-fonts
 cp awesome-terminal-fonts/build/* ~/.local/share/fonts/
 fc-cache -fv ~/.local/share/fonts/
@@ -82,7 +90,6 @@ ln -s $HOME/.dotfiles/fontconfig-symbols.conf $HOME/.config/fontconfig/conf.d/10
 sudo apt-get install zsh
 chsh -s /bin/zsh
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-cp ~/.zshrc ~/.zshrc.orig
 ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
 git clone https://github.com/bhilburn/powerlevel9k.git $ZSH_CUSTOM/themes/powerlevel9k
 git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
@@ -102,7 +109,7 @@ sudo apt-get install mpv
 mkdir -p ~/.mpv/scripts
 ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
 ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf
-ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME /.mpv/scripts/autoload.lua
+ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME/.mpv/scripts/autoload.lua
 ```
 
 

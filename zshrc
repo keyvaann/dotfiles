@@ -215,24 +215,18 @@ POWERLEVEL9K_CUSTOM_USAGE_OR_COMMIT_FOREGROUND="yellow"
 
 export DEFAULT_USER="$USER"
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context os_icon dir vcs custom_usage_or_commit)
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status time)
 
 
 [ -r /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh ] && source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
 
-task () {
-    /usr/local/bin/task "$@"
-    if [[ "$@" =~ "add" ]]; then
-        /usr/local/bin/task sync > /dev/null
-    fi
-
-    if [[ "$@" =~ "modify" ]]; then
-        /usr/local/bin/task sync > /dev/null
-    fi
-
-    if [[ "$@" =~ "done" ]]; then
-        /usr/local/bin/task sync > /dev/null
-    fi
-
-}
+LANG="en_US.utf8"
+LC_COLLATE="en_US.utf8"
+LC_CTYPE="en_US.utf8"
+LC_MESSAGES="en_US.utf8"
+LC_MONETARY="en_US.utf8"
+LC_NUMERIC="en_US.utf8"
+LC_TIME="en_US.utf8"
+LC_ALL="en_US.utf8"
+LANGUAGE="en_US.utf8"

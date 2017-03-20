@@ -1,9 +1,9 @@
-#Description
+# Description
 My linux config files, put them here for backup and sharing.
 
-#Installation
+# Installation
 
-##General
+## General
 Install Lastpass cli:
 https://github.com/lastpass/lastpass-cli
 
@@ -34,7 +34,7 @@ ln -s $HOME/.dotfiles/ssh_config $HOME/.ssh/config
 ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ```
 
-##i3
+## i3
 Put a background image in `~/.i3/background.png`
 ```shell
 echo "deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe" | sudo tee -a /etc/apt/sources.list
@@ -55,11 +55,11 @@ Workaround for gnome-settings-daemon keyboard bug:
 sudo mv /usr/lib/gnome-settings-daemon-3.0/libkeyboard.so{,.bak}
 ```
 
-######i3bar
+###### i3bar
 ![i3bar](screenshots/i3bar.png)
 
 
-##Emacs
+## Emacs
 Uncomment source lines in sources.list and update apt
 
 ```shell
@@ -75,7 +75,7 @@ ln -s $HOME/.dotfiles/emacs/custom.el  ~/.emacs.d/personal/custom.el
 ln -s $HOME/.dotfiles/emacs/prelude-modules.el $HOME/.emacs.d/prelude-modules.el
 ```
 
-##Powerline font
+## Powerline font
 ```shell
 sudo apt-get install fonts-inconsolata
 mkdir -p ~/.local/share/fonts/ $HOME/.config/fontconfig/conf.d/
@@ -85,7 +85,7 @@ fc-cache -fv ~/.local/share/fonts/
 ln -s $HOME/.dotfiles/fontconfig-symbols.conf $HOME/.config/fontconfig/conf.d/10-symbols.conf
 ```
 
-##Zsh
+## Zsh
 ```shell
 sudo apt-get install zsh
 chsh -s /bin/zsh
@@ -99,11 +99,11 @@ git clone git://github.com/zsh-users/zaw.git $ZSH_CUSTOM/plugins/zaw
 git clone https://github.com/djui/alias-tips.git $ZSH_CUSTOM/plugins/alias-tips
 git clone https://github.com/marzocchi/zsh-notify $ZSH_CUSTOM/plugins/zsh-notify
 ```
-######Prompt
+###### Prompt
 ![Commandline](screenshots/shell.png)
 
 
-##Mpv
+## Mpv
 ```shell
 sudo apt-get install mpv
 mkdir -p ~/.mpv/scripts
@@ -113,7 +113,7 @@ ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME/.mpv/scripts/autoload.lua
 ```
 
 
-##Sshrc
+## Sshrc
 ```
 git clone https://github.com/Russell91/sshrc.git
 cp sshrc/sshrc ~/.bin

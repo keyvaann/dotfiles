@@ -219,8 +219,6 @@ POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status time)
 
 
-[ -r /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh ] && source /usr/local/FIDS/FIDS/fids/deployment/shell_helpers.sh
-
 LANG="en_US.utf8"
 LC_COLLATE="en_US.utf8"
 LC_CTYPE="en_US.utf8"
@@ -230,3 +228,5 @@ LC_NUMERIC="en_US.utf8"
 LC_TIME="en_US.utf8"
 LC_ALL="en_US.utf8"
 LANGUAGE="en_US.utf8"
+
+alias ssh=sshrc

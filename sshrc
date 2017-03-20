@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export HISTCONTROL=ignoredups:erasedups # Force ignoredups and erase duplicates across the whole history which is good for desktop and bad for server
 export HISTFILESIZE=9999 # Increace history file size
 export HISTSIZE=5000
@@ -9,6 +11,7 @@ alias grep='grep --color'
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
 alias t='tail -f'
 alias nano='nano -w'
+grep -Pzo "Match User $USER\s+PasswordAuthentication no" /etc/ssh/sshd_config > /dev/null || echo -e "\e[100mWARN\e[0m \e[91mPassword login is enabled\e[0m"
 
 set -o notify          # Don't wait for job termination notification
 set completion-ignore-case on # Set tab-completion to be case-insensitive
@@ -162,9 +165,9 @@ if [ -d "/usr/local/IBSng/" ]; then
     _ipatch '!*.diff' ipatch ipatchtest
 fi
 
-if [ -d "/usr/local/IBSng/" ]; then
-    alias fiupdate="cd /usr/local/FIDS/FIDS/ && git pull && sudo supervisorctl restart all"
-    alias fidir="cd /usr/local/FIDS/FIDS/"
-    alias filog="tail -f /var/log/nginx/*.log /var/log/supervisor/supervisord.log /var/log/fids/*"
-    alias filog40="tail -n 40 -f /var/log/nginx/*.log /var/log/supervisor/supervisord.log /var/log/fids/*"
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
 fi

@@ -14,6 +14,7 @@
  '(magit-diff-use-overlays nil)
  '(projectile-idle-timer-hook nil)
  '(projectile-tags-command "")
+ '(python-shell-interpreter "python3")
  '(recentf-menu-filter (quote recentf-show-basenames-ascending))
  '(safe-local-variable-values (quote ((pyvenv-workon (quote heisen)))))
  '(tags-table-list nil)

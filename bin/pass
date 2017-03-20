@@ -8,7 +8,7 @@ if [[ $1 == "-t" ]]; then
     shift
 fi
 
-password=$(lpass ls --sync=no --format='@%an' News | \grep -E "@" | dmenu | tr -d '@')
+password=$(lpass ls --sync=no --format='@%an' Server | \grep -E "@" | dmenu | tr -d '@')
 
 [[ -n $password ]] || exit
 

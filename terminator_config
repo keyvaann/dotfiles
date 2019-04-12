@@ -1,5 +1,7 @@
 [global_config]
   enabled_plugins = InactivityWatch, ActivityWatch, TerminalShot
+  title_font = Inconsolata Medium 11
+  title_use_system_font = False
 [keybindings]
   next_tab = <Primary>Tab
   prev_tab = <Primary><Shift>Tab
@@ -14,10 +16,10 @@
 [plugins]
 [profiles]
   [[default]]
-    background_darkness = 0.46
+    background_darkness = 0.7
     background_image = None
     background_type = transparent
     font = Inconsolata for Powerline Medium 12
     foreground_color = "#ffffff"
+    scrollback_infinite = True
     scrollback_lines = 2000
-    use_system_font = False

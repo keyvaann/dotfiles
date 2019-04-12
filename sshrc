@@ -5,13 +5,37 @@ export HISTFILESIZE=9999 # Increace history file size
 export HISTSIZE=5000
 export HISTTIMEFORMAT='%F %T ' # Display TIMESTAMP in history, for auditing purpose
 export PROMPT_COMMAND='history -a; history -n; ' # Make sure the history is updated at every command.
+export EDITOR=nano
+export TERM="screen-256color"
+export LANG="en_US.utf8"
+export LC_COLLATE="en_US.utf8"
+export LC_CTYPE="en_US.utf8"
+export LC_MESSAGES="en_US.utf8"
+export LC_MONETARY="en_US.utf8"
+export LC_NUMERIC="en_US.utf8"
+export LC_TIME="en_US.utf8"
+export LC_ALL="en_US.utf8"
+export LANGUAGE="en_US.utf8"
 
-alias less="less -IJMW"
+# Security: close root shells after n seconds of inactivity
+[ "$UID" = 0 ] && export TMOUT=180
+
+alias less="less -RIJMW"
 alias grep='grep --color'
 alias sgrep='grep -R -n -H -C 5 --exclude-dir={.git,.svn,CVS} '
 alias t='tail -f'
 alias nano='nano -w'
+alias rm='rm -i'
+
 grep -Pzo "Match User $USER\s+PasswordAuthentication no" /etc/ssh/sshd_config > /dev/null || echo -e "\e[100mWARN\e[0m \e[91mPassword login is enabled\e[0m"
+
+disable_password_login() {
+    echo "
+Match User $USER
+    PasswordAuthentication no" | sudo tee -a /etc/ssh/sshd_config
+    echo "Disabled password login, reloading sshd to apply config"
+    sudo service ssh reload
+}
 
 set -o notify          # Don't wait for job termination notification
 set completion-ignore-case on # Set tab-completion to be case-insensitive
@@ -25,7 +49,6 @@ set mark-symlinked-directories on
 
 stty werase undef
 bind '"\C-w": unix-filename-rubout'
-DEBIAN_FRONTEND=noninteractive apt-get install -yq bash-completion > /dev/null 2>&1 && . /etc/bash_completion > /dev/null 2>&1
 cp -f $SSHHOME/.sshrc.d/.nanorc ~ > /dev/null 2>&1
 mkdir ~/.nano_backups/ 2> /dev/null
 

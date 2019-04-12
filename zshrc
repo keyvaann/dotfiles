@@ -8,7 +8,7 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="powerlevel9k/powerlevel9k"
+ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -49,26 +49,30 @@ fastfile_var_prefix="@"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    alias-tips
+    # alias-tips
     git
     # colorize                    # Plugin for highlighting file content, colorize
-    # dircycle                    # dircycle plugin: enables cycling through the directory stack using Ctrl+Shift+Left/Right
-    django                      # compdef manage.py
-    emacs
+    # django                      # compdef manage.py
+    # emacs
+    docker
+    kubectl
     extract
     common-aliases
     colored-man-pages
     git-extras                  # Completion script for git-extras (http://github.com/visionmedia/git-extras).
     pip
     sudo
+    # tmux
     zsh-completions
     ssh-agent
     zsh-autosuggestions
     zaw
-    # zsh-syntax-highlighting     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
+    zsh-syntax-highlighting     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
 )
-
+echo "11"
+export ZSH_AUTOSUGGEST_USE_ASYNC="true"
 source $ZSH/oh-my-zsh.sh
+echo "22"
 
 # User configuration
 
@@ -121,8 +125,8 @@ export PATH=~/.bin:$PATH
 ulimit -c 0     # create no core files
 ulimit -m 500000
 
-bindkey ';5C' forward-word
-bindkey ';5D' backward-word
+# bindkey ';5C' forward-word
+# bindkey ';5D' backward-word
 
 # Exit incremental search, retaining the command line but performing no further action. Note that this function is not bound by default and has no effect outside incremental search.
 bindkey '\ea' accept-search
@@ -153,26 +157,16 @@ bindkey "^X^S" sudo-command-line
 
 # http://chneukirchen.org/blog/archive/2011/02/10-more-zsh-tricks-you-may-not-know.html
 # Complete with words in the history (like Emacs dabbrev) with M-/, M-,
-zstyle ':completion:history-words:*' list no
-zstyle ':completion:history-words:*' menu yes
-zstyle ':completion:history-words:*' remove-all-dups yes
-bindkey "\e/" _history-complete-older
-bindkey "\e," _history-complete-newer
-
-# Additional completion definitions for Zsh.
-# https://github.com/zsh-users/zsh-completions
-autoload -U compinit && compinit
+# zstyle ':completion:history-words:*' list no
+# zstyle ':completion:history-words:*' menu yes
+# zstyle ':completion:history-words:*' remove-all-dups yes
+# bindkey "\e/" _history-complete-older
+# bindkey "\e," _history-complete-newer
 
 # zsh anything.el-like widget.
 # https://github.com/zsh-users/zaw
 bindkey '^R' zaw-history
-bindkey '^Xa' zaw-ack
-bindkey '^Xb' zaw-git-branches
-bindkey '^Xf' zaw-git-files
-bindkey '^Xs' zaw-git-status
-bindkey '^Xo' zaw-open-file
-bindkey '^Xp' zaw-process
-bindkey '^Xh' zaw-ssh-hosts
+bindkey '^Q' zaw-ssh-hosts
 zstyle ':filter-select:highlight' matched fg=yellow,standout
 zstyle ':filter-select' max-lines 20 # use 10 lines for filter-select
 # zstyle ':filter-select' max-lines -10 # use $LINES - 10 for filter-select
@@ -180,44 +174,9 @@ zstyle ':filter-select' rotate-list yes # enable rotation for filter-select
 zstyle ':filter-select' case-insensitive yes # enable case-insensitive search
 zstyle ':filter-select' extended-search yes # see below
 
-# source ~/sorin_customized
-
 export WORKON_HOME=~/.virtualenv
 mkdir -p $WORKON_HOME
 source /usr/local/bin/virtualenvwrapper.sh
-
-[ -f /run/shadowsocks.pid ] || sudo sslocal -c ~/.ssh/shadowsocks.json -d start
-
-# source ~/.dotfiles/lib/zsh-autoenv/autoenv.zsh
-# AUTOENV_FILE_ENTER='.env'
-
-# export PATH="$HOME/.rbenv/bin:$PATH"
-# eval "$(rbenv init -)"
-
-
-usage_or_commit(){
-    if [ -f .git/config ]; then
-        local last_commit="`git log --oneline | head -1`"
-        local commit_count=`git log --oneline | wc -l`
-        local message="$commit_count commits | $last_commit"
-    else
-        local usage="`/bin/ls -lah | /bin/grep -m 1 total | /bin/sed 's/total //'`"
-        local count="`/bin/ls -1 | /usr/bin/wc -l | /bin/sed 's: ::g'`"
-        local message="$count files $usage"
-     fi
-
-    echo -n "$message"
-}
-
-POWERLEVEL9K_CUSTOM_USAGE_OR_COMMIT="usage_or_commit"
-POWERLEVEL9K_CUSTOM_USAGE_OR_COMMIT_BACKGROUND="blue"
-POWERLEVEL9K_CUSTOM_USAGE_OR_COMMIT_FOREGROUND="yellow"
-
-export DEFAULT_USER="$USER"
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status time)
-
 
 LANG="en_US.utf8"
 LC_COLLATE="en_US.utf8"
@@ -230,3 +189,17 @@ LC_ALL="en_US.utf8"
 LANGUAGE="en_US.utf8"
 
 alias ssh=sshrc
+echo "33"
+
+bindkey "${terminfo[kcuu1]}" up-line-or-history
+bindkey "${terminfo[kcud1]}" down-line-or-history
+bindkey "^[/" insert-last-word
+
+alias vim=nvim
+export GOROOT=/usr/local/go
+export PATH=$PATH:$GOROOT/bin:/home/k1/src/golang/bin
+export GOPATH=~/src/golang
+
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /home/k1/.bin/mc mc

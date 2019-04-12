@@ -12,6 +12,9 @@
  '(flycheck-flake8rc "~/.dotfiles/flake8rc")
  '(magit-diff-options (quote ("--ignore-all-space" "--patience")))
  '(magit-diff-use-overlays nil)
+ '(package-selected-packages
+   (quote
+    (scala-mode dockerfile-mode zop-to-char yaml-mode web-mode volatile-highlights swiper smartrep smartparens smart-mode-line scss-mode rainbow-delimiters ov nginx-mode multiple-cursors move-text monokai-theme markdown-mode magit json-mode js2-mode highlight-symbol helm-projectile helm-descbinds helm-ag gitignore-mode gitconfig-mode flycheck expand-region exec-path-from-shell elisp-slime-nav editorconfig easy-kill discover-my-major diminish diff-hl csv-mode crux company-anaconda browse-kill-ring beacon anzu ace-window)))
  '(projectile-idle-timer-hook nil)
  '(projectile-tags-command "")
  '(python-shell-interpreter "python3")

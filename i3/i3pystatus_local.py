@@ -11,12 +11,12 @@ status.register("load", format='{avg1} {avg5}')
 status.register("cpu_usage", format='C: {usage:02}%')
 status.register("mem", format='M: {percent_used_mem:.0f}%', warn_percentage=70, color='#ffffff')
 
-status.register("network", format_up='{interface} ↑{bytes_sent:>3}K ↓{bytes_recv:>3}K', start_color="#ffffff")
-status.register(
-    "online",
-    format_online='\uF00C', color='#55ff55',
-    format_offline='\uF00D', color_offline='#ff5555'
-)
+#status.register("network", format_up='{interface} ↑{bytes_sent:>3}K ↓{bytes_recv:>3}K', start_color="#ffffff")
+#status.register(
+#    "online",
+#    format_online='\uF00C', color='#55ff55',
+#    format_offline='\uF00D', color_offline='#ff5555'
+#)
 if os.listdir('/sys/class/power_supply'):
     status.register(
         "battery",
@@ -30,13 +30,13 @@ if os.listdir('/sys/class/power_supply'):
         },
     )
 
-status.register(
-    "keyboard_locks",
-    format='{num} {scroll}',
-    caps_on='C', caps_off='_',
-    num_on='N', num_off='_',
-    scroll_on='S', scroll_off='_',
-)
+#status.register(
+#    "keyboard_locks",
+#    format='{num} {scroll}',
+#    caps_on='C', caps_off='_',
+#    num_on='N', num_off='_',
+#    scroll_on='S', scroll_off='_',
+#)
 
 status.register("uptime", format='up {days}d')
 #status.register(

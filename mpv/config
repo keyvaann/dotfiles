@@ -1,11 +1,12 @@
 [default]
-
 #osd-level=3
 # use X11 for video output, use a framebuffer as fallback
-#vo=opengl-old,xv,directfb
-
+# vd-lavc-fast
+hwdec=vaapi
+vo=vaapi
+# fs-black-out-screens
 # use alsa for audio output, choose oss4 as fallback
-ao=alsa,oss
+#ao=alsa,oss
 
 # multithreaded decoding of H264/MPEG-1/2 (valid: 1-8)
 #lavdopts=threads=2
@@ -20,7 +21,7 @@ cache = 32000
 # cache-pause
 
 # Set the maximum amplification level in percent (default: 130). A value of 130 will allow you to adjust the volume up to about double the normal level.
-softvol-max=200
+volume-max=200
 
 # Keep the player window on top of all other windows.
 ontop=yes
@@ -35,7 +36,7 @@ ontop=yes
 geometry=100%:100%
 
 # Fix aspect and size for almost fixed size
-vf=dsize=720:400:0
+# vf=dsize=720:400:0
 
 # Fix dvd subtitles to look very good
 # sub-gauss=3
@@ -52,7 +53,6 @@ vf=dsize=720:400:0
 # disable joystick
 # input-joystick=no
 
-
 sub-auto=all
 # set the window title using the media filename, when not set with --title.
 title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
@@ -63,8 +63,7 @@ title='${filename} - ${length} - ${playlist-pos}/${playlist-count}'
 # for non wide screen traditional monitors
 #vf-add=expand=::::1:4/3:16
 
-# sub-codepage=utf8
-sub-codepage=utf8:cp1256
+sub-codepage=utf8
 
 # disable screensaver
 #heartbeat-cmd="xscreensaver-command -deactivate &" # stop xscreensaver
@@ -82,8 +81,8 @@ sub-codepage=utf8:cp1256
 audio-display=no
 #save-position-on-quit=yes
 
-osd-font='Negotiate Free'           # osd font
-ass-force-style='Fontname=Negotiate Free,Default.Bold=1'
+# osd-font='Negotiate Free'           # osd font
+# sub-ass-force-style='Fontname=Negotiate Free,Default.Bold=1'
 #osd-blur=2.5
 #sub-scale=3
 #sub-pos=90                      # align to bottom of screen
@@ -97,7 +96,3 @@ ass-force-style='Fontname=Negotiate Free,Default.Bold=1'
 # use -profile 6chto2ch to activate
 [6chto2ch]
 #af-add=pan=2:0.7:0:0:0.7:0.5:0:0:0.5:0.6:0.6:0:0
-
-
-
-

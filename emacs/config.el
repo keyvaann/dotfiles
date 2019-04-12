@@ -331,28 +331,28 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
 
-(setq helm-buffers-fuzzy-matching t) ; fuzzy matching buffer names when non--nil
+;; (setq helm-buffers-fuzzy-matching t) ; fuzzy matching buffer names when non--nil
 
-(setq langtool-language-tool-jar "~/.emacs.d/LanguageTool-2.7/languagetool-commandline.jar")
+;; (setq langtool-language-tool-jar "~/.emacs.d/LanguageTool-2.7/languagetool-commandline.jar")
 
 (global-set-key (kbd "M-.") 'anaconda-mode-goto-definitions) ;;paste
 
-(setq company-dabbrev-downcase nil)
-(setq company-dabbrev-ignore-case nil)
-(setq company-idle-delay 0.2)
-(setq company-minimum-prefix-length 1)
-(setq company-show-numbers t)
-(setq company-tooltip-limit 20)
+;; (setq company-dabbrev-downcase nil)
+;; (setq company-dabbrev-ignore-case nil)
+;; (setq company-idle-delay 0.2)
+;; (setq company-minimum-prefix-length 1)
+;; (setq company-show-numbers t)
+;; (setq company-tooltip-limit 20)
 
-(setq helm-buffers-fuzzy-matching t)
-(setq helm-apropos-fuzzy-match t)
-(setq helm-recentf-fuzzy-match t)
-(setq helm-locate-fuzzy-match t)
-(setq helm-file-cache-fuzzy-match t)
-(setq helm-semantic-fuzzy-match t)
-(setq helm-imenu-fuzzy-match t)
+;; (setq helm-buffers-fuzzy-matching t)
+;; (setq helm-apropos-fuzzy-match t)
+;; (setq helm-recentf-fuzzy-match t)
+;; (setq helm-locate-fuzzy-match t)
+;; (setq helm-file-cache-fuzzy-match t)
+;; (setq helm-semantic-fuzzy-match t)
+;; (setq helm-imenu-fuzzy-match t)
 
-(helm-autoresize-mode 1)
+;; (helm-autoresize-mode 1)
 
 ;; escape minibuffer
 (define-key minibuffer-local-map [escape] 'my-minibuffer-keyboard-quit)
@@ -388,16 +388,6 @@ This is the same as using \\[set-mark-command] with the prefix argument."
  "fontset-default"
  (cons (decode-char 'ucs #x0600) (decode-char 'ucs #x06ff)) ; arabic
  "DejaVu Sans Mono")
-
-(setq magit-repo-dirs
-      (mapcar
-       (lambda (dir)
-         (substring dir 0 -1))
-       (cl-remove-if-not
-        (lambda (project)
-          (unless (file-remote-p project)
-            (file-directory-p (concat project "/.git/"))))
-        (projectile-relevant-known-projects))))
 
 (add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
 
@@ -444,16 +434,20 @@ This is the same as using \\[set-mark-command] with the prefix argument."
 
 (setq web-mode-engines-alist '(("django"    . "\\.html\\'")))
 
-(defun run-python-once ()
-  (remove-hook 'python-mode-hook 'run-python-once)
-  (run-python (python-shell-parse-command)))
+;; (defun run-python-once ()
+;;   (remove-hook 'python-mode-hook 'run-python-once)
+;;   (run-python (python-shell-parse-command)))
 
-(add-hook 'python-mode-hook 'run-python-once)
+;; (add-hook 'python-mode-hook 'run-python-once)
 
-(eval-after-load "company"
-  '(add-to-list 'company-backends 'company-anaconda))
-(add-hook 'python-mode-hook 'anaconda-mode)
+;; (eval-after-load "company"
+;;   '(add-to-list 'company-backends 'company-anaconda))
+;; (add-hook 'python-mode-hook 'anaconda-mode)
 
+(add-hook 'python-mode-hook
+  (lambda ()
+    (setq-default tab-width 4)
+    ))
 (toggle-truncate-lines t)
 
 (message "7. Config file has successfully loaded.")

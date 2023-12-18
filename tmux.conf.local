@@ -260,6 +260,7 @@ set -g mouse off
 
 # replace C-b by C-a instead of using both prefixes
 # set -gu prefix2
+set -gu prefix2
 unbind C-a
 # unbind C-b
 # set -g prefix C-a
@@ -284,6 +285,8 @@ bind-key -n M-, previous-window
 bind-key -n M-. next-window
 # bind-key o select-pane -l
 
+#set -g default-command /usr/local/bin/zsh
+
 # List of plugins
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
@@ -291,3 +294,4 @@ set -g @plugin 'tmux-plugins/tmux-resurrect'
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run '~/.tmux/plugins/tpm/tpm'
+

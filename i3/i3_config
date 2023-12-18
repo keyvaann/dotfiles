@@ -6,8 +6,9 @@ font pango: Inconsolata 11
 floating_modifier $mod
 
 workspace_layout tabbed
-new_window none
-new_float normal
+
+default_border none
+default_floating_border none
 
 #bindsym $mod+Return exec terminator
 bindsym $mod+Shift+q kill
@@ -33,39 +34,43 @@ bindsym $mod+Shift+space floating toggle
 
 bindsym $mod+space focus mode_toggle
 
-workspace "1: snp" output eDP1
-workspace "3: blt" output eDP1
-workspace "4: odo" output eDP1
-workspace "5: file" output eDP1
-workspace "6: media" output eDP1
-workspace "8: misc" output HDMI2
+workspace "10: misc" output DP-2
+workspace "1: web" output DP-2
+workspace "3: term" output HDMI-1
+workspace "4: edit" output HDMI-1
+workspace "5: file" output HDMI-1
+workspace "6: media" output HDMI-1
+workspace "7: chat" output HDMI-1
+workspace "8: misc" output HDMI-1
 
-bindsym $mod+1 workspace 1: snp
-bindsym $mod+3 workspace 3: blt
-bindsym $mod+4 workspace 4: odo
+bindsym $mod+1 workspace 1: web
+bindsym $mod+3 workspace 3: term
+bindsym $mod+4 workspace 4: edit
 bindsym $mod+5 workspace 5: file
 bindsym $mod+6 workspace 6: media
 bindsym $mod+7 workspace 7: chat
 bindsym $mod+8 workspace 8: misc
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+bindsym $mod+9 workspace 9: misc
+bindsym $mod+0 workspace 10: misc
 
-bindsym $mod+Shift+1 move container to workspace 1: snp
-bindsym $mod+Shift+3 move container to workspace 3: blt
-bindsym $mod+Shift+4 move container to workspace 4: odo
+bindsym $mod+Shift+1 move container to workspace 1: web
+bindsym $mod+Shift+3 move container to workspace 3: term
+bindsym $mod+Shift+4 move container to workspace 4: edit
 bindsym $mod+Shift+5 move container to workspace 5: file
 bindsym $mod+Shift+6 move container to workspace 6: media
 bindsym $mod+Shift+7 move container to workspace 7: chat
 bindsym $mod+Shift+8 move container to workspace 8: misc
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
+bindsym $mod+Shift+9 move container to workspace 9: misc
+bindsym $mod+Shift+0 move container to workspace 10: misc
+
+bindsym --release --border button2 kill
 
 bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -c 0 sset 'Master' 5%+
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer -c 0 sset 'Master' 5%-
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -q -D pulse set Master 5%+ unmute
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -q -D pulse set Master 5%- unmute
 bindsym XF86AudioMute exec --no-startup-id amixer sset 'Master' toggle
 bindsym XF86AudioPlay exec --no-startup-id playerctl toggle
 bindsym XF86AudioPause exec --no-startup-id playerctl pause
@@ -80,12 +85,12 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightne
 bindsym $mod+Shift+Right exec xbacklight -inc 10 # increase screen brightness
 bindsym $mod+Shift+Left exec xbacklight -dec 10 # increase screen brightness
 
-bindsym $mod+l exec --no-startup-id xrandr --output HDMI1 --auto --right-of eDP1
+#bindsym $mod+l exec --no-startup-id xrandr --output HDMI-1 --auto --right-of eDP-1
 bindsym $mod+p exec --no-startup-id playerctl play-pause
 bindsym $mod+n exec --no-startup-id playerctl next
 bindsym $mod+b exec --no-startup-id playerctl previous
-bindsym $mod+Up exec --no-startup-id amixer -c 0 sset 'Master' 5%+
-bindsym $mod+Down exec --no-startup-id amixer -c 0 sset 'Master' 5%-
+bindsym $mod+Up exec --no-startup-id amixer -q -D pulse set Master 5%+ unmute 
+bindsym $mod+Down exec --no-startup-id amixer -q -D pulse set Master 5%- unmute
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -107,19 +112,24 @@ bindsym $mod+r mode "resize"
 
 # never ending spotify bugs
 for_window [class="Spotify"] move to workspace 6: media
-# for_window [class="Gimp"] floating enable
+for_window [title="Tabs Outliner"] floating enable  border pixel 10 floating_maximum_size 100 x 100
 
-#assign [class="Google-chrome"] → 1: web
+assign [class="Google-chrome"] → 1: web
+assign [class="Opera"] → 1: web
 #assign [class="Emacs"] → 2: edit
-#assign [class="Terminator"] → 3: term
-#assign [class="Gnome-terminal"] → 3: term
+assign [class="Terminator"] → 3: term
+assign [class="Gnome-terminal"] → 3: term
+assign [class="Atom"] → 4: edit
 assign [class="nemo"] → 5: file
+assign [class="Nemo"] → 5: file
 assign [class="Nautilus"] → 5: file
 assign [class="pidgin"] → 7: chat
 assign [class="Pidgin"] → 7: chat
 assign [class="skype"] → 7: chat
 assign [class="Telegram"] → 7: chat
 assign [class="Skype"] → 7: chat
+assign [class="Slack"] → 7: chat
+assign [class="Discord"] → 7: chat
 
 bindsym $mod+z workspace prev
 bindsym $mod+x workspace next
@@ -127,21 +137,28 @@ bindsym $mod+x workspace next
 exec --no-startup-id gnome-settings-daemon # GTK theme
 exec --no-startup-id xset dpms 600
 exec --no-startup-id kbdd
+exec --no-startup-id /usr/bin/gammastep
 exec --no-startup-id numlockx on
 exec --no-startup-id nm-applet
 #exec --no-startup-id fluxgui
-exec --no-startup-id xautolock -time 5 -locker "bash ~/.dotfiles/i3/i3lock.sh" &
+exec --no-startup-id xautolock -time 15 -locker "bash ~/.dotfiles/i3/i3lock.sh" &
 exec --no-startup-id feh --bg-scale ~/.i3/background.png
 exec_always --no-startup-id /bin/bash ~/.dotfiles/i3/keyboard.sh
-exec --no-startup-id /usr/bin/google-chrome
+#exec --no-startup-id /usr/bin/google-chrome
+exec --no-startup-id /usr/bin/opera
 #exec --no-startup-id /usr/local/bin/emacsclient --alternate-editor "" --create-frame --no-wait
 exec --no-startup-id /usr/bin/gnome-terminal
-exec --no-startup-id /usr/bin/nemo
-exec --no-startup-id /usr/bin/spotify
-exec --no-startup-id /usr/bin/skypeforlinux
-exec --no-startup-id /usr/bin/pidgin
-exec --no-startup-id /home/k1/.bin/Telegram
-exec --no-startup-id /home/k1/.bin/mattermost
+exec --no-startup-id /usr/bin/nautilus
+exec --no-startup-id /usr/bin/code
+exec --no-startup-id /usr/bin/blueman-applet
+#exec --no-startup-id /usr/bin/spotify
+#exec --no-startup-id /usr/bin/steam
+#exec --no-startup-id /usr/bin/skypeforlinux
+exec --no-startup-id /usr/bin/slack
+#exec --no-startup-id /usr/bin/megasync
+exec --no-startup-id /usr/bin/discord
+#exec --no-startup-id /usr/bin/pidgin
+exec --no-startup-id flatpak run org.telegram.desktop
 
 # New exit mode. Needs the /etc/i3/exit script and sudo configuration.
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (d) shutdown

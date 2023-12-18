@@ -1,0 +1,367 @@
+set $mod Mod4
+
+font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+font pango: Inconsolata 11
+
+floating_modifier $mod
+
+workspace_layout tabbed
+
+default_border none
+default_floating_border none
+titlebar_padding 1
+titlebar_border_thickness 0
+hide_edge_borders --i3 smart
+smart_borders smart
+
+# Your preferred terminal emulator
+set $term foot
+# Your preferred application launcher
+# Note: pass the final command to swaymsg so that the resulting window can be opened
+# on the original workspace that the command was run on.
+set $menu ulauncher
+
+include /etc/sway/config-vars.d/*
+
+# sudo apt install clipman
+exec wl-paste -t text --watch clipman store --no-persist
+
+### Output configuration
+#
+# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+#
+# Example configuration:
+#
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+#
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+
+### Input configuration
+
+
+input {
+    type:keyboard {
+        xkb_layout custom,ir
+        xkb_options "grp:lwin_toggle"
+    }
+
+    type:touchpad {
+        # no click needed
+        tap enabled
+        # disable touchpad while typing
+        dwt enabled
+        # natural_scroll enabled
+        middle_emulation enabled
+    }
+}
+
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
+
+### Key bindings
+#
+# Basics:
+#
+bindsym --to-code {
+    # Kill focused window
+    $mod+Shift+q kill
+
+    # Start your launcher
+    $mod+q exec $menu
+
+
+    # Reload the configuration file
+    $mod+Shift+c reload
+
+    # Exit sway (logs you out of your Wayland session)
+    $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+    $mod+a exec --no-startup-id bash ~/.dotfiles/i3/i3lock.sh
+    #
+    # Moving around:
+    #
+    # Move your focus around
+    # $mod+$left focus left
+    # $mod+$down focus down
+    # $mod+$up focus up
+    # $mod+$right focus right
+    # Or use $mod+[up|down|left|right]
+    $mod+Left focus left
+    # $mod+Down focus down
+    # $mod+Up focus up
+    $mod+Right focus right
+
+    $mod+s focus left
+    $mod+d focus right
+
+    $mod+z workspace prev
+    $mod+x workspace next
+
+    # Move the focused window with the same, but add Shift
+    # $mod+Shift+$left move left
+    # $mod+Shift+$down move down
+    # $mod+Shift+$up move up
+    # $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    # $mod+Shift+Left move left
+    # $mod+Shift+Down move down
+    # $mod+Shift+Up move up
+    # $mod+Shift+Right move right
+
+    #
+    # Layout stuff:
+    #
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    $mod+h splith
+    $mod+v splitv
+
+    # Switch the current container between different layout styles
+    $mod+Shift+s layout stacking
+    $mod+w layout tabbed
+    $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    #$mod+a focus parent
+    #
+    # Scratchpad:
+    #
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    $mod+minus scratchpad show
+
+    XF86AudioRaiseVolume exec --no-startup-id amixer -q -D pulse set Master 5%+ unmute
+    XF86AudioLowerVolume exec --no-startup-id amixer -q -D pulse set Master 5%- unmute
+    XF86AudioMute exec --no-startup-id amixer sset 'Master' toggle
+    XF86AudioPlay exec --no-startup-id playerctl toggle
+    XF86AudioPause exec --no-startup-id playerctl pause
+    XF86AudioStop exec --no-startup-id playerctl stop
+    XF86AudioPrev exec --no-startup-id playerctl prev
+    XF86AudioNext exec --no-startup-id playerctl next
+    XF86Calculator exec --no-startup-id gnome-calculator
+
+    # Sreen brightness controls
+    XF86MonBrightnessUp exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A brightnessctl set +33%
+    XF86MonBrightnessDown exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A brightnessctl set 33-%
+    $mod+Shift+Right exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A brightnessctl set +33%
+    $mod+Shift+Left exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A brightnessctl set 33-%
+
+    $mod+p exec --no-startup-id playerctl play-pause
+    $mod+n exec --no-startup-id playerctl next
+    $mod+b exec --no-startup-id playerctl previous
+    $mod+Up exec --no-startup-id amixer -q -D pulse set Master 5%+ unmute 
+    $mod+Down exec --no-startup-id amixer -q -D pulse set Master 5%- unmute
+
+    Print exec GRIM_DEFAULT_DIR=~ grim -g "$(slurp)"
+}
+
+#
+# Resizing containers:
+#
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    # bindsym $left resize shrink width 10px
+    # bindsym $down resize grow height 10px
+    # bindsym $up resize shrink height 10px
+    # bindsym $right resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+#
+# Workspaces:
+#
+
+output eDP-1 {
+    resolution --custom 1368x768
+}
+
+set {
+    $ws1     "1: "
+    $ws2     "2: "
+    $ws3     "3: " 
+    $ws4     "4: " 
+    $ws5     "5: "
+    $ws6     "6: "
+    $ws7     "7: "
+    $ws8     "8: " 
+    $ws9     "9: "
+    $ws10    "10: "
+}
+
+workspace $ws1 #output DP-2
+workspace $ws2 #output HDMI-1
+workspace $ws3 #output HDMI-1
+workspace $ws4 #output HDMI-1
+workspace $ws5 #output HDMI-1
+workspace $ws6 #output HDMI-1
+workspace $ws7 #output HDMI-1
+workspace $ws8 #output DP-2
+workspace $ws9 #output DP-2
+workspace $ws10 #output DP-2
+
+bindsym {
+    # Switch to workspace
+    $mod+1 workspace $ws1
+    $mod+2 workspace $ws2
+    $mod+3 workspace $ws3
+    $mod+4 workspace $ws4
+    $mod+5 workspace $ws5
+    $mod+6 workspace $ws6
+    $mod+7 workspace $ws7
+    $mod+8 workspace $ws8
+    $mod+9 workspace $ws9
+    $mod+0 workspace $ws10
+    # Move focused container to workspace
+    $mod+Shift+1 move container to workspace $ws1
+    $mod+Shift+2 move container to workspace $ws2
+    $mod+Shift+3 move container to workspace $ws3
+    $mod+Shift+4 move container to workspace $ws4
+    $mod+Shift+5 move container to workspace $ws5
+    $mod+Shift+6 move container to workspace $ws6
+    $mod+Shift+7 move container to workspace $ws7
+    $mod+Shift+8 move container to workspace $ws8
+    $mod+Shift+9 move container to workspace $ws9
+    $mod+Shift+0 move container to workspace $ws10
+}
+
+for_window {
+    [class="Google-chrome"] move container to workspace $ws1
+    [class="Brave-browser"] move container to workspace $ws1
+    [class="Opera"] move container to workspace $ws1
+    [class="Emacs"] move container to workspace $ws2
+    [class="Terminator"] move container to workspace $ws2
+    [class="Gnome-terminal"] move container to workspace $ws2
+    [app_id="kitty"] move container to workspace $ws2
+    [class="Atom"] move container to workspace $ws3
+    [class="Code"] move container to workspace $ws3
+    [class="nemo"] move container to workspace $ws4
+    [class="Nemo"] move container to workspace $ws4
+    [app_id="org.gnome.Nautilus"] move container to workspace $ws4
+    [class="pidgin"] move container to workspace $ws6
+    [class="Pidgin"] move container to workspace $ws6
+    [class="skype"] move container to workspace $ws6
+    [class="Telegram"] move container to workspace $ws6
+    [app_id="org.telegram.desktop"] move container to workspace $ws6
+    [class="Skype"] move container to workspace $ws6
+    [class="discord"] move container to workspace $ws6
+    [class="Slack"] move container to workspace $ws6
+    [title="^Picture in Picture$"] floating enable, sticky enable
+    [app_id="evolution"] move container to workspace $ws6
+    [app_id="ch.proton.bridge-gui"] move container to workspace $ws6
+    [app_id="mpv"] floating enable, sticky enable
+    [class="Franz"] move container to workspace $ws6
+    [class="Vivaldi-stable"] move container to workspace $ws1
+    [app_id="org.telegram.desktop"] move container to workspace $ws6
+    [app_id="com.discordapp.Discord"] move container to workspace $ws6
+    [app_id="com.vivaldi.Vivaldi"] move container to workspace $ws1
+    [app_id="org.jellyfin.jellyfinmediaplayer"] move container to workspace $ws5
+    [app_id="whatsapp-for-linux"] move container to workspace $ws6
+    [app_id="com.rtosta.zapzap"] move container to workspace $ws6
+    [app_id="com.visualstudio.code"] move container to workspace $ws3
+    [app_id="ch.protonmail.protonmail-bridge"] move container to workspace $ws6
+    [app_id="com.valvesoftware.Steam"] move container to workspace $ws7
+    
+}
+
+exec {
+    swayidle -w \
+         timeout 300 'bash ~/.dotfiles/i3/i3lock.sh' \
+         timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+         before-sleep 'bash ~/.dotfiles/i3/i3lock.sh'
+    gnome-settings-daemon # GTK theme
+    # xset dpms 600
+    kbdd
+    /usr/bin/gammastep
+    numlockx on
+    nm-applet
+    dunst
+    #fluxgui
+    #xautolock -time 15 -locker "bash ~/.dotfiles/i3/i3lock.sh" &
+    # feh --bg-scale ~/.i3/background.png
+    #exec_always --no-startup-id /bin/bash ~/.dotfiles/i3/keyboard.sh
+    #/usr/bin/google-chrome
+    #/usr/bin/opera
+    #/usr/local/bin/emacsclient --alternate-editor "" --create-frame --no-wait
+    # /usr/bin/gnome-terminal
+    ~/.local/kitty.app/bin/kitty
+    /usr/bin/nautilus
+    /usr/bin/code
+    /usr/bin/blueman-applet
+    #/usr/bin/spotify
+    #/usr/bin/steam
+    #/usr/bin/skypeforlinux
+    /usr/bin/slack
+    #/usr/bin/megasync
+    /usr/bin/discord
+    #/usr/bin/pidgin
+    /usr/bin/protonmail-bridge
+    /usr/bin/evolution
+    setxkbmap -layout us,ir
+    flatpak run org.telegram.desktop
+    flatpak run com.github.iwalton3.jellyfin-media-player
+    flatpak run com.rtosta.zapzap
+    flatpak run org.telegram.desktop
+    flatpak run com.vivaldi.Vivaldi
+    flatpak run com.discordapp.Discord
+    flatpak run com.visualstudio.code
+    flatpak run ch.protonmail.protonmail-bridge
+    #/usr/bin/franz
+    #/usr/bin/brave-browser-stable
+    /usr/bin/vivaldi-stable
+}
+
+
+#
+# Status Bar:
+#
+# Read `man 5 sway-bar` for more information about this section.
+bar {
+    position bottom
+    mode invisible
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    status_command waybar
+
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #32323200 #32323200 #5c5c5c
+    }
+}
+
+include /etc/sway/config.d/*

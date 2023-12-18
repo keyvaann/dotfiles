@@ -1,25 +1,18 @@
 # Description
+
 My linux config files, put them here for backup and sharing.
 
 # Installation
 
 ## General
-Install Lastpass cli:
-https://github.com/lastpass/lastpass-cli
 
 ```shell
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo dpkg -i google-chrome-stable_current_amd64.deb
+sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys BBEBDCB318AD50EC6865090613B00F1FD2C19886
-echo deb http://repository.spotify.com stable non-free | sudo tee /etc/apt/sources.list.d/spotify.list
 sudo apt-get update
 sudo apt-get install -f
-sudo apt-get install python3-pip python-pip python-dev
-libappindicator1 proxychains spotify-client transmission-daemon
-xautolock colordiff
-terminator htop
-sudo pip install virtualenvwrapper shadowsocks ipython flake8
+sudo apt-get install python3-pip python-pip python-dev libappindicator1 xautolock colordiff terminator htop
+sudo pip install virtualenvwrapper ipython flake8
 
 mkdir -p $HOME/.bin $HOME/.config/htop/ $HOME/.config/terminator $HOME/.ssh
 ln -s $HOME/.dotfiles/curlrc $HOME/.curlrc
@@ -36,7 +29,9 @@ ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
 ```
 
 ## i3
+
 Put a background image in `~/.i3/background.png`
+
 ```shell
 echo "deb http://debian.sur5r.net/i3/ $(lsb_release -c -s) universe" | sudo tee -a /etc/apt/sources.list
 wget -O playerctl-0.5.0_amd64.deb https://github.com/acrisci/playerctl/releases/download/v0.5.0/playerctl-0.5.0_amd64.deb
@@ -51,21 +46,25 @@ gsettings set org.gnome.desktop.background show-desktop-icons false
 ln -s $HOME/.dotfiles/i3/i3_config $HOME/.i3/config
 ln -s $HOME/.dotfiles/Xmodmap $HOME/.Xmodmap
 ```
+
 Workaround for gnome-settings-daemon keyboard bug:
+
 ```shell
 sudo mv /usr/lib/gnome-settings-daemon-3.0/libkeyboard.so{,.bak}
 ```
 
 Convert all files to png:
+
 ```shell
 for jpg in ~/Downloads/wallpaper/*.jpg; do convert ${jpg} `echo ${jpg} | cut -d. -f 1`.png; done
 ```
 
 ###### i3bar
+
 ![i3bar](screenshots/i3bar.png)
 
-
 ## Emacs
+
 Uncomment source lines in sources.list and update apt
 
 ```shell
@@ -93,6 +92,7 @@ PYTHONPATH=$HOME/.emacs.d/anaconda-mode/0.1.8 easy_install -d $HOME/.emacs.d/ana
 ```
 
 ## Powerline font
+
 ```shell
 sudo apt-get install fonts-inconsolata
 mkdir -p ~/.local/share/fonts/ $HOME/.config/fontconfig/conf.d/
@@ -103,6 +103,7 @@ ln -s $HOME/.dotfiles/fontconfig-symbols.conf $HOME/.config/fontconfig/conf.d/10
 ```
 
 ## Zsh
+
 ```shell
 sudo apt-get install zsh
 chsh -s /bin/zsh
@@ -116,11 +117,13 @@ git clone git://github.com/zsh-users/zaw.git $ZSH_CUSTOM/plugins/zaw
 git clone https://github.com/djui/alias-tips.git $ZSH_CUSTOM/plugins/alias-tips
 git clone https://github.com/marzocchi/zsh-notify $ZSH_CUSTOM/plugins/zsh-notify
 ```
+
 ###### Prompt
+
 ![Commandline](screenshots/shell.png)
 
-
 ## Mpv
+
 ```shell
 sudo apt-get install mpv
 mkdir -p ~/.mpv/scripts
@@ -129,8 +132,8 @@ ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf
 ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME/.mpv/scripts/autoload.lua
 ```
 
-
 ## Sshrc
+
 ```
 git clone https://github.com/Russell91/sshrc.git
 cp sshrc/sshrc ~/.bin

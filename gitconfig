@@ -4,12 +4,8 @@
     excludesfile = ~/.gitignore
     attributesfile = ~/.gitattributes
 
-[user]
-    name = Keyvan Hedayati
-    email = k1.hedayati93@gmail.com
-
 [web]
-    browser = google-chrome
+    browser = firefox
 
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
@@ -108,3 +104,19 @@
     # today = diff @{yesterday}.. --stat
     # # Good web interface
     # web = instaweb
+[user]
+	name = Keyvan
+	email = keyvan42@pm.me
+[diff "sopsdiffer"]
+	textconv = sops -d
+[diff]
+	submodule = log
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

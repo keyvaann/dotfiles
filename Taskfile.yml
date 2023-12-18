@@ -1,0 +1,148 @@
+version: '3'
+
+tasks:
+  install-common:
+    cmds:
+      - sudo apt-get install git flathub age zsh jq colordiff htop
+    silent: true
+
+  install-flatpaks:
+    cmds:
+      - flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      - flatpak install flathub \
+          ch.protonmail.protonmail-bridge \
+          com.anydesk.Anydesk \
+          com.discordapp.Discord \
+          com.github.iwalton3.jellyfin-media-player \
+          com.github.tchx84.Flatseal \
+          com.rtosta.zapzap org.telegram.desktop \
+          com.valvesoftware.Steam \
+          com.visualstudio.code \
+          com.vivaldi.Vivaldi \
+          io.mpv.Mpv \
+          io.neovim.nvim \
+          org.ferdium.Ferdium \
+          nz.mega.MEGAsync \
+          org.clementine_player.Clementine \
+          org.cryptomator.Cryptomator \
+          org.darktable.Darktable \
+          org.gimp.GIMP \
+          org.gnome.meld \
+          org.kde.kdenlive \
+          org.libreoffice.LibreOffice \
+          org.nomacs.ImageLounge \
+          org.qbittorrent.qBittorrent \
+          org.remmina.Remmina
+    silent: true
+
+  install-kubectl:
+    dir: /tmp
+    cmds:
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+      - echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+      - sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      - kubectl version --client
+    silent: true
+
+  install-terraform:
+    dir: /tmp
+    cmds:
+      - set -e -o pipefail; curl -L https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+      - set -e -o pipefail; echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+      - sudo apt update
+      - sudo apt install terraform
+      - terraform version
+    silent: true
+
+  install-helm:
+    dir: /tmp
+    cmds:
+      - curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+      - sudo apt-get install apt-transport-https --yes
+      - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+      - sudo apt-get update
+      - sudo apt-get install helm
+      - helm version
+    silent: true
+
+  install-helmfile:
+    dir: /tmp
+    cmds:
+      - curl -fsSL -o helmfile.tar.gz "https://github.com/helmfile/helmfile/releases/download/{{.HELMFILE_VERSION}}/helmfile_$(echo -n {{.HELMFILE_VERSION}} | cut -c 2-)_{{.OS}}_{{.ARCH}}.tar.gz"
+      - tar xzf helmfile.tar.gz
+      - sudo install -o root -g root -m 0755 helmfile /usr/local/bin/helmfile
+      - helmfile --version
+    vars:
+      OS: 
+        sh: uname | tr '[:upper:]' '[:lower:]'
+      ARCH: 
+        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
+      HELMFILE_VERSION: 
+        sh: curl -Ls "https://github.com/helmfile/helmfile/releases" | \grep 'href="/helmfile/helmfile/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/helmfile\/helmfile\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
+    silent: true
+
+  install-tailscale:
+    dir: /tmp
+    cmds:
+      - curl -fsSL https://tailscale.com/install.sh | sh
+      - tailscale version
+    silent: true
+  
+  install-kitty:
+    dir: /tmp
+    cmds:
+      - curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+      - kitty -v
+    silent: true
+
+  install-docker:
+    dir: /tmp
+    cmds:
+      - echo {{.DISTRO}} {{.VERSION_CODENAME}}
+      - sudo apt-get update
+      - sudo apt-get install ca-certificates curl gnupg
+      - sudo install -m 0755 -d /etc/apt/keyrings
+      - curl -fsSL https://download.docker.com/linux/{{.DISTRO}}/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      - sudo chmod a+r /etc/apt/keyrings/docker.gpg
+      - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/{{.DISTRO}} {{.VERSION_CODENAME}} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      - sudo apt-get update
+      - sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    vars:
+      DISTRO: 
+        sh: . /etc/os-release && echo "$NAME" | tr '[:upper:]' '[:lower:]'
+      VERSION_CODENAME:
+        sh: . /etc/os-release && echo "$VERSION_CODENAME"
+  
+  install-aws:
+    dir: /tmp
+    cmds:
+      - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      - unzip awscliv2.zip
+      - sudo ./aws/install --update
+      - aws --version
+
+  install-mc:
+    dir: /tmp
+    cmds:
+      - curl -LO https://dl.min.io/client/mc/release/linux-amd64/mc
+      - sudo install -o root -g root -m 0755 mc /usr/local/bin/mc
+      - mc --version
+
+  install-sops:
+    dir: /tmp
+    cmds:
+      - curl -LO https://github.com/getsops/sops/releases/download/{{.HELMFILE_VERSION}}/sops-{{.HELMFILE_VERSION}}.linux.amd64
+      - mv sops-{{.HELMFILE_VERSION}}.linux.amd64 sops
+      - sudo install -o root -g root -m 0755 sops /usr/local/bin/sops
+      - sops --version
+    vars:
+      HELMFILE_VERSION: 
+        sh: curl -Ls "https://github.com/getsops/sops/releases" | \grep 'href="/getsops/sops/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/getsops\/sops\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
+
+  install-yq:
+    dir: /tmp
+    cmds:
+      - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O yq
+      - sudo install -o root -g root -m 0755 yq /usr/local/bin/yq
+      - yq --version

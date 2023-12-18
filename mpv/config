@@ -12,7 +12,7 @@ vo=vaapi
 #lavdopts=threads=2
 
 #Get rid of lag and delay
-cache = 32000
+cache = yes
 # cache-initial = 10000
 #cache-seek-min = 10
 #cache-pause-below = no

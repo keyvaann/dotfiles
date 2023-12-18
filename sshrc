@@ -27,7 +27,7 @@ alias t='tail -f'
 alias nano='nano -w'
 alias rm='rm -i'
 
-grep -Pzo "Match User $USER\s+PasswordAuthentication no" /etc/ssh/sshd_config > /dev/null || echo -e "\e[100mWARN\e[0m \e[91mPassword login is enabled\e[0m"
+#grep -Pzo "Match User $USER\s+PasswordAuthentication no" /etc/ssh/sshd_config > /dev/null || echo -e "\e[100mWARN\e[0m \e[91mPassword login is enabled\e[0m"
 
 disable_password_login() {
     echo "

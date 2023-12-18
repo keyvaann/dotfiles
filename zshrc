@@ -49,6 +49,9 @@ fastfile_var_prefix="@"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+    aws 
+    argocd
+    dnf
     # alias-tips
     git
     # colorize                    # Plugin for highlighting file content, colorize
@@ -58,8 +61,10 @@ plugins=(
     kubectl
     extract
     common-aliases
+    command-not-found
     colored-man-pages
     git-extras                  # Completion script for git-extras (http://github.com/visionmedia/git-extras).
+    git-prompt
     pip
     sudo
     # tmux
@@ -69,10 +74,8 @@ plugins=(
     zaw
     zsh-syntax-highlighting     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
 )
-echo "11"
 export ZSH_AUTOSUGGEST_USE_ASYNC="true"
 source $ZSH/oh-my-zsh.sh
-echo "22"
 
 # User configuration
 
@@ -176,7 +179,7 @@ zstyle ':filter-select' extended-search yes # see below
 
 export WORKON_HOME=~/.virtualenv
 mkdir -p $WORKON_HOME
-source /usr/local/bin/virtualenvwrapper.sh
+#source /usr/local/bin/virtualenvwrapper.sh
 
 LANG="en_US.utf8"
 LC_COLLATE="en_US.utf8"
@@ -189,17 +192,27 @@ LC_ALL="en_US.utf8"
 LANGUAGE="en_US.utf8"
 
 alias ssh=sshrc
-echo "33"
 
 bindkey "${terminfo[kcuu1]}" up-line-or-history
 bindkey "${terminfo[kcud1]}" down-line-or-history
 bindkey "^[/" insert-last-word
 
 alias vim=nvim
-export GOROOT=/usr/local/go
-export PATH=$PATH:$GOROOT/bin:/home/k1/src/golang/bin
-export GOPATH=~/src/golang
+#export GOROOT=/usr/local/go
+#export PATH=$PATH:$GOROOT/bin:/home/k1/src/golang/bin
+#export GOPATH=~/src/golang
 
-
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH:/opt/gradle/gradle-5.4.1/bin"
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /home/k1/.bin/mc mc
+
+if which kubectl > /dev/null 2>&1; then
+  # Load the kubectl completion code for bash into the current shell
+  source <(kubectl completion zsh)
+fi
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+export PATH="/home/k1/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+

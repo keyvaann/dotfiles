@@ -51,7 +51,6 @@ fastfile_var_prefix="@"
 plugins=(
     aws 
     argocd
-    dnf
     # alias-tips
     git
     # colorize                    # Plugin for highlighting file content, colorize
@@ -177,8 +176,8 @@ zstyle ':filter-select' rotate-list yes # enable rotation for filter-select
 zstyle ':filter-select' case-insensitive yes # enable case-insensitive search
 zstyle ':filter-select' extended-search yes # see below
 
-export WORKON_HOME=~/.virtualenv
-mkdir -p $WORKON_HOME
+#export WORKON_HOME=~/.virtualenv
+#mkdir -p $WORKON_HOME
 #source /usr/local/bin/virtualenvwrapper.sh
 
 LANG="en_US.utf8"
@@ -191,7 +190,7 @@ LC_TIME="en_US.utf8"
 LC_ALL="en_US.utf8"
 LANGUAGE="en_US.utf8"
 
-alias ssh=sshrc
+#alias ssh=sshrc
 
 bindkey "${terminfo[kcuu1]}" up-line-or-history
 bindkey "${terminfo[kcud1]}" down-line-or-history
@@ -212,7 +211,7 @@ if which kubectl > /dev/null 2>&1; then
 fi
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
-export PATH="/home/k1/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+#export PATH="/home/k1/.pyenv/bin:$PATH"
+#eval "$(pyenv init -)"
+#eval "$(pyenv virtualenv-init -)"
 

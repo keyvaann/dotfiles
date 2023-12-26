@@ -292,9 +292,10 @@ for_window {
     [app_id="whatsapp-for-linux"] move container to workspace $ws6
     [app_id="com.rtosta.zapzap"] move container to workspace $ws6
     [app_id="com.visualstudio.code"] move container to workspace $ws3
+    [app_id="org.ferdium.Ferdium"] move container to workspace $ws6
     [app_id="ch.protonmail.protonmail-bridge"] move container to workspace $ws6
     [app_id="com.valvesoftware.Steam"] move container to workspace $ws7
-    
+    [app_id="com.slack.Slack"] move container to workspace $ws6
 }
 
 exec {
@@ -324,24 +325,26 @@ exec {
     #/usr/bin/spotify
     #/usr/bin/steam
     #/usr/bin/skypeforlinux
-    /usr/bin/slack
+    # /usr/bin/slack
     #/usr/bin/megasync
-    /usr/bin/discord
+    # /usr/bin/discord
     #/usr/bin/pidgin
-    /usr/bin/protonmail-bridge
-    /usr/bin/evolution
+    # /usr/bin/protonmail-bridge
+    # /usr/bin/evolution
     setxkbmap -layout us,ir
+    flatpak run com.slack.Slack
     flatpak run org.telegram.desktop
     flatpak run com.github.iwalton3.jellyfin-media-player
     flatpak run com.rtosta.zapzap
-    flatpak run org.telegram.desktop
     flatpak run com.vivaldi.Vivaldi
     flatpak run com.discordapp.Discord
     flatpak run com.visualstudio.code
-    flatpak run ch.protonmail.protonmail-bridge
+    flatpak run org.ferdium.Ferdium
+    flatpak run com.vivaldi.Vivaldi
+    # flatpak run ch.protonmail.protonmail-bridge
     #/usr/bin/franz
     #/usr/bin/brave-browser-stable
-    /usr/bin/vivaldi-stable
+    # /usr/bin/vivaldi-stable
 }
 
 

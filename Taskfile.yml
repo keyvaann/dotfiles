@@ -3,13 +3,54 @@ version: '3'
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install git flathub age zsh jq colordiff htop
+      - sudo apt-get install flathub age colordiff htop postgresql-client-common
+    silent: true
+
+  update-independent-apps:
+    cmds:
+      - task: install-kubectl
+      - task: install-helmfile
+      - task: install-tailscale
+      - task: install-kitty
+      - task: install-aws
+      - task: install-mc
+      - task: install-sops
+      - task: install-yq
+      - task: install-jq
+      - task: install-argocd
+      - task: install-mullvad
+      - task: install-yt-dlp
+      - task: install-ulauncher
+
+  setup-config:
+    cmds:
+      - mkdir -p $HOME/.config/htop/ $HOME/.config/terminator $HOME/.ssh
+      - cmd: ln -s $HOME/.dotfiles/curlrc $HOME/.curlrc
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/flake8rc $HOME/.config/flake8
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/gitconfig $HOME/.gitconfig
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/gitignore $HOME/.gitignore
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/htoprc $HOME/.config/htop/htoprc
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/nanorc $HOME/.nanorc
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/psqlrc $HOME/.psqlrc
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/terminator_config $HOME/.config/terminator/config
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/ssh_config $HOME/.ssh/config
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
+        ignore_error: true
     silent: true
 
   install-flatpaks:
     cmds:
       - flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-      - flatpak install flathub \
+      - flatpak install -y flathub \
           ch.protonmail.protonmail-bridge \
           com.anydesk.Anydesk \
           com.discordapp.Discord \
@@ -19,7 +60,7 @@ tasks:
           com.valvesoftware.Steam \
           com.visualstudio.code \
           com.vivaldi.Vivaldi \
-          io.mpv.Mpv \
+          com.slack.Slack \
           io.neovim.nvim \
           org.ferdium.Ferdium \
           nz.mega.MEGAsync \
@@ -89,13 +130,34 @@ tasks:
       - tailscale version
     silent: true
   
-  install-kitty:
+  install-yt-dlp:
     dir: /tmp
     cmds:
-      - curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-      - kitty -v
+      - sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+      - sudo chmod a+rx /usr/local/bin/yt-dlp  # Make executable
+      - yt-dlp --version
     silent: true
 
+  install-kitty:
+    cmds:
+      - curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+      - mkdir -p $HOME/.config/kitty/
+      - cmd: ln -s $HOME/.dotfiles/kitty/kitty.conf $HOME/.config/kitty/kitty.conf
+        ignore_error: true      
+      - ~/.local/kitty.app/bin/kitty --version
+    silent: true
+
+  install-gcloud:
+    dir: /tmp
+    cmds:
+      - sudo apt-get update
+      - sudo apt-get install apt-transport-https ca-certificates gnupg curl sudo
+      - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+      - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+      - sudo apt-get update
+      - sudo apt-get install google-cloud-cli
+    silent: true
+  
   install-docker:
     dir: /tmp
     cmds:
@@ -113,6 +175,7 @@ tasks:
         sh: . /etc/os-release && echo "$NAME" | tr '[:upper:]' '[:lower:]'
       VERSION_CODENAME:
         sh: . /etc/os-release && echo "$VERSION_CODENAME"
+    silent: true
   
   install-aws:
     dir: /tmp
@@ -121,6 +184,7 @@ tasks:
       - unzip awscliv2.zip
       - sudo ./aws/install --update
       - aws --version
+    silent: true
 
   install-mc:
     dir: /tmp
@@ -128,6 +192,7 @@ tasks:
       - curl -LO https://dl.min.io/client/mc/release/linux-amd64/mc
       - sudo install -o root -g root -m 0755 mc /usr/local/bin/mc
       - mc --version
+    silent: true
 
   install-sops:
     dir: /tmp
@@ -139,6 +204,7 @@ tasks:
     vars:
       HELMFILE_VERSION: 
         sh: curl -Ls "https://github.com/getsops/sops/releases" | \grep 'href="/getsops/sops/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/getsops\/sops\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
+    silent: true        
 
   install-yq:
     dir: /tmp
@@ -146,3 +212,76 @@ tasks:
       - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O yq
       - sudo install -o root -g root -m 0755 yq /usr/local/bin/yq
       - yq --version
+    silent: true
+  
+  install-jq:
+    dir: /tmp
+    cmds:
+      - wget https://github.com/jqlang/jq/releases/latest/download/jq-linux-amd64 -O jq
+      - sudo install -o root -g root -m 0755 jq /usr/local/bin/jq
+      - jq --version
+    silent: true
+
+  install-argocd:
+    dir: /tmp
+    cmds:
+      - curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+      - sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+      - rm argocd-linux-amd64
+      - argocd version 
+    silent: true
+
+  install-mullvad:
+    dir: /tmp
+    cmds:
+      - curl -sSL -o mullvad.deb https://mullvad.net/en/download/app/deb/latest
+      - sudo dpkg -i mullvad.deb
+      - rm mullvad.deb
+      - mullvad version 
+    silent: true
+
+  install-sway:
+    cmds:
+      - sudo apt install sway clipman grim slurp dunst gammastep waybar swayidle
+      - mkdir -p ~/.config/sway ~/.config/waybar
+      - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/waybar/config $HOME/.config/waybar/config
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/waybar/style.css $HOME/.config/waybar/style.css
+        ignore_error: true
+    silent: true
+
+  install-zsh:
+    cmds:
+      - sudo apt install zsh
+      - chsh -s /bin/zsh
+      - git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh/custom
+      - ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
+      - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+      - git clone git://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+      - git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+      - git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
+      - git clone git://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
+      - git clone https://github.com/djui/alias-tips.git ~/.oh-my-zsh/custom/plugins/alias-tips
+      - git clone https://github.com/marzocchi/zsh-notify ~/.oh-my-zsh/custom/plugins/zsh-notify
+    silent: true
+
+  install-mpv:
+    cmds:
+      - flatpak install flathub io.mpv.Mpv
+      - mkdir -p ~/.mpv/scripts
+      - ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
+      - ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf
+      - ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME/.mpv/scripts/autoload.lua
+    silent: true
+
+  install-ulauncher:
+    dir: /tmp
+    cmds:
+      - curl -fsSL -o ulauncher.deb "https://github.com/Ulauncher/Ulauncher/releases/download/{{.ULAUNCHER_VERSION}}/ulauncher_$(echo -n {{.ULAUNCHER_VERSION}})_all.deb"
+      - sudo dpkg -i ulauncher.deb
+    vars:
+      ULAUNCHER_VERSION: 
+        sh: curl -Ls "https://github.com/Ulauncher/Ulauncher/releases" | \grep 'href="/Ulauncher/Ulauncher/releases/tag/[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/Ulauncher\/Ulauncher\/releases\/tag\/([0-9\.]+)".*/\1/g' | head -1
+    silent: true

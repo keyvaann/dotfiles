@@ -4,7 +4,7 @@ tasks:
   install-common:
     cmds:
       - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common
-      - flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      - sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     silent: true
 
   update-independent-apps:
@@ -164,13 +164,13 @@ tasks:
     cmds:
       - echo {{.DISTRO}} {{.VERSION_CODENAME}}
       - sudo apt-get update
-      - sudo apt-get install ca-certificates curl gnupg
+      - sudo apt-get -y install ca-certificates curl gnupg
       - sudo install -m 0755 -d /etc/apt/keyrings
       - curl -fsSL https://download.docker.com/linux/{{.DISTRO}}/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       - sudo chmod a+r /etc/apt/keyrings/docker.gpg
       - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/{{.DISTRO}} {{.VERSION_CODENAME}} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
       - sudo apt-get update
-      - sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      - sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     vars:
       DISTRO: 
         sh: . /etc/os-release && echo "$NAME" | tr '[:upper:]' '[:lower:]'
@@ -229,7 +229,7 @@ tasks:
       - curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
       - sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
       - rm argocd-linux-amd64
-      - argocd version 
+      - argocd version --argocd
     silent: true
 
   install-mullvad:
@@ -244,12 +244,15 @@ tasks:
   install-sway:
     cmds:
       - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle
-      - mkdir -p ~/.config/sway ~/.config/waybar
+      - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols
+      - pip install khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
         ignore_error: true
       - cmd: ln -s $HOME/.dotfiles/waybar/config $HOME/.config/waybar/config
         ignore_error: true
       - cmd: ln -s $HOME/.dotfiles/waybar/style.css $HOME/.config/waybar/style.css
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/xkb/custom $HOME/.xkb/symbols/custom 
         ignore_error: true
     silent: true
 
@@ -271,7 +274,7 @@ tasks:
   install-mpv:
     deps: [install-common]
     cmds:
-      - flatpak install flathub io.mpv.Mpv
+      - flatpak install -y flathub io.mpv.Mpv
       - mkdir -p ~/.mpv/scripts
       - ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
       - ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf

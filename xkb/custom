@@ -1,0 +1,8 @@
+xkb_symbols "basic" {
+    include "us"
+    name[Group1] = "ussr";
+    # Make CapsLock Mod4 and Windows key Mod5
+    key <CAPS> { [ Hyper_L ] };
+    modifier_map Mod4 { Hyper_L };
+};
+

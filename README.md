@@ -8,19 +8,11 @@ My linux config files, put them here for backup and sharing.
 
 ```shell
 
+sudo apt install git curl
+git clone https://github.com/K1Hyve/dotfiles.git .dotfiles
 sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
-mkdir -p $HOME/.config/htop/ $HOME/.config/terminator $HOME/.ssh
-ln -s $HOME/.dotfiles/curlrc $HOME/.curlrc
-ln -s $HOME/.dotfiles/flake8rc $HOME/.config/flake8
-ln -s $HOME/.dotfiles/gitconfig $HOME/.gitconfig
-ln -s $HOME/.dotfiles/gitignore $HOME/.gitignore
-ln -s $HOME/.dotfiles/htoprc $HOME/.config/htop/htoprc
-ln -s $HOME/.dotfiles/nanorc $HOME/.nanorc
-ln -s $HOME/.dotfiles/psqlrc $HOME/.psqlrc
-ln -s $HOME/.dotfiles/terminator_config $HOME/.config/terminator/config
-ln -s $HOME/.dotfiles/ssh_config $HOME/.ssh/config
-ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
+
 ```
 
 ## Emacs

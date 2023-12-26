@@ -3,7 +3,8 @@ version: '3'
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install flathub age colordiff htop postgresql-client-common
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common
+      - flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     silent: true
 
   update-independent-apps:
@@ -242,7 +243,7 @@ tasks:
 
   install-sway:
     cmds:
-      - sudo apt install sway clipman grim slurp dunst gammastep waybar swayidle
+      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle
       - mkdir -p ~/.config/sway ~/.config/waybar
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
         ignore_error: true
@@ -255,19 +256,20 @@ tasks:
   install-zsh:
     cmds:
       - sudo apt install zsh
-      - chsh -s /bin/zsh
-      - git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh/custom
+      - sudo chsh -s /bin/zsh
+      - git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh/custom
       - ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
       - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
-      - git clone git://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+      - git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
       - git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
       - git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
-      - git clone git://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
+      - git clone https://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
       - git clone https://github.com/djui/alias-tips.git ~/.oh-my-zsh/custom/plugins/alias-tips
       - git clone https://github.com/marzocchi/zsh-notify ~/.oh-my-zsh/custom/plugins/zsh-notify
     silent: true
 
   install-mpv:
+    deps: [install-common]
     cmds:
       - flatpak install flathub io.mpv.Mpv
       - mkdir -p ~/.mpv/scripts
@@ -280,7 +282,9 @@ tasks:
     dir: /tmp
     cmds:
       - curl -fsSL -o ulauncher.deb "https://github.com/Ulauncher/Ulauncher/releases/download/{{.ULAUNCHER_VERSION}}/ulauncher_$(echo -n {{.ULAUNCHER_VERSION}})_all.deb"
-      - sudo dpkg -i ulauncher.deb
+      - cmd: sudo dpkg -i ulauncher.deb
+        ignore_error: true
+      - sudo apt install -f 
     vars:
       ULAUNCHER_VERSION: 
         sh: curl -Ls "https://github.com/Ulauncher/Ulauncher/releases" | \grep 'href="/Ulauncher/Ulauncher/releases/tag/[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/Ulauncher\/Ulauncher\/releases\/tag\/([0-9\.]+)".*/\1/g' | head -1

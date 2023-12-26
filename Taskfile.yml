@@ -243,7 +243,7 @@ tasks:
 
   install-sway:
     cmds:
-      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle
+      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome
       - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols
       - pip install khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
@@ -260,7 +260,7 @@ tasks:
     cmds:
       - sudo apt install zsh
       - sudo chsh -s /bin/zsh
-      - git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh/custom
+      - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       - ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
       - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
       - git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions

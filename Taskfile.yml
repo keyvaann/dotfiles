@@ -3,7 +3,7 @@ version: '3'
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip
       - sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
     silent: true
 
@@ -244,7 +244,7 @@ tasks:
   install-sway:
     cmds:
       - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome
-      - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols
+      - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols ~/.config/dunst/
       - pip install khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
         ignore_error: true
@@ -254,6 +254,8 @@ tasks:
         ignore_error: true
       - cmd: ln -s $HOME/.dotfiles/xkb/custom $HOME/.xkb/symbols/custom 
         ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/dunst/dunstrc $HOME/.config/dunst/dunstrc 
+        ignore_error: true        
     silent: true
 
   install-zsh:

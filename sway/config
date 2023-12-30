@@ -259,43 +259,59 @@ bindsym {
 }
 
 for_window {
+    # ws1
     [class="Google-chrome"] move container to workspace $ws1
     [class="Brave-browser"] move container to workspace $ws1
     [class="Opera"] move container to workspace $ws1
+    [class="Vivaldi-stable"] move container to workspace $ws1
+    [app_id="com.vivaldi.Vivaldi"] move container to workspace $ws1
+
+    # ws2
     [class="Emacs"] move container to workspace $ws2
     [class="Terminator"] move container to workspace $ws2
     [class="Gnome-terminal"] move container to workspace $ws2
     [app_id="kitty"] move container to workspace $ws2
+
+    # ws3
     [class="Atom"] move container to workspace $ws3
     [class="Code"] move container to workspace $ws3
+    [app_id="com.visualstudio.code"] move container to workspace $ws3
+
+    # ws4
     [class="nemo"] move container to workspace $ws4
     [class="Nemo"] move container to workspace $ws4
     [app_id="org.gnome.Nautilus"] move container to workspace $ws4
+
+    # ws5
+    [app_id="org.jellyfin.jellyfinmediaplayer"] move container to workspace $ws5
+
+    # ws6
+    [app_id="ch.proton.bridge-gui"] move container to workspace $ws6
+    [app_id="ch.protonmail.protonmail-bridge"] move container to workspace $ws6
+    [app_id="com.discordapp.Discord"] move container to workspace $ws6
+    [app_id="com.rtosta.zapzap"] move container to workspace $ws6
+    [app_id="com.slack.Slack"] move container to workspace $ws6
+    [app_id="evolution"] move container to workspace $ws6
+    [app_id="org.ferdium.Ferdium"] move container to workspace $ws6
+    [app_id="org.telegram.desktop"] move container to workspace $ws6
+    [app_id="whatsapp-for-linux"] move container to workspace $ws6
+    [class="discord"] move container to workspace $ws6
+    [class="Franz"] move container to workspace $ws6
     [class="pidgin"] move container to workspace $ws6
     [class="Pidgin"] move container to workspace $ws6
     [class="skype"] move container to workspace $ws6
-    [class="Telegram"] move container to workspace $ws6
-    [app_id="org.telegram.desktop"] move container to workspace $ws6
     [class="Skype"] move container to workspace $ws6
-    [class="discord"] move container to workspace $ws6
     [class="Slack"] move container to workspace $ws6
-    [title="^Picture in Picture$"] floating enable, sticky enable
-    [app_id="evolution"] move container to workspace $ws6
-    [app_id="ch.proton.bridge-gui"] move container to workspace $ws6
-    [app_id="mpv"] floating enable, sticky enable
-    [class="Franz"] move container to workspace $ws6
-    [class="Vivaldi-stable"] move container to workspace $ws1
-    [app_id="org.telegram.desktop"] move container to workspace $ws6
-    [app_id="com.discordapp.Discord"] move container to workspace $ws6
-    [app_id="com.vivaldi.Vivaldi"] move container to workspace $ws1
-    [app_id="org.jellyfin.jellyfinmediaplayer"] move container to workspace $ws5
-    [app_id="whatsapp-for-linux"] move container to workspace $ws6
-    [app_id="com.rtosta.zapzap"] move container to workspace $ws6
-    [app_id="com.visualstudio.code"] move container to workspace $ws3
-    [app_id="org.ferdium.Ferdium"] move container to workspace $ws6
-    [app_id="ch.protonmail.protonmail-bridge"] move container to workspace $ws6
+    [class="Telegram"] move container to workspace $ws6
+
+    # ws7 
     [app_id="com.valvesoftware.Steam"] move container to workspace $ws7
-    [app_id="com.slack.Slack"] move container to workspace $ws6
+
+    # other
+    [app_id="mpv"] floating enable, sticky enable
+    [title="^Picture in Picture$"] floating enable, sticky enable
+    [class=".*"] inhibit_idle fullscreen
+    [app_id=".*"] inhibit_idle fullscreen
 }
 
 exec {
@@ -335,9 +351,9 @@ exec {
     flatpak run com.slack.Slack
     flatpak run org.telegram.desktop
     flatpak run com.github.iwalton3.jellyfin-media-player
-    flatpak run com.rtosta.zapzap
+    # flatpak run com.rtosta.zapzap
     flatpak run com.vivaldi.Vivaldi
-    flatpak run com.discordapp.Discord
+    # flatpak run com.discordapp.Discord
     flatpak run com.visualstudio.code
     flatpak run org.ferdium.Ferdium
     flatpak run com.vivaldi.Vivaldi

@@ -124,6 +124,22 @@ tasks:
         sh: curl -Ls "https://github.com/helmfile/helmfile/releases" | \grep 'href="/helmfile/helmfile/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/helmfile\/helmfile\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
     silent: true
 
+  install-kustomize:
+    dir: /tmp
+    cmds:
+      - curl -fsSL -o kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F{{.KUSTOMIZE_VERSION}}/kustomize_$(echo -n {{.KUSTOMIZE_VERSION}})_{{.OS}}_{{.ARCH}}.tar.gz"
+      - tar xzf kustomize.tar.gz
+      - sudo install -o root -g root -m 0755 kustomize /usr/local/bin/kustomize
+      - kustomize version
+    vars:
+      OS: 
+        sh: uname | tr '[:upper:]' '[:lower:]'
+      ARCH: 
+        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
+      KUSTOMIZE_VERSION: 
+        sh: curl -Ls "https://github.com/kubernetes-sigs/kustomize/releases" | \grep 'href="/kubernetes-sigs/kustomize/releases/tag/kustomize%2Fv[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/kubernetes-sigs\/kustomize\/releases\/tag\/kustomize%2F(v[0-9\.]+)".*/\1/g' | head -1
+    # silent: true
+
   install-tailscale:
     dir: /tmp
     cmds:

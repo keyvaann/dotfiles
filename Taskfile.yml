@@ -4,26 +4,10 @@ tasks:
   install-common:
     cmds:
       - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip
-      - sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    silent: true
-
-  update-independent-apps:
-    cmds:
-      - task: install-kubectl
-      - task: install-helmfile
-      - task: install-tailscale
-      - task: install-kitty
-      - task: install-aws
-      - task: install-mc
-      - task: install-sops
-      - task: install-yq
-      - task: install-jq
-      - task: install-argocd
-      - task: install-mullvad
-      - task: install-yt-dlp
-      - task: install-ulauncher
 
   setup-config:
+    deps:
+      - install-common
     cmds:
       - mkdir -p $HOME/.config/htop/ $HOME/.config/terminator $HOME/.ssh
       - cmd: ln -s $HOME/.dotfiles/curlrc $HOME/.curlrc
@@ -46,11 +30,12 @@ tasks:
         ignore_error: true
       - cmd: ln -s $HOME/.dotfiles/wgetrc $HOME/.wgetrc
         ignore_error: true
-    silent: true
 
   install-flatpaks:
+    deps:
+      - setup-config
     cmds:
-      - flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      - flatpak -v remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
       - flatpak install -y flathub \
           ch.protonmail.protonmail-bridge \
           com.anydesk.Anydesk \
@@ -75,30 +60,24 @@ tasks:
           org.nomacs.ImageLounge \
           org.qbittorrent.qBittorrent \
           org.remmina.Remmina
-    silent: true
-
-  install-kubectl:
-    dir: /tmp
-    cmds:
-      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-      - echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
-      - sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-      - kubectl version --client
-    silent: true
 
   install-terraform:
     dir: /tmp
+    deps:
+      - install-flatpaks
     cmds:
       - set -e -o pipefail; curl -L https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
       - set -e -o pipefail; echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
       - sudo apt update
       - sudo apt install terraform
       - terraform version
-    silent: true
+    status:
+      - test -f /usr/bin/terraform
 
   install-helm:
     dir: /tmp
+    deps:
+      - install-terraform
     cmds:
       - curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
       - sudo apt-get install apt-transport-https --yes
@@ -106,66 +85,13 @@ tasks:
       - sudo apt-get update
       - sudo apt-get install helm
       - helm version
-    silent: true
-
-  install-helmfile:
-    dir: /tmp
-    cmds:
-      - curl -fsSL -o helmfile.tar.gz "https://github.com/helmfile/helmfile/releases/download/{{.HELMFILE_VERSION}}/helmfile_$(echo -n {{.HELMFILE_VERSION}} | cut -c 2-)_{{.OS}}_{{.ARCH}}.tar.gz"
-      - tar xzf helmfile.tar.gz
-      - sudo install -o root -g root -m 0755 helmfile /usr/local/bin/helmfile
-      - helmfile --version
-    vars:
-      OS: 
-        sh: uname | tr '[:upper:]' '[:lower:]'
-      ARCH: 
-        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
-      HELMFILE_VERSION: 
-        sh: curl -Ls "https://github.com/helmfile/helmfile/releases" | \grep 'href="/helmfile/helmfile/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/helmfile\/helmfile\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
-    silent: true
-
-  install-kustomize:
-    dir: /tmp
-    cmds:
-      - curl -fsSL -o kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F{{.KUSTOMIZE_VERSION}}/kustomize_$(echo -n {{.KUSTOMIZE_VERSION}})_{{.OS}}_{{.ARCH}}.tar.gz"
-      - tar xzf kustomize.tar.gz
-      - sudo install -o root -g root -m 0755 kustomize /usr/local/bin/kustomize
-      - kustomize version
-    vars:
-      OS: 
-        sh: uname | tr '[:upper:]' '[:lower:]'
-      ARCH: 
-        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
-      KUSTOMIZE_VERSION: 
-        sh: curl -Ls "https://github.com/kubernetes-sigs/kustomize/releases" | \grep 'href="/kubernetes-sigs/kustomize/releases/tag/kustomize%2Fv[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/kubernetes-sigs\/kustomize\/releases\/tag\/kustomize%2F(v[0-9\.]+)".*/\1/g' | head -1
-    # silent: true
-
-  install-tailscale:
-    dir: /tmp
-    cmds:
-      - curl -fsSL https://tailscale.com/install.sh | sh
-      - tailscale version
-    silent: true
-  
-  install-yt-dlp:
-    dir: /tmp
-    cmds:
-      - sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
-      - sudo chmod a+rx /usr/local/bin/yt-dlp  # Make executable
-      - yt-dlp --version
-    silent: true
-
-  install-kitty:
-    cmds:
-      - curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-      - mkdir -p $HOME/.config/kitty/
-      - cmd: ln -s $HOME/.dotfiles/kitty/kitty.conf $HOME/.config/kitty/kitty.conf
-        ignore_error: true      
-      - ~/.local/kitty.app/bin/kitty --version
-    silent: true
+    status:
+      - test -f /usr/bin/helm
 
   install-gcloud:
     dir: /tmp
+    deps:
+      - install-helm
     cmds:
       - sudo apt-get update
       - sudo apt-get install apt-transport-https ca-certificates gnupg curl sudo
@@ -173,12 +99,14 @@ tasks:
       - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
       - sudo apt-get update
       - sudo apt-get install google-cloud-cli
-    silent: true
-  
+    status:
+      - test -f /usr/bin/dockerd
+
   install-docker:
     dir: /tmp
+    deps:
+      - install-gcloud
     cmds:
-      - echo {{.DISTRO}} {{.VERSION_CODENAME}}
       - sudo apt-get update
       - sudo apt-get -y install ca-certificates curl gnupg
       - sudo install -m 0755 -d /etc/apt/keyrings
@@ -188,78 +116,18 @@ tasks:
       - sudo apt-get update
       - sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     vars:
-      DISTRO: 
+      DISTRO:
         sh: . /etc/os-release && echo "$NAME" | tr '[:upper:]' '[:lower:]'
       VERSION_CODENAME:
         sh: . /etc/os-release && echo "$VERSION_CODENAME"
-    silent: true
-  
-  install-aws:
-    dir: /tmp
-    cmds:
-      - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      - unzip awscliv2.zip
-      - sudo ./aws/install --update
-      - aws --version
-    silent: true
-
-  install-mc:
-    dir: /tmp
-    cmds:
-      - curl -LO https://dl.min.io/client/mc/release/linux-amd64/mc
-      - sudo install -o root -g root -m 0755 mc /usr/local/bin/mc
-      - mc --version
-    silent: true
-
-  install-sops:
-    dir: /tmp
-    cmds:
-      - curl -LO https://github.com/getsops/sops/releases/download/{{.HELMFILE_VERSION}}/sops-{{.HELMFILE_VERSION}}.linux.amd64
-      - mv sops-{{.HELMFILE_VERSION}}.linux.amd64 sops
-      - sudo install -o root -g root -m 0755 sops /usr/local/bin/sops
-      - sops --version
-    vars:
-      HELMFILE_VERSION: 
-        sh: curl -Ls "https://github.com/getsops/sops/releases" | \grep 'href="/getsops/sops/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/getsops\/sops\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
-    silent: true        
-
-  install-yq:
-    dir: /tmp
-    cmds:
-      - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O yq
-      - sudo install -o root -g root -m 0755 yq /usr/local/bin/yq
-      - yq --version
-    silent: true
-  
-  install-jq:
-    dir: /tmp
-    cmds:
-      - wget https://github.com/jqlang/jq/releases/latest/download/jq-linux-amd64 -O jq
-      - sudo install -o root -g root -m 0755 jq /usr/local/bin/jq
-      - jq --version
-    silent: true
-
-  install-argocd:
-    dir: /tmp
-    cmds:
-      - curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
-      - sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
-      - rm argocd-linux-amd64
-      - argocd version --argocd
-    silent: true
-
-  install-mullvad:
-    dir: /tmp
-    cmds:
-      - curl -sSL -o mullvad.deb https://mullvad.net/en/download/app/deb/latest
-      - sudo dpkg -i mullvad.deb
-      - rm mullvad.deb
-      - mullvad version 
-    silent: true
+    status:
+      - test -f /usr/bin/dockerd
 
   install-sway:
+    deps:
+      - install-docker
     cmds:
-      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome
+      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman
       - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols ~/.config/dunst/
       - pip install khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
@@ -268,13 +136,17 @@ tasks:
         ignore_error: true
       - cmd: ln -s $HOME/.dotfiles/waybar/style.css $HOME/.config/waybar/style.css
         ignore_error: true
-      - cmd: ln -s $HOME/.dotfiles/xkb/custom $HOME/.xkb/symbols/custom 
+      - cmd: ln -s $HOME/.dotfiles/xkb/custom $HOME/.xkb/symbols/custom
         ignore_error: true
-      - cmd: ln -s $HOME/.dotfiles/dunst/dunstrc $HOME/.config/dunst/dunstrc 
-        ignore_error: true        
-    silent: true
+      - cmd: ln -s $HOME/.dotfiles/dunst/dunstrc $HOME/.config/dunst/dunstrc
+        ignore_error: true
+    status:
+      - test -f /usr/bin/sway
+      - test -f $HOME/.config/sway/config
 
   install-zsh:
+    deps:
+      - install-sway
     cmds:
       - sudo apt install zsh
       - sudo chsh -s /bin/zsh
@@ -287,26 +159,199 @@ tasks:
       - git clone https://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
       - git clone https://github.com/djui/alias-tips.git ~/.oh-my-zsh/custom/plugins/alias-tips
       - git clone https://github.com/marzocchi/zsh-notify ~/.oh-my-zsh/custom/plugins/zsh-notify
-    silent: true
+    status:
+      - test -f /bin/zsh
+      - test -d ~/.oh-my-zsh/
 
   install-mpv:
-    deps: [install-common]
+    deps:
+      - install-zsh
     cmds:
       - flatpak install -y flathub io.mpv.Mpv
-      - mkdir -p ~/.mpv/scripts
-      - ln -s $HOME/.dotfiles/mpv/config $HOME/.mpv/config
-      - ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.mpv/input.conf
-      - ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME/.mpv/scripts/autoload.lua
-    silent: true
+      - mkdir -p $HOME/.var/app/io.mpv.Mpv/scripts
+      - cmd: ln -s $HOME/.dotfiles/mpv/config $HOME/.var/app/io.mpv.Mpv/config
+        ignore_error: true
+      - cmd: ln -s $HOME/.dotfiles/mpv/input.conf $HOME/.var/app/io.mpv.Mpv/input.conf
+        ignore_error: true
+      - cmd: ln -s /usr/share/doc/mpv/tools/lua/autoload.lua $HOME/.var/app/io.mpv.Mpv/scripts/autoload.lua
+        ignore_error: true
 
-  install-ulauncher:
+  install-tailscale:
     dir: /tmp
+    deps:
+      - install-mpv
+    cmds:
+      - curl -fsSL https://tailscale.com/install.sh | sh
+      - tailscale version
+    status:
+      - test -f /usr/bin/tailscale
+
+  install-once:
+    deps:
+      - install-tailscale
+
+# --------------------------------------------- Install or update ----------------------------------------
+
+  install-or-update-kubectl:
+    dir: /tmp
+    cmds:
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+      - echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+      - sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+      - kubectl version --client
+
+  install-or-update-helmfile:
+    dir: /tmp
+    deps:
+      - install-or-update-kubectl
+    cmds:
+      - curl -fsSL -o helmfile.tar.gz "https://github.com/helmfile/helmfile/releases/download/{{.HELMFILE_VERSION}}/helmfile_$(echo -n {{.HELMFILE_VERSION}} | cut -c 2-)_{{.OS}}_{{.ARCH}}.tar.gz"
+      - tar xzf helmfile.tar.gz
+      - sudo install -o root -g root -m 0755 helmfile /usr/local/bin/helmfile
+      - helmfile --version
+    vars:
+      OS:
+        sh: uname | tr '[:upper:]' '[:lower:]'
+      ARCH:
+        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
+      HELMFILE_VERSION:
+        sh: curl -Ls "https://github.com/helmfile/helmfile/releases" | \grep 'href="/helmfile/helmfile/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/helmfile\/helmfile\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
+
+  install-or-update-kustomize:
+    dir: /tmp
+    deps:
+      - install-or-update-helmfile
+    cmds:
+      - curl -fsSL -o kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F{{.KUSTOMIZE_VERSION}}/kustomize_$(echo -n {{.KUSTOMIZE_VERSION}})_{{.OS}}_{{.ARCH}}.tar.gz"
+      - tar xzf kustomize.tar.gz
+      - sudo install -o root -g root -m 0755 kustomize /usr/local/bin/kustomize
+      - kustomize version
+    vars:
+      OS:
+        sh: uname | tr '[:upper:]' '[:lower:]'
+      ARCH:
+        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
+      KUSTOMIZE_VERSION:
+        sh: curl -Ls "https://github.com/kubernetes-sigs/kustomize/releases" | \grep 'href="/kubernetes-sigs/kustomize/releases/tag/kustomize%2Fv[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/kubernetes-sigs\/kustomize\/releases\/tag\/kustomize%2F(v[0-9\.]+)".*/\1/g' | head -1
+
+  install-or-update-tailscale:
+    dir: /tmp
+    deps:
+      - install-or-update-kustomize
+    cmds:
+      - curl -fsSL https://tailscale.com/install.sh | sh
+      - tailscale version
+
+  install-or-update-yt-dlp:
+    dir: /tmp
+    deps:
+      - install-or-update-tailscale
+    cmds:
+      - sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+      - sudo chmod a+rx /usr/local/bin/yt-dlp  # Make executable
+      - yt-dlp --version
+
+  install-or-update-kitty:
+    deps:
+      - install-or-update-yt-dlp
+    cmds:
+      - curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+      - mkdir -p $HOME/.config/kitty/
+      - cmd: ln -s $HOME/.dotfiles/kitty/kitty.conf $HOME/.config/kitty/kitty.conf
+        ignore_error: true
+      - ~/.local/kitty.app/bin/kitty --version
+
+  install-or-update-aws:
+    dir: /tmp
+    deps:
+      - install-or-update-kitty
+    cmds:
+      - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      - unzip awscliv2.zip
+      - sudo ./aws/install --update
+      - aws --version
+
+  install-or-update-mc:
+    dir: /tmp
+    deps:
+      - install-or-update-aws
+    cmds:
+      - curl -LO https://dl.min.io/client/mc/release/linux-amd64/mc
+      - sudo install -o root -g root -m 0755 mc /usr/local/bin/mc
+      - mc --version
+
+  install-or-update-sops:
+    dir: /tmp
+    deps:
+      - install-or-update-mc
+    cmds:
+      - curl -LO https://github.com/getsops/sops/releases/download/{{.SOPS_VERSION}}/sops-{{.SOPS_VERSION}}.linux.amd64
+      - mv sops-{{.SOPS_VERSION}}.linux.amd64 sops
+      - sudo install -o root -g root -m 0755 sops /usr/local/bin/sops
+      - sops --version
+    vars:
+      SOPS_VERSION:
+        sh: curl -Ls "https://github.com/getsops/sops/releases" | \grep 'href="/getsops/sops/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/getsops\/sops\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
+
+  install-or-update-yq:
+    dir: /tmp
+    deps:
+      - install-or-update-sops
+    cmds:
+      - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O yq
+      - sudo install -o root -g root -m 0755 yq /usr/local/bin/yq
+      - yq --version
+
+  install-or-update-jq:
+    dir: /tmp
+    deps:
+      - install-or-update-yq
+    cmds:
+      - wget https://github.com/jqlang/jq/releases/latest/download/jq-linux-amd64 -O jq
+      - sudo install -o root -g root -m 0755 jq /usr/local/bin/jq
+      - jq --version
+
+  install-or-update-argocd:
+    dir: /tmp
+    deps:
+      - install-or-update-jq
+    cmds:
+      - curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+      - sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+      - rm argocd-linux-amd64
+      - argocd version --client
+
+  install-or-update-mullvad:
+    dir: /tmp
+    deps:
+      - install-or-update-argocd
+    cmds:
+      - curl -sSL -o mullvad.deb https://mullvad.net/en/download/app/deb/latest
+      - sudo dpkg -i mullvad.deb
+      - rm mullvad.deb
+      - mullvad version
+
+  install-or-update-ulauncher:
+    dir: /tmp
+    deps:
+      - install-or-update-mullvad
     cmds:
       - curl -fsSL -o ulauncher.deb "https://github.com/Ulauncher/Ulauncher/releases/download/{{.ULAUNCHER_VERSION}}/ulauncher_$(echo -n {{.ULAUNCHER_VERSION}})_all.deb"
       - cmd: sudo dpkg -i ulauncher.deb
         ignore_error: true
-      - sudo apt install -f 
+      - sudo apt install -f
     vars:
-      ULAUNCHER_VERSION: 
+      ULAUNCHER_VERSION:
         sh: curl -Ls "https://github.com/Ulauncher/Ulauncher/releases" | \grep 'href="/Ulauncher/Ulauncher/releases/tag/[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/Ulauncher\/Ulauncher\/releases\/tag\/([0-9\.]+)".*/\1/g' | head -1
-    silent: true
+
+  install-or-update:
+    deps:
+      - install-or-update-ulauncher
+
+# ------------------------------------------------------------------------------------------------------
+
+  install-all:
+    deps:
+      - install-once
+      - install-or-update

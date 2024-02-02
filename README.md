@@ -7,12 +7,11 @@ My linux config files, put them here for backup and sharing.
 ## General
 
 ```shell
-
 sudo apt install git curl
-git clone https://github.com/K1Hyve/dotfiles.git .dotfiles
+git clone https://github.com/K1Hyve/dotfiles.git ~/.dotfiles
 sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
-
-
+cd ~/.dotfiles
+task install-all
 ```
 
 ## Emacs
@@ -34,7 +33,7 @@ ln -s $HOME/.dotfiles/emacs/prelude-modules.el $HOME/.emacs.d/prelude-modules.el
 
 Due to some bug we need to install Jedi version 0.9 as instructed below
 
-```
+```shell
 git clone https://github.com/davidhalter/jedi
 cd jedi
 git checkout v0.9.0

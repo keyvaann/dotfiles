@@ -11,7 +11,11 @@ export ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+CASE_SENSITIVE="false"
+
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 DISABLE_AUTO_UPDATE="true"
@@ -29,6 +33,9 @@ DISABLE_AUTO_UPDATE="true"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
 COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
@@ -201,17 +208,9 @@ alias vim=nvim
 #export PATH=$PATH:$GOROOT/bin:/home/k1/src/golang/bin
 #export GOPATH=~/src/golang
 
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH:/opt/gradle/gradle-5.4.1/bin"
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /home/k1/.bin/mc mc
-
-if which kubectl > /dev/null 2>&1; then
-  # Load the kubectl completion code for bash into the current shell
-  source <(kubectl completion zsh)
-fi
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+complete -o nospace -C /usr/local/bin/mc mc
 
 #export PATH="/home/k1/.pyenv/bin:$PATH"
 #eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"
-

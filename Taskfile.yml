@@ -3,7 +3,7 @@ version: '3'
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim
 
   setup-config:
     deps:
@@ -47,7 +47,6 @@ tasks:
           com.visualstudio.code \
           com.vivaldi.Vivaldi \
           com.slack.Slack \
-          io.neovim.nvim \
           org.ferdium.Ferdium \
           nz.mega.MEGAsync \
           org.clementine_player.Clementine \
@@ -151,6 +150,7 @@ tasks:
       - sudo apt install zsh
       - sudo chsh -s /bin/zsh
       - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      - rm $HOME/.zshrc
       - ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
       - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
       - git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -159,6 +159,8 @@ tasks:
       - git clone https://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
       - git clone https://github.com/djui/alias-tips.git ~/.oh-my-zsh/custom/plugins/alias-tips
       - git clone https://github.com/marzocchi/zsh-notify ~/.oh-my-zsh/custom/plugins/zsh-notify
+    vars:
+      RUNZSH: false
     status:
       - test -f /bin/zsh
       - test -d ~/.oh-my-zsh/
@@ -218,10 +220,25 @@ tasks:
       HELMFILE_VERSION:
         sh: curl -Ls "https://github.com/helmfile/helmfile/releases" | \grep 'href="/helmfile/helmfile/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/helmfile\/helmfile\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
 
-  install-or-update-kustomize:
+  install-or-update-krew:
     dir: /tmp
     deps:
       - install-or-update-helmfile
+    cmds:
+      - curl -fsSL -o krew.tar.gz "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-{{.OS}}_{{.ARCH}}.tar.gz"
+      - tar xzf krew.tar.gz
+      - sudo install -o root -g root -m 0755 krew-{{.OS}}_{{.ARCH}} /usr/local/bin/krew
+      - krew version
+    vars:
+      OS:
+        sh: uname | tr '[:upper:]' '[:lower:]'
+      ARCH:
+        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
+
+  install-or-update-kustomize:
+    dir: /tmp
+    deps:
+      - install-or-update-krew
     cmds:
       - curl -fsSL -o kustomize.tar.gz "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F{{.KUSTOMIZE_VERSION}}/kustomize_$(echo -n {{.KUSTOMIZE_VERSION}})_{{.OS}}_{{.ARCH}}.tar.gz"
       - tar xzf kustomize.tar.gz
@@ -279,6 +296,7 @@ tasks:
     cmds:
       - curl -LO https://dl.min.io/client/mc/release/linux-amd64/mc
       - sudo install -o root -g root -m 0755 mc /usr/local/bin/mc
+      - mc --autocompletion
       - mc --version
 
   install-or-update-sops:

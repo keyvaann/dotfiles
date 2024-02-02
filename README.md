@@ -1,6 +1,6 @@
 # Description
 
-My linux config files, put them here for backup and sharing.
+My linux config files, put them here for backup and sharing. It's most tested on and aimed at Ubuntu distributions, it might work without changes on Debian based systems as well.
 
 # Installation
 

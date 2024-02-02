@@ -1,5 +1,11 @@
 version: '3'
 
+env:
+  OS:
+    sh: uname | tr '[:upper:]' '[:lower:]'
+  ARCH:
+    sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
+
 tasks:
   install-common:
     cmds:
@@ -213,10 +219,6 @@ tasks:
       - sudo install -o root -g root -m 0755 helmfile /usr/local/bin/helmfile
       - helmfile --version
     vars:
-      OS:
-        sh: uname | tr '[:upper:]' '[:lower:]'
-      ARCH:
-        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
       HELMFILE_VERSION:
         sh: curl -Ls "https://github.com/helmfile/helmfile/releases" | \grep 'href="/helmfile/helmfile/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/helmfile\/helmfile\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
 
@@ -245,25 +247,27 @@ tasks:
       - sudo install -o root -g root -m 0755 kustomize /usr/local/bin/kustomize
       - kustomize version
     vars:
-      OS:
-        sh: uname | tr '[:upper:]' '[:lower:]'
-      ARCH:
-        sh: uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/'
       KUSTOMIZE_VERSION:
         sh: curl -Ls "https://github.com/kubernetes-sigs/kustomize/releases" | \grep 'href="/kubernetes-sigs/kustomize/releases/tag/kustomize%2Fv[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/kubernetes-sigs\/kustomize\/releases\/tag\/kustomize%2F(v[0-9\.]+)".*/\1/g' | head -1
 
-  install-or-update-tailscale:
+  install-or-update-terraform-docs:
     dir: /tmp
     deps:
       - install-or-update-kustomize
     cmds:
-      - curl -fsSL https://tailscale.com/install.sh | sh
-      - tailscale version
+      - curl -fsSL -o terraform-docs.tar.gz "https://github.com/terraform-docs/terraform-docs/releases/download/{{.VERSION}}/terraform-docs-$(echo -n {{.VERSION}})-{{.OS}}-{{.ARCH}}.tar.gz"
+      - tar xzf terraform-docs.tar.gz
+      - sudo install -o root -g root -m 0755 terraform-docs /usr/local/bin/terraform-docs
+      - terraform-docs completion zsh | sudo tee /usr/local/share/zsh/site-functions/_terraform-docs > /dev/null
+      - terraform-docs version
+    vars:
+      VERSION:
+        sh: curl -Ls "https://github.com/terraform-docs/terraform-docs/releases" | \grep 'href="/terraform-docs/terraform-docs/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/terraform-docs\/terraform-docs\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1
 
   install-or-update-yt-dlp:
     dir: /tmp
     deps:
-      - install-or-update-tailscale
+      - install-or-update-terraform-docs
     cmds:
       - sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
       - sudo chmod a+rx /usr/local/bin/yt-dlp  # Make executable

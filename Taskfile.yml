@@ -9,7 +9,7 @@ env:
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg curl sudo
 
   setup-config:
     deps:
@@ -41,7 +41,7 @@ tasks:
     deps:
       - setup-config
     cmds:
-      - flatpak -v remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      - flatpak -v remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
       - flatpak install -y flathub \
           ch.protonmail.protonmail-bridge \
           com.anydesk.Anydesk \
@@ -70,7 +70,7 @@ tasks:
     deps:
       - install-flatpaks
     cmds:
-      - sudo apt install zsh
+      - sudo apt install -y zsh
       - sudo chsh -s /bin/zsh
       - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       - rm $HOME/.zshrc
@@ -107,7 +107,6 @@ tasks:
       - install-terraform
     cmds:
       - curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-      - sudo apt-get install apt-transport-https --yes
       - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
       - sudo apt-get update
       - sudo apt-get install helm
@@ -120,12 +119,10 @@ tasks:
     deps:
       - install-helm
     cmds:
-      - sudo apt-get update
-      - sudo apt-get install apt-transport-https ca-certificates gnupg curl sudo
       - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
       - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
       - sudo apt-get update
-      - sudo apt-get install google-cloud-cli
+      - sudo apt-get install -y google-cloud-cli
     status:
       - test -f /usr/bin/dockerd
 
@@ -134,8 +131,6 @@ tasks:
     deps:
       - install-gcloud
     cmds:
-      - sudo apt-get update
-      - sudo apt-get -y install ca-certificates curl gnupg
       - sudo install -m 0755 -d /etc/apt/keyrings
       - curl -fsSL https://download.docker.com/linux/{{.DISTRO}}/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
       - sudo chmod a+r /etc/apt/keyrings/docker.gpg
@@ -175,7 +170,7 @@ tasks:
     deps:
       - install-sway
     cmds:
-      - flatpak install -y flathub io.mpv.Mpv
+      - flatpak install --user -y flathub io.mpv.Mpv
       - mkdir -p $HOME/.var/app/io.mpv.Mpv/scripts
       - cmd: ln -s $HOME/.dotfiles/mpv/config $HOME/.var/app/io.mpv.Mpv/config
         ignore_error: true
@@ -362,7 +357,7 @@ tasks:
       - curl -sSL -o windscribe.deb https://windscribe.com/install/desktop/linux_deb_x64
       - cmd: sudo dpkg -i windscribe.deb
         ignore_error: true
-      - sudo apt install -f
+      - sudo apt install -f -y
       - rm windscribe.deb
 
   install-or-update-ulauncher:
@@ -373,7 +368,7 @@ tasks:
       - curl -fsSL -o ulauncher.deb "https://github.com/Ulauncher/Ulauncher/releases/download/{{.ULAUNCHER_VERSION}}/ulauncher_$(echo -n {{.ULAUNCHER_VERSION}})_all.deb"
       - cmd: sudo dpkg -i ulauncher.deb
         ignore_error: true
-      - sudo apt install -f
+      - sudo apt install -f -y
     vars:
       ULAUNCHER_VERSION:
         sh: curl -Ls "https://github.com/Ulauncher/Ulauncher/releases" | \grep 'href="/Ulauncher/Ulauncher/releases/tag/[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/Ulauncher\/Ulauncher\/releases\/tag\/([0-9\.]+)".*/\1/g' | head -1

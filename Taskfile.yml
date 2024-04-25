@@ -66,10 +66,32 @@ tasks:
           org.qbittorrent.qBittorrent \
           org.remmina.Remmina
 
+  install-zsh:
+    deps:
+      - install-flatpaks
+    cmds:
+      - sudo apt install zsh
+      - sudo chsh -s /bin/zsh
+      - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      - rm $HOME/.zshrc
+      - ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
+      # - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+      - git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+      - git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+      - git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
+      # - git clone https://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
+      - git clone https://github.com/djui/alias-tips.git ~/.oh-my-zsh/custom/plugins/alias-tips
+      - git clone https://github.com/marzocchi/zsh-notify ~/.oh-my-zsh/custom/plugins/zsh-notify
+    vars:
+      RUNZSH: false
+    status:
+      - test -f /bin/zsh
+      - test -d ~/.oh-my-zsh/
+
   install-terraform:
     dir: /tmp
     deps:
-      - install-flatpaks
+      - install-zsh
     cmds:
       - set -e -o pipefail; curl -L https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
       - set -e -o pipefail; echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
@@ -149,31 +171,9 @@ tasks:
       - test -f /usr/bin/sway
       - test -f $HOME/.config/sway/config
 
-  install-zsh:
-    deps:
-      - install-sway
-    cmds:
-      - sudo apt install zsh
-      - sudo chsh -s /bin/zsh
-      - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-      - rm $HOME/.zshrc
-      - ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
-      # - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
-      - git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-      - git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-      - git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
-      # - git clone https://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
-      - git clone https://github.com/djui/alias-tips.git ~/.oh-my-zsh/custom/plugins/alias-tips
-      - git clone https://github.com/marzocchi/zsh-notify ~/.oh-my-zsh/custom/plugins/zsh-notify
-    vars:
-      RUNZSH: false
-    status:
-      - test -f /bin/zsh
-      - test -d ~/.oh-my-zsh/
-
   install-mpv:
     deps:
-      - install-zsh
+      - install-sway
     cmds:
       - flatpak install -y flathub io.mpv.Mpv
       - mkdir -p $HOME/.var/app/io.mpv.Mpv/scripts

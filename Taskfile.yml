@@ -9,7 +9,7 @@ env:
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments
 
   setup-config:
     deps:
@@ -132,7 +132,7 @@ tasks:
     deps:
       - install-docker
     cmds:
-      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman
+      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock
       - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols ~/.config/dunst/
       - pip install khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
@@ -158,11 +158,11 @@ tasks:
       - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
       - rm $HOME/.zshrc
       - ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
-      - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+      # - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
       - git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
       - git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
       - git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
-      - git clone https://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
+      # - git clone https://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
       - git clone https://github.com/djui/alias-tips.git ~/.oh-my-zsh/custom/plugins/alias-tips
       - git clone https://github.com/marzocchi/zsh-notify ~/.oh-my-zsh/custom/plugins/zsh-notify
     vars:
@@ -354,10 +354,21 @@ tasks:
       - rm mullvad.deb
       - mullvad version
 
-  install-or-update-ulauncher:
+  install-or-update-windscribe:
     dir: /tmp
     deps:
       - install-or-update-mullvad
+    cmds:
+      - curl -sSL -o windscribe.deb https://windscribe.com/install/desktop/linux_deb_x64
+      - cmd: sudo dpkg -i windscribe.deb
+        ignore_error: true
+      - sudo apt install -f
+      - rm windscribe.deb
+
+  install-or-update-ulauncher:
+    dir: /tmp
+    deps:
+      - install-or-update-windscribe
     cmds:
       - curl -fsSL -o ulauncher.deb "https://github.com/Ulauncher/Ulauncher/releases/download/{{.ULAUNCHER_VERSION}}/ulauncher_$(echo -n {{.ULAUNCHER_VERSION}})_all.deb"
       - cmd: sudo dpkg -i ulauncher.deb
@@ -367,9 +378,21 @@ tasks:
       ULAUNCHER_VERSION:
         sh: curl -Ls "https://github.com/Ulauncher/Ulauncher/releases" | \grep 'href="/Ulauncher/Ulauncher/releases/tag/[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/Ulauncher\/Ulauncher\/releases\/tag\/([0-9\.]+)".*/\1/g' | head -1
 
-  install-or-update:
+  install-or-update-atuin:
+    dir: /tmp
     deps:
       - install-or-update-ulauncher
+    cmds:
+      - bash <(curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh)
+      - atuin login
+      - atuin import auto
+      - atuin sync
+      - cmd: ln -s $HOME/.dotfiles/atuin/config.toml $HOME/.config/atuin/config.toml
+        ignore_error: true
+
+  install-or-update:
+    deps:
+      - install-or-update-atuin
 
 # ------------------------------------------------------------------------------------------------------
 

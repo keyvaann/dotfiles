@@ -26,9 +26,9 @@
     },
     "clock": {
         "timezone": "Europe/Amsterdam",
-        "format": "🇳🇱 {:%a %b %m-%d %H:%M}",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "format": "🇳🇱 {:%a %b %m-%d %H:%M}"
+        // "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        // "format-alt": "{:%Y-%m-%d}"
     },
 	"custom/jalalidate": { 
 		"format": "🇮🇷 {}",

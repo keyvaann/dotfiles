@@ -114,7 +114,7 @@ source $ZSH/oh-my-zsh.sh
 
 # exports =======================================
 export PYTHONSTARTUP=$HOME/.dotfiles/pythonrc.py
-export PATH=~/.bin:$PATH
+export PATH=~/.bin:~/.local/bin:$PATH
 
 # Security: close root shells after n seconds of inactivity
 [ "$UID" = 0 ] && export TMOUT=180
@@ -174,8 +174,8 @@ bindkey "^X^S" sudo-command-line
 
 # zsh anything.el-like widget.
 # https://github.com/zsh-users/zaw
-bindkey '^R' zaw-history
-bindkey '^Q' zaw-ssh-hosts
+# bindkey '^R' zaw-history
+# bindkey '^Q' zaw-ssh-hosts
 zstyle ':filter-select:highlight' matched fg=yellow,standout
 zstyle ':filter-select' max-lines 20 # use 10 lines for filter-select
 # zstyle ':filter-select' max-lines -10 # use $LINES - 10 for filter-select
@@ -204,6 +204,8 @@ bindkey "${terminfo[kcud1]}" down-line-or-history
 bindkey "^[/" insert-last-word
 
 alias vim=nvim
+alias code=flatpak run com.visualstudio.code
+alias mpv=flatpak run flathub io.mpv.Mpv
 #export GOROOT=/usr/local/go
 #export PATH=$PATH:$GOROOT/bin:/home/k1/src/golang/bin
 #export GOPATH=~/src/golang
@@ -211,6 +213,9 @@ alias vim=nvim
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/mc mc
 
-#export PATH="/home/k1/.pyenv/bin:$PATH"
-#eval "$(pyenv init -)"
-#eval "$(pyenv virtualenv-init -)"
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+eval "$(atuin init zsh --disable-up-arrow)"

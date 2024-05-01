@@ -77,7 +77,7 @@ plugins=(
     zsh-completions
     ssh-agent
     zsh-autosuggestions
-    zaw
+    # zaw
     zsh-syntax-highlighting     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
 )
 export ZSH_AUTOSUGGEST_USE_ASYNC="true"

@@ -119,12 +119,14 @@ tasks:
     deps:
       - install-helm
     cmds:
+      - cmd: sudo rm /usr/share/keyrings/cloud.google.gpg
+        ignore_error: true
       - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
       - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
       - sudo apt-get update
       - sudo apt-get install -y google-cloud-cli
     status:
-      - test -f /usr/bin/dockerd
+      - test -f /usr/bin/gcloud
 
   install-docker:
     dir: /tmp
@@ -166,9 +168,19 @@ tasks:
       - test -f /usr/bin/sway
       - test -f $HOME/.config/sway/config
 
+  config-logind-conf:
+    # deps:
+    #   - install-sway
+    cmds:
+      - mkdir -p /etc/systemd/logind.conf.d
+      - cmd: sudo ln -s $HOME/.dotfiles/logind.conf.d/90-custom.conf /etc/systemd/logind.conf.d/90-custom.conf
+        ignore_error: true
+    status:
+      - test -f /etc/systemd/logind.conf.d/90-custom.conf
+
   install-mpv:
     deps:
-      - install-sway
+      - config-logind-conf
     cmds:
       - flatpak install --user -y flathub io.mpv.Mpv
       - mkdir -p $HOME/.var/app/io.mpv.Mpv/scripts
@@ -339,10 +351,23 @@ tasks:
       - rm argocd-linux-amd64
       - argocd version --client
 
-  install-or-update-mullvad:
+  install-or-update-helm-docs:
     dir: /tmp
     deps:
       - install-or-update-argocd
+    cmds:
+      - curl -sSL -o helm-docs.deb https://github.com/norwoodj/helm-docs/releases/download/v{{.HELM_DOCS_VERSION}}/helm-docs_{{.HELM_DOCS_VERSION}}_Linux_x86_64.deb
+      - sudo dpkg -i helm-docs.deb
+      - rm helm-docs.deb
+      - helm-docs --version
+    vars:
+      HELM_DOCS_VERSION:
+        sh: curl -Ls "https://github.com/norwoodj/helm-docs/releases" | \grep 'href="/norwoodj/helm-docs/releases/tag/v[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/norwoodj\/helm-docs\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1 | tr -d v
+
+  install-or-update-mullvad:
+    dir: /tmp
+    deps:
+      - install-or-update-helm-docs
     cmds:
       - curl -sSL -o mullvad.deb https://mullvad.net/en/download/app/deb/latest
       - sudo dpkg -i mullvad.deb
@@ -379,11 +404,13 @@ tasks:
       - install-or-update-ulauncher
     cmds:
       - bash <(curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh)
+      - rm $HOME/.config/atuin/config.toml
+      - mkdir -p $HOME/.config/atuin
+      - cmd: ln -s $HOME/.dotfiles/atuin/config.toml $HOME/.config/atuin/config.toml
+        ignore_error: true
       - atuin login
       - atuin import auto
       - atuin sync
-      - cmd: ln -s $HOME/.dotfiles/atuin/config.toml $HOME/.config/atuin/config.toml
-        ignore_error: true
 
   install-or-update:
     deps:

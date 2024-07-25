@@ -30,12 +30,12 @@
         // "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         // "format-alt": "{:%Y-%m-%d}"
     },
-	"custom/jalalidate": { 
-		"format": "🇮🇷 {}",
-		"interval": 60,
-		"exec": "python3 -c \"import khayyam as k; print(k.JalaliDatetime.now(k.TehranTimezone()).strftime('%m-%d %H:%M'));\"",
-		"tooltip": "false"
-	},
+//	"custom/jalalidate": { 
+//		"format": "🇮🇷 {}",
+//		"interval": 60,
+//		"exec": "python3 -c \"import khayyam as k; print(k.JalaliDatetime.now(k.TehranTimezone()).strftime('%m-%d %H:%M'));\"",
+//		"tooltip": "false"
+//	},
     "cpu": {
         "format": "C: {usage}%",
         "tooltip": false

@@ -219,3 +219,8 @@ complete -o nospace -C /usr/local/bin/mc mc
 # eval "$(pyenv virtualenv-init -)"
 
 eval "$(atuin init zsh --disable-up-arrow)"
+# fnm
+export PATH="/home/k1/.local/share/fnm:$PATH"
+eval "`fnm env`"
+
+. "$HOME/.atuin/bin/env"

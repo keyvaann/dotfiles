@@ -9,7 +9,7 @@ env:
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg curl sudo
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg curl sudo pavucontrol playerctl
 
   setup-config:
     deps:
@@ -151,7 +151,7 @@ tasks:
     deps:
       - install-docker
     cmds:
-      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock
+      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock swaykbdd
       - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols ~/.config/dunst/
       - pip install khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
@@ -169,8 +169,8 @@ tasks:
       - test -f $HOME/.config/sway/config
 
   config-logind-conf:
-    # deps:
-    #   - install-sway
+    deps:
+      - install-sway
     cmds:
       - mkdir -p /etc/systemd/logind.conf.d
       - cmd: sudo ln -s $HOME/.dotfiles/logind.conf.d/90-custom.conf /etc/systemd/logind.conf.d/90-custom.conf
@@ -351,10 +351,30 @@ tasks:
       - rm argocd-linux-amd64
       - argocd version --client
 
-  install-or-update-helm-docs:
+  install-or-update-helm-secrets:
     dir: /tmp
     deps:
       - install-or-update-argocd
+    cmds:
+      - cmd: helm plugin install https://github.com/jkroepke/helm-secrets
+        ignore_error: true
+      - helm plugin update secrets
+      - helm secrets --version
+
+  install-or-update-helm-diff:
+    dir: /tmp
+    deps:
+      - install-or-update-helm-secrets
+    cmds:
+      - cmd: helm plugin install https://github.com/databus23/helm-diff
+        ignore_error: true
+      - helm plugin update diff
+      - helm diff version
+
+  install-or-update-helm-docs:
+    dir: /tmp
+    deps:
+      - install-or-update-helm-diff
     cmds:
       - curl -sSL -o helm-docs.deb https://github.com/norwoodj/helm-docs/releases/download/v{{.HELM_DOCS_VERSION}}/helm-docs_{{.HELM_DOCS_VERSION}}_Linux_x86_64.deb
       - sudo dpkg -i helm-docs.deb

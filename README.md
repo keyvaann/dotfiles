@@ -7,7 +7,7 @@ My linux config files, put them here for backup and sharing. It's most tested on
 ## General
 
 ```shell
-sudo apt install git curl
+sudo apt install git curl git-lfs
 git clone https://github.com/K1Hyve/dotfiles.git ~/.dotfiles
 sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 cd ~/.dotfiles

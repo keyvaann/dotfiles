@@ -1,0 +1,1 @@
+0 10,22 * * * wget 'https://bing.biturl.top/?resolution=3840&format=image&index=0&mkt=random' -O ~/.wallpaper.jpg

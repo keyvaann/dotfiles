@@ -9,7 +9,7 @@ env:
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg curl sudo pavucontrol playerctl
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg pavucontrol playerctl
 
   setup-config:
     deps:
@@ -42,29 +42,7 @@ tasks:
       - setup-config
     cmds:
       - flatpak -v remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-      - flatpak install -y flathub \
-          ch.protonmail.protonmail-bridge \
-          com.anydesk.Anydesk \
-          com.discordapp.Discord \
-          com.github.iwalton3.jellyfin-media-player \
-          com.github.tchx84.Flatseal \
-          com.rtosta.zapzap org.telegram.desktop \
-          com.valvesoftware.Steam \
-          com.visualstudio.code \
-          com.vivaldi.Vivaldi \
-          com.slack.Slack \
-          org.ferdium.Ferdium \
-          nz.mega.MEGAsync \
-          org.clementine_player.Clementine \
-          org.cryptomator.Cryptomator \
-          org.darktable.Darktable \
-          org.gimp.GIMP \
-          org.gnome.meld \
-          org.kde.kdenlive \
-          org.libreoffice.LibreOffice \
-          org.nomacs.ImageLounge \
-          org.qbittorrent.qBittorrent \
-          org.remmina.Remmina
+      - flatpak install -y flathub com.anydesk.Anydesk com.discordapp.Discord com.github.iwalton3.jellyfin-media-player com.github.tchx84.Flatseal com.rtosta.zapzap org.telegram.desktop com.valvesoftware.Steam com.visualstudio.code com.vivaldi.Vivaldi com.slack.Slack org.ferdium.Ferdium nz.mega.MEGAsync org.clementine_player.Clementine org.cryptomator.Cryptomator org.darktable.Darktable org.gimp.GIMP org.gnome.meld org.kde.kdenlive org.libreoffice.LibreOffice org.nomacs.ImageLounge org.qbittorrent.qBittorrent org.remmina.Remmina
 
   install-zsh:
     deps:
@@ -151,9 +129,9 @@ tasks:
     deps:
       - install-docker
     cmds:
-      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock swaykbdd
+      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock swaykbdd fonts-inconsolata
       - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols ~/.config/dunst/
-      - pip install khayyam
+      - pip install --break-system-packages khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
         ignore_error: true
       - cmd: ln -s $HOME/.dotfiles/waybar/config $HOME/.config/waybar/config
@@ -172,7 +150,7 @@ tasks:
     deps:
       - install-sway
     cmds:
-      - mkdir -p /etc/systemd/logind.conf.d
+      - sudo mkdir -p /etc/systemd/logind.conf.d
       - cmd: sudo ln -s $HOME/.dotfiles/logind.conf.d/90-custom.conf /etc/systemd/logind.conf.d/90-custom.conf
         ignore_error: true
     status:
@@ -296,7 +274,7 @@ tasks:
       - install-or-update-kitty
     cmds:
       - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      - unzip awscliv2.zip
+      - unzip -o awscliv2.zip
       - sudo ./aws/install --update
       - aws --version
 

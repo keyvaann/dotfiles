@@ -22,6 +22,7 @@ set $term ~/.local/kitty.app/bin/kitty
 set $menu ulauncher
 
 include /etc/sway/config-vars.d/*
+include /etc/sway/config.d/*
 
 # sudo apt install clipman
 exec wl-paste -t text --watch clipman store --no-persist
@@ -29,7 +30,8 @@ exec wl-paste -t text --watch clipman store --no-persist
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-#output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg /var/tmp/wallpaper.jpg fill
+
 #
 # Example configuration:
 #

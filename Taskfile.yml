@@ -9,7 +9,7 @@ env:
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg pavucontrol playerctl
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg pavucontrol playerctl bat lsd
 
   setup-config:
     deps:
@@ -129,7 +129,7 @@ tasks:
     deps:
       - install-docker
     cmds:
-      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock swaykbdd fonts-inconsolata
+      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock swaykbdd fonts-inconsolata xdg-desktop-portal-wlr
       - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols ~/.config/dunst/
       - pip install --break-system-packages khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config
@@ -392,6 +392,8 @@ tasks:
       - cmd: sudo dpkg -i ulauncher.deb
         ignore_error: true
       - sudo apt install -f -y
+      - cmd: ln -s $HOME/.dotfiles/ulauncher $HOME/.config/ulauncher
+        ignore_error: true
     vars:
       ULAUNCHER_VERSION:
         sh: curl -Ls "https://github.com/Ulauncher/Ulauncher/releases" | \grep 'href="/Ulauncher/Ulauncher/releases/tag/[0-9]*.[0-9]*.[0-9]*\"' | sed -E 's/.*\/Ulauncher\/Ulauncher\/releases\/tag\/([0-9\.]+)".*/\1/g' | head -1

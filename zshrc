@@ -206,6 +206,8 @@ bindkey "^[/" insert-last-word
 alias vim=nvim
 alias code=flatpak run com.visualstudio.code
 alias mpv=flatpak run flathub io.mpv.Mpv
+alias cat=batcat
+alias ls=lsd
 #export GOROOT=/usr/local/go
 #export PATH=$PATH:$GOROOT/bin:/home/k1/src/golang/bin
 #export GOPATH=~/src/golang

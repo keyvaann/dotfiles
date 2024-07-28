@@ -1,8 +1,9 @@
 {
-    "layer": "bottom",
+    "layer": "top",
     "position": "bottom",
     "spacing": -5,
     "height": -10,
+    "mode": "dock",
     "modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad"], //, "custom/media"
     "modules-center": ["sway/window"],
     "modules-right": [
@@ -95,7 +96,7 @@
     },
     "custom/vpn": {
         "format": "{}",
-        "exec": "curl -s -H 'Host: www.icanhazip.com' 104.18.115.97",
+        "exec": "cat /var/tmp/location",
         "interval": 30
     },
     "custom/media": {

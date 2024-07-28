@@ -1,1 +1,2 @@
-0 10,22 * * * wget 'https://bing.biturl.top/?resolution=3840&format=image&index=0&mkt=random' -O ~/.wallpaper.jpg
+0 10,22 * * * wget 'https://bing.biturl.top/?resolution=3840&format=image&index=0&mkt=random' -O /var/tmp/wallpaper.jpg
+* * * * * curl https://ipleak.net/json/ | jq ".country_code, .city_name" | tr -d \" | tr \\\n " " > /var/tmp/location

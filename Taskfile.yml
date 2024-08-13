@@ -64,7 +64,8 @@ tasks:
           org.libreoffice.LibreOffice \
           org.nomacs.ImageLounge \
           org.qbittorrent.qBittorrent \
-          org.remmina.Remmina
+          org.remmina.Remmina \
+          net.mullvad.MullvadBrowser
 
   install-zsh:
     deps:

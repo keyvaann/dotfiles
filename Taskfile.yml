@@ -42,7 +42,7 @@ tasks:
       - setup-config
     cmds:
       - flatpak -v remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-      - flatpak install -y flathub com.anydesk.Anydesk com.discordapp.Discord com.github.iwalton3.jellyfin-media-player com.github.tchx84.Flatseal com.rtosta.zapzap org.telegram.desktop com.valvesoftware.Steam com.visualstudio.code com.vivaldi.Vivaldi com.slack.Slack org.ferdium.Ferdium nz.mega.MEGAsync org.clementine_player.Clementine org.cryptomator.Cryptomator org.darktable.Darktable org.gimp.GIMP org.gnome.meld org.kde.kdenlive org.libreoffice.LibreOffice org.nomacs.ImageLounge org.qbittorrent.qBittorrent org.remmina.Remmina
+      - flatpak install -y flathub com.anydesk.Anydesk com.discordapp.Discord com.github.iwalton3.jellyfin-media-player com.github.tchx84.Flatseal com.rtosta.zapzap org.telegram.desktop com.valvesoftware.Steam com.visualstudio.code com.vivaldi.Vivaldi com.slack.Slack org.ferdium.Ferdium nz.mega.MEGAsync org.clementine_player.Clementine org.cryptomator.Cryptomator org.darktable.Darktable org.gimp.GIMP org.gnome.meld org.kde.kdenlive org.libreoffice.LibreOffice org.nomacs.ImageLounge org.qbittorrent.qBittorrent org.remmina.Remmina net.mullvad.MullvadBrowser
 
   install-zsh:
     deps:

@@ -1,2 +1,3 @@
 0 10,22 * * * wget 'https://bing.biturl.top/?resolution=3840&format=image&index=0&mkt=random' -O /var/tmp/wallpaper.jpg
 * * * * * curl https://ipleak.net/json/ | jq ".country_code, .city_name" | tr -d \" | tr \\\n " " > /var/tmp/location
+*/9 * * * * XDG_RUNTIME_DIR=/run/user/1000 /usr/bin/play -n synth .1 sin 5

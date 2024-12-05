@@ -9,7 +9,7 @@ env:
 tasks:
   install-common:
     cmds:
-      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg pavucontrol playerctl bat lsd
+      - sudo apt-get install -y flatpak age colordiff htop postgresql-client-common python3-pip neovim brightnessctl python3-pygments apt-transport-https ca-certificates gnupg pavucontrol playerctl bat lsd sox
 
   setup-config:
     deps:
@@ -42,7 +42,7 @@ tasks:
       - setup-config
     cmds:
       - flatpak -v remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-      - flatpak install -y flathub com.anydesk.Anydesk com.discordapp.Discord com.github.iwalton3.jellyfin-media-player com.github.tchx84.Flatseal com.rtosta.zapzap org.telegram.desktop com.valvesoftware.Steam com.visualstudio.code com.vivaldi.Vivaldi com.slack.Slack org.ferdium.Ferdium nz.mega.MEGAsync org.clementine_player.Clementine org.cryptomator.Cryptomator org.darktable.Darktable org.gimp.GIMP org.gnome.meld org.kde.kdenlive org.libreoffice.LibreOffice org.nomacs.ImageLounge org.qbittorrent.qBittorrent org.remmina.Remmina net.mullvad.MullvadBrowser
+      - flatpak install -y flathub com.anydesk.Anydesk com.discordapp.Discord com.github.iwalton3.jellyfin-media-player com.github.tchx84.Flatseal com.rtosta.zapzap org.telegram.desktop com.valvesoftware.Steam com.visualstudio.code com.vivaldi.Vivaldi com.slack.Slack org.ferdium.Ferdium nz.mega.MEGAsync org.clementine_player.Clementine org.cryptomator.Cryptomator org.darktable.Darktable org.gimp.GIMP org.gnome.meld org.kde.kdenlive org.libreoffice.LibreOffice org.nomacs.ImageLounge org.qbittorrent.qBittorrent org.remmina.Remmina net.mullvad.MullvadBrowser org.keepassxc.KeePassXC
 
   install-zsh:
     deps:
@@ -66,10 +66,20 @@ tasks:
       - test -f /bin/zsh
       - test -d ~/.oh-my-zsh/
 
+  install-nix:
+    deps:
+      - install-zsh
+    cmds:
+      - sh <(curl -L https://nixos.org/nix/install) --daemon --yes
+      - source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+      - nix-shell -p nix-info --run "nix-info -m"
+    status:
+      - test -d /nix
+
   install-terraform:
     dir: /tmp
     deps:
-      - install-zsh
+      - install-nix
     cmds:
       - set -e -o pipefail; curl -L https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
       - set -e -o pipefail; echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
@@ -129,7 +139,7 @@ tasks:
     deps:
       - install-docker
     cmds:
-      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock swaykbdd fonts-inconsolata xdg-desktop-portal-wlr
+      - sudo apt install -y sway clipman grim slurp dunst gammastep waybar swayidle fonts-font-awesome blueman swaylock swaykbdd fonts-inconsolata xdg-desktop-portal-wlr ffmpegthumbnailer
       - mkdir -p ~/.config/sway ~/.config/waybar ~/.xkb/symbols ~/.config/dunst/
       - pip install --break-system-packages khayyam
       - cmd: ln -s $HOME/.dotfiles/sway/config $HOME/.config/sway/config

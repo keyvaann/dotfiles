@@ -51,7 +51,6 @@ alias du1='du --max-depth=1'
 alias df="df -Th"
 alias ln='ln -s'
 alias iotop='sudo iotop -Pkoa'
-alias axel='axel -av'
 alias errorlog='sudo journalctl -efp 5'
 alias alllog='sudo journalctl -ef'
 
@@ -74,40 +73,8 @@ alias diff='colordiff' # install  colordiff package :)
 alias showmount='mount | column -t'
 alias path='echo -e ${PATH//:/\\n}'
 
-# pacman aliases (if necessary, replace 'pacman' with your favorite AUR helper and adapt the commands accordingly)
-alias pac="sudo pacman -S"              # default action        - install one or more packages
-alias pacu="sudo pacman -Syu"           # '[u]pdate'            - upgrade all packages to their newest version
-alias pacr="sudo pacman -Rs"            # '[r]emove'            - uninstall one or more packages
-alias pacs="pacman -Ss"                 # '[s]earch'            - search for a package using one or more keywords
-alias pacqs="pacman -Qs"                # '[q]uery [s]earch'    - To search for already installed packages
-alias paci="pacman -Sii"                # '[i]nfo'              - show information about a package
-alias pacqi="pacman -Sii"                # '[q]uery [i]nfo'      - show information about a for locally installed package
-alias paclo="pacman -Qdt"               # '[l]ist [o]rphans'    - list all packages which are orphaned
-alias pacc="sudo pacman -Scc"           # '[c]lean cache'       - delete all not currently installed package files
-alias paclf="pacman -Ql"                # '[l]ist [f]iles'      - list all files installed by a given package
-alias pacof="pacman -Qo"                # '[o]wn [f]iles'       - Search for packages that own the specified file(s)
-alias pacexpl="pacman -D --asexp"       # 'mark as [expl]icit'  - mark one or more packages as explicitly installed
-alias pacimpl="pacman -D --asdep"       # 'mark as [impl]icit'  - mark one or more packages as non explicitly installed
-                                        # '[l]ist [e]xplicit'   - Lists explicitly installed Pacman packages.
-alias pacle="pacman --query --explicit --info | awk 'BEGIN { FS=\":\" } /^Name/ { printf $2 \":\" } /^Description/ { print $2 } '"
-                                        # '[r]emove [o]rphans' - recursively remove ALL orphaned packages
-alias pacro="pacman -Qtdq > /dev/null && sudo pacman -Rs \$(pacman -Qtdq)"
-
-# incase I need to type yaourt..
-alias yoaurt='yaourt'
-alias yuaort='yaourt'
-alias youart='yaourt'
-alias yauort='yaourt'
-alias yuoart='yaourt'
-
 # Better copy
 alias rsync-copy="rsync --verbose --progress --human-readable --compress --archive --hard-links --partial"
 alias rsync-move="rsync --verbose --progress --human-readable --compress --archive --hard-links --partial --remove-source-files"
 alias rsync-update="rsync --verbose --progress --human-readable --compress --archive --hard-links --partial --update"
 alias rsync-synchronize="rsync --verbose --progress --human-readable --compress --archive --hard-links --partial --update --delete-after"
-
-# These are just for personal use, you can remove them.
-alias m='mfind'
-alias unlock="sudo truecrypt /run/media/mrgee/f/data /home/mrgee/.tmp/"
-alias lock="sudo truecrypt -d"
-alias d='mdic -W'

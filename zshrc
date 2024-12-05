@@ -206,11 +206,8 @@ bindkey "^[/" insert-last-word
 alias vim=nvim
 alias code=flatpak run com.visualstudio.code
 alias mpv=flatpak run flathub io.mpv.Mpv
-alias cat=batcat
-alias ls=lsd
-#export GOROOT=/usr/local/go
-#export PATH=$PATH:$GOROOT/bin:/home/k1/src/golang/bin
-#export GOPATH=~/src/golang
+alias cat="batcat --paging never --theme DarkNeon --style plain"
+alias ls="lsd --classify --group-directories-first"
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/mc mc
@@ -220,9 +217,10 @@ complete -o nospace -C /usr/local/bin/mc mc
 # eval "$(pyenv init -)"
 # eval "$(pyenv virtualenv-init -)"
 
+. "$HOME/.atuin/bin/env"
+
 eval "$(atuin init zsh --disable-up-arrow)"
 # fnm
-export PATH="/home/k1/.local/share/fnm:$PATH"
-eval "`fnm env`"
+#export PATH="/home/k1/.local/share/fnm:$PATH"
+#eval "`fnm env`"
 
-. "$HOME/.atuin/bin/env"

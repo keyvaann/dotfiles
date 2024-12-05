@@ -178,6 +178,9 @@ bindsym --to-code {
     Print exec GRIM_DEFAULT_DIR=~ grim -g "$(slurp)"
 }
 
+bindsym --whole-window button8 workspace prev
+bindsym --whole-window button9 workspace next
+
 #
 # Resizing containers:
 #

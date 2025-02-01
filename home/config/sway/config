@@ -1,6 +1,5 @@
 set $mod Mod4
 
-#font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 font pango: Inconsolata 11
 
 floating_modifier $mod
@@ -14,49 +13,17 @@ titlebar_border_thickness 0
 hide_edge_borders --i3 smart
 smart_borders smart
 
-# Your preferred terminal emulator
-set $term ~/.local/kitty.app/bin/kitty
-# Your preferred application launcher
-# Note: pass the final command to swaymsg so that the resulting window can be opened
-# on the original workspace that the command was run on.
-set $menu ulauncher
+set $term ~/.nix-profile/bin/kitty
+set $menu ~/.nix-profile/bin/rofi -show combi
 
 include /etc/sway/config-vars.d/*
 include /etc/sway/config.d/*
 
 # sudo apt install clipman
-exec wl-paste -t text --watch clipman store --no-persist
+exec wl-paste -t text --watch ~/.nix-profile/bin/clipman store --no-persist
 
 ### Output configuration
-#
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 output * bg /var/tmp/wallpaper.jpg fill
-
-#
-# Example configuration:
-#
-#   output HDMI-A-1 resolution 1920x1080 position 1920,0
-#
-# You can get the names of your outputs by running: swaymsg -t get_outputs
-
-### Input configuration
-
-input {
-    type:keyboard {
-        xkb_layout custom,ir
-        xkb_options "grp:lwin_toggle"
-	xkb_numlock enabled
-    }
-
-    type:touchpad {
-        # no click needed
-        tap enabled
-        # disable touchpad while typing
-        dwt enabled
-        # natural_scroll enabled
-        middle_emulation enabled
-    }
-}
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
@@ -66,9 +33,6 @@ input {
 floating_modifier $mod normal
 
 ### Key bindings
-#
-# Basics:
-#
 bindsym --to-code {
     # Kill focused window
     $mod+Shift+q kill
@@ -76,14 +40,13 @@ bindsym --to-code {
     # Start your launcher
     $mod+q exec $menu
 
-
     # Reload the configuration file
     $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
     $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
-    $mod+a exec --no-startup-id bash ~/.dotfiles/i3/i3lock.sh
+    $mod+a exec --no-startup-id bash ~/.dotfiles/home/config/i3/i3lock.sh
     #
     # Moving around:
     #
@@ -137,9 +100,7 @@ bindsym --to-code {
 
     # Swap focus between the tiling area and the floating area
     $mod+space focus mode_toggle
-
-    # Move focus to the parent container
-    #$mod+a focus parent
+    
     #
     # Scratchpad:
     #
@@ -156,26 +117,26 @@ bindsym --to-code {
     XF86AudioRaiseVolume exec --no-startup-id amixer -q -D pulse set Master 5%+ unmute
     XF86AudioLowerVolume exec --no-startup-id amixer -q -D pulse set Master 5%- unmute
     XF86AudioMute exec --no-startup-id amixer sset 'Master' toggle
-    XF86AudioPlay exec --no-startup-id playerctl toggle
-    XF86AudioPause exec --no-startup-id playerctl pause
-    XF86AudioStop exec --no-startup-id playerctl stop
-    XF86AudioPrev exec --no-startup-id playerctl prev
-    XF86AudioNext exec --no-startup-id playerctl next
+    XF86AudioPlay exec --no-startup-id ~/.nix-profile/bin/playerctl toggle
+    XF86AudioPause exec --no-startup-id ~/.nix-profile/bin/playerctl pause
+    XF86AudioStop exec --no-startup-id ~/.nix-profile/bin/playerctl stop
+    XF86AudioPrev exec --no-startup-id ~/.nix-profile/bin/playerctl prev
+    XF86AudioNext exec --no-startup-id ~/.nix-profile/bin/playerctl next
     XF86Calculator exec --no-startup-id gnome-calculator
 
     # Sreen brightness controls
-    XF86MonBrightnessUp exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A brightnessctl set +33%
-    XF86MonBrightnessDown exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A brightnessctl set 33-%
-    $mod+Shift+Right exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A brightnessctl set +33%
-    $mod+Shift+Left exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A brightnessctl set 33-%
+    XF86MonBrightnessUp exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A ~/.nix-profile/bin/brightnessctl set +33%
+    XF86MonBrightnessDown exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A ~/.nix-profile/bin/brightnessctl set 33-%
+    $mod+Shift+Right exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A ~/.nix-profile/bin/brightnessctl set +33%
+    $mod+Shift+Left exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A ~/.nix-profile/bin/brightnessctl set 33-%
 
-    $mod+p exec --no-startup-id playerctl play-pause
-    $mod+n exec --no-startup-id playerctl next
-    $mod+b exec --no-startup-id playerctl previous
+    $mod+p exec --no-startup-id ~/.nix-profile/bin/playerctl play-pause
+    $mod+n exec --no-startup-id ~/.nix-profile/bin/playerctl next
+    $mod+b exec --no-startup-id ~/.nix-profile/bin/playerctl previous
     $mod+Up exec --no-startup-id amixer -q -D pulse set Master 5%+ unmute 
     $mod+Down exec --no-startup-id amixer -q -D pulse set Master 5%- unmute
 
-    Print exec GRIM_DEFAULT_DIR=~ grim -g "$(slurp)"
+    Print exec GRIM_DEFAULT_DIR=~ ~/.nix-profile/bin/grim -g "$(~/.nix-profile/bin/slurp)" - | ~/.nix-profile/bin/swappy -f -
 }
 
 bindsym --whole-window button8 workspace prev
@@ -210,10 +171,6 @@ bindsym $mod+r mode "resize"
 # Workspaces:
 #
 
-#output eDP-1 {
-#    resolution --custom 1368x768
-#}
-
 set {
     $ws1     "1: "
     $ws2     "2: "
@@ -226,15 +183,15 @@ set {
     $ws9     "9: "
 }
 
-workspace $ws1 #output DP-2
-workspace $ws2 #output HDMI-1
-workspace $ws3 #output HDMI-1
-workspace $ws4 #output HDMI-1
-workspace $ws5 #output HDMI-1
-workspace $ws6 #output HDMI-1c
-workspace $ws7 #output HDMI-1
-workspace $ws8 #output DP-2
-workspace $ws9 #output DP-2
+# workspace $ws1 output DP-2
+# workspace $ws2 output HDMI-1
+# workspace $ws3 output HDMI-1
+# workspace $ws4 output HDMI-1
+# workspace $ws5 output HDMI-1
+# workspace $ws6 output HDMI-1c
+# workspace $ws7 output HDMI-1
+# workspace $ws8 output DP-2
+# workspace $ws9 output DP-2
 
 bindsym {
     # Switch to workspace
@@ -269,12 +226,12 @@ for_window {
     [app_id="firefox"] move container to workspace $ws1
 
     # ws2
-    [class="Emacs"] move container to workspace $ws2
     [class="Terminator"] move container to workspace $ws2
     [class="Gnome-terminal"] move container to workspace $ws2
     [app_id="kitty"] move container to workspace $ws2
 
     # ws3
+    [class="Emacs"] move container to workspace $ws2
     [class="Atom"] move container to workspace $ws3
     [class="Code"] move container to workspace $ws3
     [app_id="com.visualstudio.code"] move container to workspace $ws3
@@ -319,64 +276,33 @@ for_window {
 }
 
 exec {
-    swayidle -w \
-         timeout 300 'bash ~/.dotfiles/i3/i3lock.sh' \
-         timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
-         before-sleep 'bash ~/.dotfiles/i3/i3lock.sh'
     #gnome-settings-daemon # GTK theme
-    # xset dpms 600
-    swaykbdd
-    /usr/bin/gammastep -l 47.7:18.6  
-    nm-applet
-    dunst
+    ~/.nix-profile/bin/swaykbdd
+    ~/.nix-profile/bin/gammastep-indicator
+    # nm-applet
+    # ~/.nix-profile/bin/dunst
     #fluxgui
-    #xautolock -time 15 -locker "bash ~/.dotfiles/i3/i3lock.sh" &
-    # feh --bg-scale ~/.i3/background.png
-    #exec_always --no-startup-id /bin/bash ~/.dotfiles/i3/keyboard.sh
-    #/usr/bin/google-chrome
-    #/usr/bin/opera
     #/usr/local/bin/emacsclient --alternate-editor "" --create-frame --no-wait
-    # /usr/bin/gnome-terminal
-    ~/.local/kitty.app/bin/kitty
+    ~/.nix-profile/bin/kitty
     /usr/bin/nautilus
-    # /usr/bin/code
-    /usr/bin/blueman-applet
-    #/usr/bin/spotify
-    #/usr/bin/steam
-    #/usr/bin/skypeforlinux
-    # /usr/bin/slack
-    #/usr/bin/megasync
-    # /usr/bin/discord
-    #/usr/bin/pidgin
-    # /usr/bin/protonmail-bridge
-    # /usr/bin/evolution
-    #setxkbmap -layout us,ir
+    # ~/.nix-profile/bin/blueman-applet
     flatpak run com.slack.Slack
     flatpak run org.telegram.desktop
-    flatpak run com.github.iwalton3.jellyfin-media-player
+    ~/.nix-profile/bin/jellyfinmediaplayer
     # flatpak run com.rtosta.zapzap
-    flatpak run com.vivaldi.Vivaldi
-    # flatpak run com.discordapp.Discord
+    flatpak run org.mozilla.firefox
     flatpak run com.visualstudio.code
     flatpak run org.ferdium.Ferdium
-    # flatpak run ch.protonmail.protonmail-bridge
-    #/usr/bin/franz
-    #/usr/bin/brave-browser-stable
-    # /usr/bin/vivaldi-stable
+
+    ~/.nix-profile/bin/kanshi
 }
 
-
-#
 # Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
 bar {
     position bottom
     mode invisible
 
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    status_command waybar
+    status_command ~/.nix-profile/bin/waybar
 
     colors {
         statusline #ffffff
@@ -384,5 +310,3 @@ bar {
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
-
-include /etc/sway/config.d/*

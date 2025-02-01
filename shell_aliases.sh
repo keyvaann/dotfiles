@@ -14,8 +14,6 @@ alias l.='ls --color=auto --group-directories-first --classify --ignore-backups 
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'
 alias grep='grep --color=auto --line-number --with-filename'
-alias fgrep='fgrep --color=auto --line-number --with-filename'
-alias egrep='egrep --color=auto --line-number --with-filename'
 
 # Easier navigation
 alias ..='cd ..'

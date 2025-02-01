@@ -183,10 +183,6 @@ zstyle ':filter-select' rotate-list yes # enable rotation for filter-select
 zstyle ':filter-select' case-insensitive yes # enable case-insensitive search
 zstyle ':filter-select' extended-search yes # see below
 
-#export WORKON_HOME=~/.virtualenv
-#mkdir -p $WORKON_HOME
-#source /usr/local/bin/virtualenvwrapper.sh
-
 LANG="en_US.utf8"
 LC_COLLATE="en_US.utf8"
 LC_CTYPE="en_US.utf8"
@@ -204,23 +200,27 @@ bindkey "${terminfo[kcud1]}" down-line-or-history
 bindkey "^[/" insert-last-word
 
 alias vim=nvim
-alias code=flatpak run com.visualstudio.code
-alias mpv=flatpak run flathub io.mpv.Mpv
-alias cat="batcat --paging never --theme DarkNeon --style plain"
+alias cat="bat --paging never --theme DarkNeon --style plain"
 alias ls="lsd --classify --group-directories-first"
+alias du="dust --reverse"
+alias df=duf
+alias ping=gping
+alias ps='procs --tree --pager disable'
 
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/local/bin/mc mc
 
 # export PYENV_ROOT="$HOME/.pyenv"
 # [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 # eval "$(pyenv init -)"
 # eval "$(pyenv virtualenv-init -)"
 
-. "$HOME/.atuin/bin/env"
+#. "$HOME/.atuin/bin/env"
 
-eval "$(atuin init zsh --disable-up-arrow)"
+#eval "$(atuin init zsh --disable-up-arrow)"
 # fnm
 #export PATH="/home/k1/.local/share/fnm:$PATH"
 #eval "`fnm env`"
 
+source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+eval "$(zoxide init --cmd cd zsh)"
+eval $(thefuck --alias)

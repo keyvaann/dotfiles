@@ -1,3 +1,9 @@
-0 10,22 * * * wget 'https://bing.biturl.top/?resolution=3840&format=image&index=0&mkt=random' -O /var/tmp/wallpaper.jpg
-* * * * * curl https://ipleak.net/json/ | jq ".country_code, .city_name" | tr -d \" | tr \\\n " " > /var/tmp/location
-*/9 * * * * XDG_RUNTIME_DIR=/run/user/1000 /usr/bin/play -n synth .1 sin 5
+MAILTO='localhost'
+SHELL=/bin/bash
+0 10,22 * * * wget 'https://bing.biturl.top/?resolution=3840&format=image&index=0&mkt=random' -O /var/tmp/wallpaper.jpg > /tmp/cron_wallpaper 2>&1 
+* * * * * curl https://ipleak.net/json/ | jq ".country_code, .city_name" | tr -d \" | tr \\\n " " > /var/tmp/location 2> /tmp/cron_location
+*/9 * * * * XDG_RUNTIME_DIR=/run/user/1000 $HOME/.nix-profile/bin/play -n synth .1 sin 5 > /tmp/cron_play 2>&1
+0 11,23 * * * $HOME/.nix-profile/bin/restic -r "rclone:koofr:Obsidian" --password-command "$HOME/.nix-profile/bin/age -d -i $HOME/.config/sops/age/keys.txt $HOME/.config/restic/repo_key_obsidian" backup "$HOME/Obsidian" > /tmp/cron_restic_obsidian_backup 2>&1
+0 18 * * 1,3,5 $HOME/.nix-profile/bin/restic -r "rclone:koofr:Obsidian" --password-command "$HOME/.nix-profile/bin/age -d -i $HOME/.config/sops/age/keys.txt $HOME/.config/restic/repo_key_obsidian" forget --keep-yearly 1 --keep-monthly 3 --keep-weekly 4 --keep-daily 7 --prune > /tmp/cron_restic_obsidian_forget 2>&1
+0 12,0 * * * $HOME/.nix-profile/bin/restic -r "rclone:koofr:Pictures" --password-command "$HOME/.nix-profile/bin/age -d -i $HOME/.config/sops/age/keys.txt $HOME/.config/restic/repo_key_pictures" backup "$HOME/Pictures" > /tmp/cron_restic_pictures_backup 2>&1
+0 18 * * 2,4,6 $HOME/.nix-profile/bin/restic -r "rclone:koofr:Pictures" --password-command "$HOME/.nix-profile/bin/age -d -i $HOME/.config/sops/age/keys.txt $HOME/.config/restic/repo_key_pictures" forget --keep-yearly 1 --keep-monthly 3 --keep-weekly 4 --keep-daily 7 --prune > /tmp/cron_restic_pictures_forget 2>&1

@@ -114,9 +114,7 @@ bindsym --to-code {
     # If there are multiple scratchpad windows, this command cycles through them.
     $mod+minus scratchpad show
 
-    XF86AudioRaiseVolume exec --no-startup-id amixer -q -D pulse set Master 5%+ unmute
-    XF86AudioLowerVolume exec --no-startup-id amixer -q -D pulse set Master 5%- unmute
-    XF86AudioMute exec --no-startup-id amixer sset 'Master' toggle
+    XF86AudioMute exec --no-startup-id ~/.nix-profile/bin/swayosd-client --output-volume mute-toggle
     XF86AudioPlay exec --no-startup-id ~/.nix-profile/bin/playerctl toggle
     XF86AudioPause exec --no-startup-id ~/.nix-profile/bin/playerctl pause
     XF86AudioStop exec --no-startup-id ~/.nix-profile/bin/playerctl stop
@@ -125,16 +123,19 @@ bindsym --to-code {
     XF86Calculator exec --no-startup-id gnome-calculator
 
     # Sreen brightness controls
-    XF86MonBrightnessUp exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A ~/.nix-profile/bin/brightnessctl set +33%
-    XF86MonBrightnessDown exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A ~/.nix-profile/bin/brightnessctl set 33-%
-    $mod+Shift+Right exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A ~/.nix-profile/bin/brightnessctl set +33%
-    $mod+Shift+Left exec SUDO_ASKPASS="/usr/bin/ksshaskpass" sudo -A ~/.nix-profile/bin/brightnessctl set 33-%
+    XF86MonBrightnessUp exec ~/.nix-profile/bin/swayosd-client --brightness raise 5%+
+    XF86MonBrightnessDown exec ~/.nix-profile/bin/swayosd-client --brightness lower 5%-
+    $mod+Shift+Right exec ~/.nix-profile/bin/swayosd-client --brightness raise 5%+
+    $mod+Shift+Left exec ~/.nix-profile/bin/swayosd-client --brightness lower 5%-
 
     $mod+p exec --no-startup-id ~/.nix-profile/bin/playerctl play-pause
     $mod+n exec --no-startup-id ~/.nix-profile/bin/playerctl next
     $mod+b exec --no-startup-id ~/.nix-profile/bin/playerctl previous
-    $mod+Up exec --no-startup-id amixer -q -D pulse set Master 5%+ unmute 
-    $mod+Down exec --no-startup-id amixer -q -D pulse set Master 5%- unmute
+
+    XF86AudioRaiseVolume exec --no-startup-id ~/.nix-profile/bin/swayosd-client --output-volume +2 --max-volume=100
+    XF86AudioLowerVolume exec --no-startup-id ~/.nix-profile/bin/swayosd-client --output-volume -2
+    $mod+Up exec --no-startup-id ~/.nix-profile/bin/swayosd-client --output-volume +2 --max-volume=100
+    $mod+Down exec --no-startup-id ~/.nix-profile/bin/swayosd-client --output-volume -2
 
     Print exec GRIM_DEFAULT_DIR=~ ~/.nix-profile/bin/grim -g "$(~/.nix-profile/bin/slurp)" - | ~/.nix-profile/bin/swappy -f -
 }
@@ -295,6 +296,7 @@ exec {
     flatpak run org.ferdium.Ferdium
 
     ~/.nix-profile/bin/kanshi
+    ~/.nix-profile/bin/swayosd-server
 }
 
 # Status Bar:

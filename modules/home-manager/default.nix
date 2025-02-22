@@ -9,4 +9,5 @@
   shell = import ./shell.nix;
   fonts = import ./fonts.nix;
   git = import ./git.nix;
+  syncthing = import ./syncthing.nix;
 }

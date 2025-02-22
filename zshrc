@@ -112,27 +112,13 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# exports =======================================
-export PYTHONSTARTUP=$HOME/.dotfiles/pythonrc.py
-export PATH=~/.bin:~/.local/bin:$PATH
-
-# Security: close root shells after n seconds of inactivity
-[ "$UID" = 0 ] && export TMOUT=180
-
 # automatically log out after 2 hours of inactivity
 #export TMOUT=7200
 
 # eval & source =================================
 
-[ -r ~/.dotfiles/shell_aliases.sh ] && source ~/.dotfiles/shell_aliases.sh
-[ -r ~/.dotfiles/.shell_functions.sh ] && source ~/.dotfiles/shell_functions.sh
-
 # Safe default permissions
 #umask 077
-
-# ulimit settings are per-process, 'man bash', not 'man ulimit'
-ulimit -c 0     # create no core files
-ulimit -m 500000
 
 # bindkey ';5C' forward-word
 # bindkey ';5D' backward-word
@@ -199,14 +185,6 @@ bindkey "${terminfo[kcuu1]}" up-line-or-history
 bindkey "${terminfo[kcud1]}" down-line-or-history
 bindkey "^[/" insert-last-word
 
-alias vim=nvim
-alias cat="bat --paging never --theme DarkNeon --style plain"
-alias ls="lsd --classify --group-directories-first"
-alias du="dust --reverse"
-alias df=duf
-alias ping=gping
-alias ps='procs --tree --pager disable'
-
 autoload -U +X bashcompinit && bashcompinit
 
 # export PYENV_ROOT="$HOME/.pyenv"
@@ -223,4 +201,3 @@ autoload -U +X bashcompinit && bashcompinit
 
 source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
 eval "$(zoxide init --cmd cd zsh)"
-eval $(thefuck --alias)

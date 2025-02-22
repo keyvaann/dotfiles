@@ -64,14 +64,13 @@
     duf
     gping
     procs
-    zoxide
-    fzf
     thefuck
     lsd
     sox
-    htop
     pgcli
-    pavucontrol
+
+    rclone
+    restic
 
     age
     colordiff
@@ -95,8 +94,6 @@
     sops
     yq-go
     jq
-
-    jellyfin-media-player
   ];
 
   programs.nvf = {
@@ -108,7 +105,7 @@
       vim.vimAlias = true;
       vim.lsp = {
         enable = true;
-      };
+      };    
       vim.autocomplete.nvim-cmp.enable = true;
       vim.languages.enableTreesitter = true;
     };
@@ -128,8 +125,8 @@
     "procs.toml".source = ~/.dotfiles/home/config/procs/config.toml;
     "procs.toml".target = ".config/procs/config.toml";
 
-    "htoprc".source = ~/.dotfiles/home/config/htop/htoprc;
-    "htoprc".target = ".config/htop/htoprc";
+    # "htoprc".source = ~/.dotfiles/home/config/htop/htoprc;
+    # "htoprc".target = ".config/htop/htoprc";
 
     "flake8rc".source = ~/.dotfiles/home/config/flake8/flake8rc;
     "flake8rc".target = ".config/flake8/flake8rc";

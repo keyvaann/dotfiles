@@ -16,7 +16,7 @@ tasks:
       - setup-common
     cmds:
       - flatpak -v remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-      - flatpak install -y flathub com.anydesk.Anydesk com.github.tchx84.Flatseal com.rtosta.zapzap org.telegram.desktop com.valvesoftware.Steam com.visualstudio.code com.slack.Slack org.ferdium.Ferdium org.clementine_player.Clementine org.cryptomator.Cryptomator org.darktable.Darktable org.gimp.GIMP org.gnome.meld org.kde.kdenlive org.libreoffice.LibreOffice org.nomacs.ImageLounge org.qbittorrent.qBittorrent org.remmina.Remmina net.mullvad.MullvadBrowser org.keepassxc.KeePassXC
+      - flatpak install -y flathub com.anydesk.Anydesk com.github.tchx84.Flatseal com.rtosta.zapzap org.telegram.desktop com.valvesoftware.Steam com.visualstudio.code com.slack.Slack org.ferdium.Ferdium org.clementine_player.Clementine org.cryptomator.Cryptomator org.darktable.Darktable org.gnome.meld org.kde.kdenlive org.nomacs.ImageLounge org.qbittorrent.qBittorrent org.remmina.Remmina net.mullvad.MullvadBrowser org.keepassxc.KeePassXC
 
   install-zsh:
     deps:
@@ -24,21 +24,10 @@ tasks:
     cmds:
       - sudo apt install -y zsh
       - sudo chsh -s /bin/zsh
-      - sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-      - rm $HOME/.zshrc
-      - ln -s $HOME/.dotfiles/zshrc $HOME/.zshrc
-      # - git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
-      - git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-      - git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-      - git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
-      # - git clone https://github.com/zsh-users/zaw.git ~/.oh-my-zsh/custom/plugins/zaw
-      - git clone https://github.com/djui/alias-tips.git ~/.oh-my-zsh/custom/plugins/alias-tips
-      - git clone https://github.com/marzocchi/zsh-notify ~/.oh-my-zsh/custom/plugins/zsh-notify
     vars:
       RUNZSH: false
     status:
       - test -f /bin/zsh
-      - test -d ~/.oh-my-zsh/
 
   install-nix:
     deps:
@@ -123,23 +112,9 @@ tasks:
       - sudo apt install -f -y
       - rm windscribe.deb
 
-  install-or-update-atuin:
-    dir: /tmp
-    deps:
-      - install-or-update-windscribe
-    cmds:
-      - bash <(curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh)
-      - rm $HOME/.config/atuin/config.toml
-      - mkdir -p $HOME/.config/atuin
-      - cmd: ln -s $HOME/.dotfiles/atuin/config.toml $HOME/.config/atuin/config.toml
-        ignore_error: true
-      - atuin login
-      - atuin import auto
-      - atuin sync
-
   install-or-update:
     deps:
-      - install-or-update-atuin
+      - install-or-update-windscribe
 
 # ------------------------------------------------------------------------------------------------------
 

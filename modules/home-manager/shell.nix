@@ -34,9 +34,9 @@
     programs.yt-dlp = {
         enable = true;
         settings = {
-        embed-metadata = true;
-        sponsorblock-mark = "all";
-        downloader = lib.getExe pkgs.aria2;
+            embed-metadata = true;
+            sponsorblock-mark = "all";
+            downloader = lib.getExe pkgs.aria2;
         };
     };
     home.packages = [ pkgs.aria2 ];
@@ -44,8 +44,25 @@
     programs.bat = {
         enable = true;
         config = {
-        plain = true;
-        theme = "gruvbox-dark";
+            plain = true;
+            theme = "gruvbox-dark";
+        };
+        extraPackages = with pkgs.bat-extras; [
+            batman
+            batpipe
+            # batgrep
+            # batdiff
+        ];
+    };
+
+    programs.btop = {
+        enable = true;
+
+        settings = {
+            color_theme = "TTY";
+            theme_background = false;
+            update_ms = 500;
+            rounded_corners = false;
         };
     };
     
@@ -54,14 +71,14 @@
         enableZshIntegration = true;
         daemon.enable = true;
         flags = [
-        "--disable-up-arrow"
+            "--disable-up-arrow"
         ];
 
         settings = {
-        style = "compact";
-        word_jump_mode = "emacs";
-        enter_accept = true;
-        secrets_filter = true;
+            style = "compact";
+            word_jump_mode = "emacs";
+            enter_accept = true;
+            secrets_filter = true;
         };
     };
 
@@ -75,4 +92,148 @@
     programs.nix-index.enable = true;
     programs.nix-index.enableZshIntegration = true;
     programs.nix-index-database.comma.enable = true;
+
+    programs.zoxide = {
+        enable = true;
+        enableZshIntegration = true;
+    };
+
+    programs.fzf = {
+        enable = true;
+
+        enableZshIntegration = true;
+
+        defaultCommand = "fd --hidden --strip-cwd-prefix --exclude .git";
+        fileWidgetOptions = [
+        "--preview 'if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi'"
+        ];
+        changeDirWidgetCommand = "fd --type=d --hidden --strip-cwd-prefix --exclude .git";
+        changeDirWidgetOptions = [
+        "--preview 'eza --tree --color=always {} | head -200'"
+        ];
+
+        ## Theme
+        defaultOptions = [
+        "--color=fg:-1,fg+:#FBF1C7,bg:-1,bg+:#282828"
+        "--color=hl:#98971A,hl+:#B8BB26,info:#928374,marker:#D65D0E"
+        "--color=prompt:#CC241D,spinner:#689D6A,pointer:#D65D0E,header:#458588"
+        "--color=border:#665C54,label:#aeaeae,query:#FBF1C7"
+        "--border='double' --border-label='' --preview-window='border-sharp' --prompt='> '"
+        "--marker='>' --pointer='>' --separator='─' --scrollbar='│'"
+        "--info='right'"
+        ];
+    };
+
+    programs.starship = {
+        enable = true;
+
+        enableBashIntegration = true;
+        enableZshIntegration = true;
+
+        settings = {
+            time = {
+                disabled = false;
+                time_format = "%R";
+                style = "bg:color_bg1";
+                format = "[[   $time ](fg:color_fg0 bg:color_bg1)]($style)";
+            };
+            cmd_duration = {
+                format = "[ 󰔛 $duration ]($style)";
+                disabled = false;
+                style = "bg:color_bg3 fg:color_fg0";
+                show_notifications = false;
+                min_time_to_notify = 60000;
+            };
+        };
+    };
+
+    # enable zsh autocompletion for system packages (systemd, etc)
+    # environment.pathsToLink = ["/share/zsh"];
+    
+    programs.zsh = {
+        enable = true;
+        autosuggestion.enable = true;
+        syntaxHighlighting.enable = true;
+        enableCompletion = true;
+
+        dotDir = ".config/zsh";
+
+        oh-my-zsh = {
+            enable = true;
+            theme = "robbyrussell";
+            plugins = [
+                "git"
+                "aws" 
+                "argocd"
+                "git"
+                # django                      # compdef manage.py
+                # emacs
+                "docker"
+                "kubectl"
+                "extract"
+                "common-aliases"
+                "command-not-found"
+                "colored-man-pages"
+                "git-prompt"
+                "pip"
+                "sudo"
+                "ssh-agent"
+                # "zsh-autosuggestions"
+                # "zsh-syntax-highlighting"     # Note that zsh-syntax-highlighting must be the last plugin sourced, so make it the last element of the $plugins array.
+            ];
+        };
+        plugins = [
+            {
+                name = "alias-tips";
+                src = pkgs.fetchFromGitHub {
+                    owner = "djui";
+                    repo = "alias-tips";
+                    rev = "master";
+                    sha256 = "sha256-ZFWrwcwwwSYP5d8k7Lr/hL3WKAZmgn51Q9hYL3bq9vE=";
+                };
+            }
+            # {
+            #     name = "powerlevel10k";
+            #     src = pkgs.zsh-powerlevel10k;
+            #     file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+            # }
+        ];
+        completionInit = ''
+            # Security: close root shells after n seconds of inactivity
+            [ "$UID" = 0 ] && export TMOUT=180
+
+            # ulimit settings are per-process, 'man bash', not 'man ulimit'
+            ulimit -c 0     # create no core files
+            ulimit -m 500000
+
+            eval $(thefuck --alias)
+        '';
+
+        sessionVariables = {
+            PYTHONSTARTUP = "$HOME/.dotfiles/home/pythonrc.py";
+        };
+
+        shellAliases = {
+            ls = "lsd --classify --group-directories-first";
+            grep = "grep --color=auto --line-number --with-filename";
+            dig = "dig ANY +noall +answer "; # dig deeper
+            sudo = "sudo "; # Enable aliases to be sudo’ed
+            ping = "gping";
+            df = "duf";
+            ln = "ln -s";
+            cp = "cp -iv";                   # interactive, verbose, Sorry for that ;)
+            rm = "rm -iI --preserve-root";   # do not delete / or prompt if deleting more than 3 files at a time, Shame on me :)
+            mv = "mv -iv";                   # interactive, verbose
+            chown = "chown --preserve-root"; # Parenting changing perms on / #
+            chmod = "chmod --preserve-root"; # Parenting changing perms on / #
+            chgrp = "chgrp --preserve-root"; # Parenting changing perms on / #
+            mkdir = "mkdir -pv";             # Create parent directories on demand
+            diff = "colordiff";
+            cat = "bat --paging never --theme DarkNeon --style plain";
+            du = "dust --reverse";
+            ps = "procs --tree --pager disable";
+            man = "BAT_THEME='default' batman";
+            less = "bat";
+        };
+    };
 }
